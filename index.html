@@ -312,15 +312,22 @@
                     msgEl.innerText = 'Đang đăng nhập...';
                     const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
                         method: 'POST',
-                        mode: 'cors',
                         headers: {
                             'Content-Type': 'application/json',
                             'apikey': SUPABASE_ANON_KEY
                         },
                         body: JSON.stringify({ email, password })
                     });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error_description || data.msg || 'Sai email hoặc mật khẩu');
+                    
+                    const textResponse = await res.text();
+                    let data;
+                    try {
+                        data = JSON.parse(textResponse);
+                    } catch (e) {
+                        throw new Error('Phản hồi từ server không hợp lệ');
+                    }
+
+                    if (!res.ok) throw new Error(data.error_description || data.msg || data.message || 'Sai email hoặc mật khẩu');
 
                     localStorage.setItem('htbn_user', JSON.stringify({ email: data.user.email, token: data.access_token }));
                     location.reload();
@@ -329,15 +336,22 @@
                     msgEl.innerText = 'Đang đăng ký tài khoản...';
                     const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
                         method: 'POST',
-                        mode: 'cors',
                         headers: {
                             'Content-Type': 'application/json',
                             'apikey': SUPABASE_ANON_KEY
                         },
                         body: JSON.stringify({ email, password })
                     });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error_description || data.msg || 'Không thể đăng ký');
+                    
+                    const textResponse = await res.text();
+                    let data;
+                    try {
+                        data = JSON.parse(textResponse);
+                    } catch (e) {
+                        throw new Error('Phản hồi từ server không hợp lệ');
+                    }
+
+                    if (!res.ok) throw new Error(data.error_description || data.msg || data.message || 'Không thể đăng ký');
 
                     alert('Đăng ký thành công! Vui lòng bấm đăng nhập.');
                     currentMode = 'login';
@@ -348,7 +362,6 @@
                     msgEl.innerText = 'Đang gửi link...';
                     const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
                         method: 'POST',
-                        mode: 'cors',
                         headers: {
                             'Content-Type': 'application/json',
                             'apikey': SUPABASE_ANON_KEY
@@ -361,7 +374,8 @@
                     submitBtn.disabled = false;
                 }
             } catch (err) {
-                msgEl.innerText = 'Lỗi kết nối / ' + err.message;
+                console.error("Auth Error:", err);
+                msgEl.innerText = 'Lỗi: ' + (err.message || 'Không kết nối được server');
                 submitBtn.disabled = false;
             }
         }
@@ -404,7 +418,6 @@
             try {
                 const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/songs/${fileName}`, {
                     method: 'POST',
-                    mode: 'cors',
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${user.token}`,
@@ -418,7 +431,6 @@
 
                 const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/songs`, {
                     method: 'POST',
-                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
                         'apikey': SUPABASE_ANON_KEY,
@@ -442,7 +454,6 @@
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/songs?select=*&order=created_at.desc`, {
                     method: 'GET',
-                    mode: 'cors',
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`

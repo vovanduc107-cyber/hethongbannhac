@@ -98,7 +98,7 @@
     </footer>
 
     <!-- Audio Element Ẩn -->
-    <audio id="audio-element"></audio>
+    <audio id="audio-element" preload="auto"></audio>
 
     <!-- Modal Thanh Toán QR Ngân Hàng -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
@@ -229,9 +229,11 @@
         function playSong(url, title, artist) {
             document.getElementById('player-title').textContent = title;
             document.getElementById('player-artist').textContent = artist;
+            totalTimeEl.textContent = "Đang tải..."; // Hiển thị trạng thái đang đọc file
+
             audioElement.src = url;
-            audioElement.load(); // Ép trình duyệt đọc metadata ngay lập tức
-            audioElement.play();
+            audioElement.load();
+            audioElement.play().catch(e => console.log("Auto-play blocked:", e));
             playPauseBtn.textContent = "⏸";
         }
 
@@ -246,15 +248,21 @@
             }
         }
 
-        // Bắt sự kiện cập nhật thời lượng cực nhạy cho iOS/Safari
+        // Bắt mọi sự kiện thay đổi thời gian để cập nhật lập tức trên iOS
+        audioElement.addEventListener('loadedmetadata', () => {
+            if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration !== Infinity) {
+                totalTimeEl.textContent = formatTime(audioElement.duration);
+            }
+        });
+
         audioElement.addEventListener('durationchange', () => {
-            if (audioElement.duration && !isNaN(audioElement.duration)) {
+            if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration !== Infinity) {
                 totalTimeEl.textContent = formatTime(audioElement.duration);
             }
         });
 
         audioElement.addEventListener('timeupdate', () => {
-            if (audioElement.duration && !isNaN(audioElement.duration)) {
+            if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration !== Infinity) {
                 progressBar.value = (audioElement.currentTime / audioElement.duration) * 100;
                 currentTimeEl.textContent = formatTime(audioElement.currentTime);
                 totalTimeEl.textContent = formatTime(audioElement.duration);
@@ -262,13 +270,13 @@
         });
 
         progressBar.addEventListener('input', () => {
-            if (audioElement.duration && !isNaN(audioElement.duration)) {
+            if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration !== Infinity) {
                 audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
             }
         });
 
         function formatTime(seconds) {
-            if (isNaN(seconds)) return "00:00";
+            if (isNaN(seconds) || seconds === Infinity) return "00:00";
             const min = Math.floor(seconds / 60);
             const sec = Math.floor(seconds % 60);
             return `${min}:${sec < 10 ? '0' : ''}${sec}`;

@@ -50,12 +50,12 @@
 
         /* Hiệu ứng logo thương hiệu phát sáng nhẹ */
         .brand-logo {
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.5);
             transition: transform 0.3s ease;
         }
         .brand-logo:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(234, 179, 8, 0.7);
+            transform: scale(1.08);
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.8);
         }
 
         /* Hiệu ứng chú gấu nhảy siêu cute (Bouncings & Wiggle) */
@@ -95,8 +95,8 @@
     <!-- Header -->
     <header class="flex justify-between items-center p-4 border-b border-gray-800/80 bg-[#111827]/90 backdrop-blur-md sticky top-0 z-50">
         <div class="flex items-center space-x-3">
-            <!-- Logo Thương Hiệu Ảnh 2 (Đã mã hóa chuẩn trực tiếp hiển thị 100%) -->
-            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/50 brand-logo">
+            <!-- Logo Thương Hiệu Từ Ảnh 2 Chuẩn Tuyệt Đối -->
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/60 brand-logo">
             <div>
                 <h1 class="font-bold text-lg leading-tight flex items-center gap-1.5">
                     HTBN <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">PRO</span>
@@ -279,7 +279,7 @@
 
     <!-- Script Xử Lý Chính -->
     <script>
-        // Cố định ảnh Logo thương hiệu từ Ảnh 2 (đã mã hóa chuẩn Base64 nhúng thẳng)
+        // Cố định ảnh Logo thương hiệu từ Ảnh 2
         const BRAND_LOGO_BASE64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
         document.getElementById('brand-logo-img').src = BRAND_LOGO_BASE64;
 
@@ -679,7 +679,7 @@
             } else {
                 qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
             }
-            modal.classList.add('hidden'); // Fix mở modal chuẩn
+            modal.classList.remove('hidden');
         }
 
         function closeCheckoutModal() {

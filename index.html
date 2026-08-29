@@ -12,7 +12,7 @@
         body { background-color: #0b0f19; color: #fff; font-family: system-ui, -apple-system, sans-serif; }
     </style>
 </head>
-<body class="min-h-screen pb-24">
+<body class="min-h-screen pb-32">
 
     <!-- Header -->
     <header class="flex justify-between items-center p-4 border-b border-gray-800 bg-[#111827]/80 backdrop-blur sticky top-0 z-50">
@@ -23,14 +23,14 @@
                 <p class="text-xs text-gray-400">HỆ THỐNG BÁN NHẠC</p>
             </div>
         </div>
-        <div class="flex items-center space-x-3">
-            <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+        <div class="flex items-center space-x-3" id="auth-header-action">
+            <!-- Nút chuyển đổi dựa trên trạng thái đăng nhập -->
         </div>
     </header>
 
     <main class="max-w-2xl mx-auto p-4 space-y-6">
-        <!-- Form Quản Trị Đăng Tải -->
-        <section class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl shadow-xl space-y-4">
+        <!-- Form Quản Trị Đăng Tải (Chỉ hiện khi là Admin) -->
+        <section id="admin-section" class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl shadow-xl space-y-4 hidden">
             <h2 class="text-blue-400 font-bold text-base flex items-center gap-2">
                 ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
             </h2>
@@ -52,7 +52,7 @@
 
             <div>
                 <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh (.mp3)</label>
-                <input type="file" id="song-file" accept="audio/mp3,audio/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                <input type="file" id="song-file" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
             </div>
 
             <button onclick="uploadSong()" id="upload-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/20 text-sm">
@@ -68,6 +68,26 @@
             </h2>
             <div id="songs-list" class="space-y-3">
                 <p class="text-xs text-gray-500 italic">Đang tải danh sách bài hát...</p>
+            </div>
+        </section>
+
+        <!-- Mục Liên Hệ Hỗ Trợ Cho Khách Hàng -->
+        <section class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl space-y-3">
+            <h2 class="text-blue-400 font-bold text-sm flex items-center gap-2">
+                💬 Hỗ Trợ & Liên Hệ Admin
+            </h2>
+            <p class="text-xs text-gray-300 leading-relaxed">
+                Quý khách cần mua bản quyền beat/track hoặc cần hỗ trợ thanh toán, vui lòng liên hệ trực tiếp với Admin qua thông tin bên dưới:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex items-center gap-2">
+                    <span class="text-blue-400 font-bold">📱 Zalo/Phone:</span>
+                    <span class="text-gray-200 font-medium">0xxxxxxxxx (Võ Văn Đức)</span>
+                </div>
+                <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex items-center gap-2">
+                    <span class="text-blue-400 font-bold">🌐 Facebook:</span>
+                    <a href="#" class="text-blue-400 underline truncate">fb.com/vovanduc</a>
+                </div>
             </div>
         </section>
     </main>
@@ -89,15 +109,28 @@
                 </div>
                 <div class="w-full flex items-center space-x-2 text-[10px] text-gray-400">
                     <span id="current-time">00:00</span>
-                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500" disabled>
                     <span id="total-time">00:00</span>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Thẻ Audio Ẩn -->
-    <audio id="audio-element" preload="auto"></audio>
+    <!-- Modal Đăng Nhập Admin -->
+    <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4">
+            <h3 class="font-bold text-base text-white text-center">Đăng Nhập Quản Trị Viên</h3>
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Mật khẩu Admin</label>
+                <input type="password" id="admin-pass" placeholder="Nhập mật khẩu..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 text-white">
+            </div>
+            <p id="login-error" class="text-xs text-red-400 text-center hidden"></p>
+            <div class="flex gap-2">
+                <button onclick="closeLoginModal()" class="w-1/2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2.5 rounded-xl text-xs transition">Hủy</button>
+                <button onclick="submitAdminLogin()" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-xs transition">Xác Nhận</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Thanh Toán QR Ngân Hàng -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
@@ -119,7 +152,7 @@
         </div>
     </div>
 
-    <!-- Script Xử Lý -->
+    <!-- Script Xử Lý Chính -->
     <script>
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
@@ -129,23 +162,79 @@
         const BANK_ID = "TCB";
         const ACCOUNT_NO = "1903xxxxxxxxx";
         const ACCOUNT_NAME = "VO VAN DUC";
+        const ADMIN_SECRET_PASS = "admin123456"; // Anh có thể đổi mật khẩu này theo ý muốn
 
-        const audioElement = document.getElementById('audio-element');
         const playPauseBtn = document.getElementById('play-pause-btn');
         const progressBar = document.getElementById('progress-bar');
         const currentTimeEl = document.getElementById('current-time');
         const totalTimeEl = document.getElementById('total-time');
 
-        let isUserSeeking = false;
-        let currentObjectURL = null;
+        let audioCtx = null;
+        let audioBuffer = null;
+        let sourceNode = null;
+        let startTime = 0;
+        let pauseOffset = 0;
+        let isPlaying = false;
+        let timerInterval = null;
 
-        document.addEventListener("DOMContentLoaded", fetchSongs);
+        document.addEventListener("DOMContentLoaded", () => {
+            checkAuthUI();
+            fetchSongs();
+        });
+
+        function checkAuthUI() {
+            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+            const authHeaderAction = document.getElementById('auth-header-action');
+            const adminSection = document.getElementById('admin-section');
+
+            if (isAdmin) {
+                authHeaderAction.innerHTML = `<button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>`;
+                adminSection.classList.remove('hidden');
+            } else {
+                authHeaderAction.innerHTML = `<button onclick="openLoginModal()" class="bg-blue-600/20 text-blue-400 border border-blue-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-600/30 transition">🔐 Admin Đăng Nhập</button>`;
+                adminSection.classList.add('hidden');
+            }
+        }
+
+        function openLoginModal() {
+            document.getElementById('login-pass').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+        }
+
+        function submitAdminLogin() {
+            const pass = document.getElementById('admin-pass').value;
+            const errEl = document.getElementById('login-error');
+            if (pass === ADMIN_SECRET_PASS) {
+                localStorage.setItem('htbn_is_admin', 'true');
+                closeLoginModal();
+                checkAuthUI();
+            } else {
+                errEl.textContent = "Mật khẩu quản trị không đúng!";
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('htbn_is_admin');
+            stopCurrentAudio();
+            checkAuthUI();
+            document.getElementById('player-title').textContent = "Chưa chọn bài hát";
+            document.getElementById('player-artist').textContent = "HTBN Music Player";
+            totalTimeEl.textContent = "00:00";
+            currentTimeEl.textContent = "00:00";
+            alert("Đã đăng xuất tài khoản quản trị!");
+        }
 
         async function fetchSongs() {
             const listContainer = document.getElementById('songs-list');
             const { data, error } = await supabaseClient
                 .from('songs')
-                .select('id, title, artist, price')
+                .select('*')
                 .order('id', { ascending: false });
 
             if (error) {
@@ -158,13 +247,15 @@
                 return;
             }
 
+            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+
             listContainer.innerHTML = data.map(song => `
                 <div class="bg-[#161f31] border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-3">
                     <div class="flex items-center space-x-3 overflow-hidden">
-                        <button onclick="playSong('${song.id}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
+                        <button onclick="handlePlayClick('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
                         <div class="truncate">
                             <h3 class="text-sm font-bold text-gray-100 truncate">${song.title}</h3>
-                            <p class="text-xs text-gray-400 truncate">${song.artist}</p>
+                            <p class="text-xs text-gray-400 truncate">${song.artist} ${!isAdmin ? '<span class="text-yellow-500/80 text-[10px] ml-1">(Chỉ hiển thị thời gian)</span>' : ''}</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0">
@@ -173,6 +264,19 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function handlePlayClick(url, title, artist) {
+            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+            if (!isAdmin) {
+                alert("Tính năng phát nhạc bảo mật chỉ dành riêng cho Admin! Khách hàng vui lòng liên hệ Admin hoặc mua bản quyền để nhận file nhạc.");
+                document.getElementById('player-title').textContent = title;
+                document.getElementById('player-artist').textContent = artist + " (Chỉ Admin mới nghe được)";
+                totalTimeEl.textContent = "--:--";
+                currentTimeEl.textContent = "00:00";
+                return;
+            }
+            playSong(url, title, artist);
         }
 
         async function uploadSong() {
@@ -189,21 +293,27 @@
             }
 
             const file = fileInput.files[0];
+            const fileName = `song_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+
             statusEl.className = "text-xs text-center font-medium text-yellow-400";
-            statusEl.textContent = "Đang nạp file vào cơ sở dữ liệu...";
+            statusEl.textContent = "Đang tải file lên Supabase Storage...";
 
             try {
-                // Đọc file dưới dạng chuỗi Data URL chuẩn
-                const reader = new FileReader();
-                const base64Data = await new Promise((resolve, reject) => {
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('songs')
+                    .upload(fileName, file, { upsert: true });
+
+                if (uploadError) throw new Error("Lỗi Storage: " + uploadError.message);
+
+                const { data: publicURLData } = supabaseClient.storage
+                    .from('songs')
+                    .getPublicUrl(fileName);
+
+                const fileUrl = publicURLData.publicUrl;
 
                 const { error: insertError } = await supabaseClient
                     .from('songs')
-                    .insert([{ title, artist, price, file_url: base64Data }]);
+                    .insert([{ title, artist, price, file_url: fileUrl }]);
 
                 if (insertError) throw new Error("Lỗi Database: " + insertError.message);
 
@@ -222,97 +332,124 @@
             }
         }
 
-        async function playSong(songId, title, artist) {
+        async function playSong(url, title, artist) {
             document.getElementById('player-title').textContent = title;
             document.getElementById('player-artist').textContent = artist;
             totalTimeEl.textContent = "Đang tải...";
             currentTimeEl.textContent = "00:00";
             progressBar.value = 0;
+            progressBar.disabled = true;
 
-            const { data, error } = await supabaseClient
-                .from('songs')
-                .select('file_url')
-                .eq('id', songId)
-                .single();
-
-            if (error || !data || !data.file_url) {
-                totalTimeEl.textContent = "Lỗi tải file";
-                return;
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
             }
 
-            if (currentObjectURL) {
-                URL.revokeObjectURL(currentObjectURL);
-            }
+            stopCurrentAudio();
 
             try {
-                // Chuyển đổi dữ liệu lưu trữ thành Blob chuẩn của trình duyệt
-                const response = await fetch(data.file_url);
-                const blob = await response.blob();
-                currentObjectURL = URL.createObjectURL(blob);
-
-                audioElement.src = currentObjectURL;
-                audioElement.load();
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Không thể tải file từ Storage");
                 
-                await audioElement.play();
-                playPauseBtn.textContent = "⏸";
-            } catch (e) {
-                console.log("Phát nhạc lỗi:", e);
-                totalTimeEl.textContent = "Lỗi định dạng";
-                playPauseBtn.textContent = "▶";
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+                totalTimeEl.textContent = formatTime(audioBuffer.duration);
+                progressBar.disabled = false;
+                
+                startPlayback(0);
+            } catch (err) {
+                console.error("Lỗi phát nhạc:", err);
+                totalTimeEl.textContent = "Lỗi tải file";
             }
+        }
+
+        function startPlayback(offset) {
+            if (!audioBuffer) return;
+            stopSourceOnly();
+
+            sourceNode = audioCtx.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            sourceNode.connect(audioCtx.destination);
+
+            sourceNode.onended = () => {
+                if (isPlaying && (audioCtx.currentTime - startTime >= audioBuffer.duration)) {
+                    stopCurrentAudio();
+                    playPauseBtn.textContent = "▶";
+                    progressBar.value = 0;
+                    currentTimeEl.textContent = "00:00";
+                }
+            };
+
+            sourceNode.start(0, offset);
+            startTime = audioCtx.currentTime - offset;
+            isPlaying = true;
+            playPauseBtn.textContent = "⏸";
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!isPlaying) return;
+                let currentPos = audioCtx.currentTime - startTime;
+                if (currentPos >= audioBuffer.duration) {
+                    currentPos = audioBuffer.duration;
+                }
+                currentTimeEl.textContent = formatTime(currentPos);
+                progressBar.value = (currentPos / audioBuffer.duration) * 100;
+            }, 200);
+        }
+
+        function stopSourceOnly() {
+            if (sourceNode) {
+                try { sourceNode.stop(); } catch(e) {}
+                try { sourceNode.disconnect(); } catch(e) {}
+                sourceNode = null;
+            }
+        }
+
+        function stopCurrentAudio() {
+            stopSourceOnly();
+            isPlaying = false;
+            pauseOffset = 0;
+            clearInterval(timerInterval);
         }
 
         function togglePlay() {
-            if (!audioElement.src) return;
-            if (audioElement.paused) {
-                audioElement.play();
-                playPauseBtn.textContent = "⏸";
-            } else {
-                audioElement.pause();
+            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+            if (!isAdmin) {
+                alert("Chỉ Admin mới có quyền phát nhạc hệ thống!");
+                return;
+            }
+            if (!audioBuffer) return;
+
+            if (isPlaying) {
+                pauseOffset = audioCtx.currentTime - startTime;
+                stopSourceOnly();
+                isPlaying = false;
                 playPauseBtn.textContent = "▶";
+                clearInterval(timerInterval);
+            } else {
+                if (pauseOffset >= audioBuffer.duration) {
+                    pauseOffset = 0;
+                }
+                startPlayback(pauseOffset);
             }
         }
-
-        function updateDuration() {
-            if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration !== Infinity) {
-                totalTimeEl.textContent = formatTime(audioElement.duration);
-            }
-        }
-
-        audioElement.addEventListener('loadedmetadata', updateDuration);
-        audioElement.addEventListener('durationchange', updateDuration);
-        audioElement.addEventListener('canplaythrough', updateDuration);
-
-        audioElement.addEventListener('timeupdate', () => {
-            updateDuration();
-            if (!isUserSeeking && audioElement.duration && !isNaN(audioElement.duration)) {
-                const percent = (audioElement.currentTime / audioElement.duration) * 100;
-                progressBar.value = percent;
-                currentTimeEl.textContent = formatTime(audioElement.currentTime);
-            }
-        });
-
-        progressBar.addEventListener('mousedown', () => { isUserSeeking = true; });
-        progressBar.addEventListener('touchstart', () => { isUserSeeking = true; });
 
         progressBar.addEventListener('input', () => {
-            if (audioElement.duration && !isNaN(audioElement.duration)) {
-                const time = (progressBar.value / 100) * audioElement.duration;
-                currentTimeEl.textContent = formatTime(time);
-            }
+            if (!audioBuffer) return;
+            const seekTime = (progressBar.value / 100) * audioBuffer.duration;
+            currentTimeEl.textContent = formatTime(seekTime);
         });
 
         progressBar.addEventListener('change', () => {
-            isUserSeeking = false;
-            if (audioElement.duration && !isNaN(audioElement.duration)) {
-                audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
+            if (!audioBuffer) return;
+            const seekTime = (progressBar.value / 100) * audioBuffer.duration;
+            pauseOffset = seekTime;
+            if (isPlaying) {
+                startPlayback(pauseOffset);
             }
-        });
-
-        audioElement.addEventListener('ended', () => {
-            playPauseBtn.textContent = "▶";
-            progressBar.value = 0;
-            currentTimeEl.textContent = "00:00";
         });
 
         function formatTime(seconds) {
@@ -340,11 +477,6 @@
 
         function closeCheckoutModal() {
             document.getElementById('checkout-modal').classList.add('hidden');
-        }
-
-        function handleLogout() {
-            alert("Đã đăng xuất!");
-            location.reload();
         }
     </script>
 </body>

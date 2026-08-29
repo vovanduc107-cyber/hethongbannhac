@@ -207,7 +207,7 @@
         </div>
     </div>
 
-    <!-- Script Xử Lý Trực Tiếp Chuẩn Xác -->
+    <!-- Script Xử Lý An Toàn Tránh Load Failed -->
     <script>
         const SUPABASE_URL = 'https://znunswdfeylrmunntmhk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudW5zd2RmZXlscm11bm50bWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjM2MzMyODczNTl9.W54V_aY34eCgV3aO0Tq2_XzZ1K6k3_qV8Y9m4_8p2_o';
@@ -313,6 +313,7 @@
                     msgEl.innerText = 'Đang đăng nhập...';
                     const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
                         method: 'POST',
+                        mode: 'cors',
                         headers: {
                             'Content-Type': 'application/json',
                             'apikey': SUPABASE_ANON_KEY
@@ -329,6 +330,7 @@
                     msgEl.innerText = 'Đang đăng ký tài khoản...';
                     const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
                         method: 'POST',
+                        mode: 'cors',
                         headers: {
                             'Content-Type': 'application/json',
                             'apikey': SUPABASE_ANON_KEY
@@ -347,6 +349,7 @@
                     msgEl.innerText = 'Đang gửi link...';
                     const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
                         method: 'POST',
+                        mode: 'cors',
                         headers: {
                             'Content-Type': 'application/json',
                             'apikey': SUPABASE_ANON_KEY
@@ -359,7 +362,7 @@
                     submitBtn.disabled = false;
                 }
             } catch (err) {
-                msgEl.innerText = 'Lỗi: ' + err.message;
+                msgEl.innerText = 'Lỗi kết nối / ' + err.message;
                 submitBtn.disabled = false;
             }
         }
@@ -400,9 +403,9 @@
             msgEl.innerText = 'Đang tải file lên hệ thống...';
 
             try {
-                // Upload Storage trực tiếp
                 const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/songs/${fileName}`, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${user.token}`,
@@ -414,9 +417,9 @@
 
                 const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/songs/${fileName}`;
 
-                // Insert Database trực tiếp
                 const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/songs`, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
                         'apikey': SUPABASE_ANON_KEY,
@@ -439,6 +442,8 @@
             const container = document.getElementById('songs-container');
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/songs?select=*&order=created_at.desc`, {
+                    method: 'GET',
+                    mode: 'cors',
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`

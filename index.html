@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTBN - Hệ Thống Bán Nhạc Luxury</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { 
@@ -14,10 +16,10 @@
         }
 
         /* Hiệu ứng viền LED chạy xung quanh web cực kỳ sang chảnh và độc lạ */
-        @keyframes ledBorderRun {
-            0% { border-image-source: linear-gradient(0deg, #f59e0b, #3b82f6, #ec4899, #f59e0b); }
-            50% { border-image-source: linear-gradient(180deg, #ec4899, #f59e0b, #3b82f6, #ec4899); }
-            100% { border-image-source: linear-gradient(360deg, #f59e0b, #3b82f6, #ec4899, #f59e0b); }
+        @keyframes ledBorderAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .led-frame {
@@ -29,12 +31,6 @@
             background-size: 300% 300%;
             animation: ledBorderAnimation 6s ease infinite;
             box-shadow: 0 0 25px rgba(245, 158, 11, 0.25), inset 0 0 15px rgba(59, 130, 246, 0.15);
-        }
-
-        @keyframes ledBorderAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         /* Đèn LED chạy viền ngoài cùng của màn hình Body */
@@ -136,6 +132,7 @@
 </head>
 <body class="min-h-screen pb-36 relative overflow-x-hidden">
 
+    <!-- Lớp Hiệu Ứng Ánh Sáng Bay Nổi -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div class="absolute top-10 left-1/4 w-[28rem] h-[28rem] bg-amber-500/10 rounded-full blur-[150px] luxury-glow-1"></div>
         <div class="absolute bottom-10 right-1/4 w-[32rem] h-[32rem] bg-yellow-600/10 rounded-full blur-[170px] luxury-glow-2"></div>
@@ -148,6 +145,7 @@
         <div class="particle" style="width: 8px; height: 8px; left: 88%; bottom: -10px; animation-duration: 9s; animation-delay: 1.5s;"></div>
     </div>
 
+    <!-- Header Sang Chảnh -->
     <header class="flex justify-between items-center p-4 border-b border-amber-500/20 bg-[#0b0f19]/90 backdrop-blur-xl sticky top-0 z-50 shadow-lg">
         <div class="flex items-center space-x-3">
             <img src="" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/80 brand-logo">
@@ -171,6 +169,7 @@
 
     <main class="max-w-2xl mx-auto p-4 space-y-6 relative z-10">
         
+        <!-- Sảnh Chào Mừng -->
         <section class="led-frame p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3 text-center sm:text-left">
                 <div class="text-3xl flag-anim bg-red-600/20 p-2.5 rounded-2xl border border-red-500/40 shadow">🇻🇳</div>
@@ -189,6 +188,7 @@
             </div>
         </section>
 
+        <!-- Form Quản Trị Đăng Tải Nhạc (Có kèm chọn Ảnh Bìa Cover Art) -->
         <section id="admin-section" class="led-frame p-5 space-y-4 hidden">
             <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
                 ☁️ Khu Vực Quản Trị - Đăng Tải Track Nhạc <span class="dancing-bear text-base">🐻</span>
@@ -225,6 +225,7 @@
             <p id="upload-status" class="text-xs text-center font-medium"></p>
         </section>
 
+        <!-- Khu Vực Quản Trị Duyệt Nạp Tiền -->
         <section id="admin-deposits-section" class="led-frame p-5 space-y-4 hidden">
             <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
                 📥 Duyệt Phiếu Nạp Tiền Của Khách <span class="text-xs text-amber-200/60 font-normal">(Yêu cầu chờ duyệt)</span>
@@ -234,6 +235,17 @@
             </div>
         </section>
 
+        <!-- KHU VỰC QUẢN TRỊ: DANH SÁCH TÀI KHOẢN NGƯỜI DÙNG ĐÃ ĐĂNG KÝ -->
+        <section id="admin-users-section" class="led-frame p-5 space-y-4 hidden">
+            <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
+                👥 Quản Lý Tài Khoản Người Dùng Đã Đăng Ký <span class="text-xs text-amber-200/60 font-normal" id="total-users-count">(0 thành viên)</span>
+            </h2>
+            <div id="admin-users-list" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+                <p class="text-xs text-gray-500 italic">Đang tải danh sách thành viên...</p>
+            </div>
+        </section>
+
+        <!-- Kho Nhạc Luxury -->
         <section class="space-y-3">
             <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
                 🎵 Kho Nhạc Độc Quyền Cao Cấp <span class="dancing-bear-delay text-base">🐨</span>
@@ -243,6 +255,7 @@
             </div>
         </section>
 
+        <!-- Mục Liên Hệ Hỗ Trợ -->
         <section class="luxury-card p-5 rounded-2xl space-y-3">
             <h2 class="text-amber-400 font-bold text-sm flex items-center gap-2">
                 💬 Hỗ Trợ & Liên Hệ Quản Trị <span class="dancing-bear text-sm">🐼</span>
@@ -269,6 +282,7 @@
         </section>
     </main>
 
+    <!-- Thanh Player Cố Định Dưới Đáy -->
     <footer class="fixed bottom-0 left-0 right-0 bg-[#030712]/95 backdrop-blur-2xl border-t border-amber-500/30 p-3 z-50 shadow-2xl">
         <div class="max-w-2xl mx-auto flex items-center justify-between gap-3">
             <div class="flex items-center space-x-3 overflow-hidden">
@@ -294,6 +308,7 @@
         </div>
     </footer>
 
+    <!-- Modal Đăng Nhập / Đăng Ký -->
     <div id="auth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="luxury-card border border-amber-500/30 rounded-2xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
             <div class="flex border-b border-amber-500/20 text-xs font-semibold">
@@ -333,6 +348,7 @@
         </div>
     </div>
 
+    <!-- Modal Nạp Tiền & Gửi Bill -->
     <div id="deposit-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="luxury-card border border-amber-500/30 rounded-2xl p-5 max-w-sm w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <h3 class="font-bold text-base text-white text-center">💳 Nạp Tiền Vào Ví Luxury</h3>
@@ -368,6 +384,7 @@
         </div>
     </div>
 
+    <!-- Script Xử Lý -->
     <script>
         const BRAND_LOGO_BASE64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
         document.getElementById('brand-logo-img').src = BRAND_LOGO_BASE64;
@@ -416,6 +433,7 @@
             const authHeaderAction = document.getElementById('auth-header-action');
             const adminSection = document.getElementById('admin-section');
             const adminDepositsSection = document.getElementById('admin-deposits-section');
+            const adminUsersSection = document.getElementById('admin-users-section');
             const userWallet = document.getElementById('user-wallet');
 
             if (currentUser) {
@@ -442,13 +460,17 @@
                     `;
                     adminSection.classList.remove('hidden');
                     adminDepositsSection.classList.remove('hidden');
+                    adminUsersSection.classList.remove('hidden');
+                    
                     fetchAdminDeposits();
+                    fetchAdminUsers();
                 } else {
                     authHeaderAction.innerHTML = `
                         <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold">Đăng Xuất</button>
                     `;
                     adminSection.classList.add('hidden');
                     adminDepositsSection.classList.add('hidden');
+                    adminUsersSection.classList.add('hidden');
                 }
             } else {
                 userWallet.classList.add('hidden');
@@ -458,6 +480,7 @@
                 `;
                 adminSection.classList.add('hidden');
                 adminDepositsSection.classList.add('hidden');
+                adminUsersSection.classList.add('hidden');
             }
         }
 
@@ -505,6 +528,10 @@
                 errEl.textContent = error.message;
                 errEl.classList.remove('hidden');
             } else {
+                // Tự động thêm bản ghi vào bảng profiles để quản lý thành viên
+                if (data.user) {
+                    await supabaseClient.from('profiles').upsert([{ id: data.user.id, email: email, balance: 0 }]);
+                }
                 alert("Đăng ký thành công! Hãy đăng nhập ngay.");
                 switchAuthTab('login');
             }
@@ -527,6 +554,9 @@
                 errEl.classList.remove('hidden');
             } else {
                 currentUser = data.user;
+                // Cập nhật email vào profiles nếu chưa có
+                await supabaseClient.from('profiles').upsert([{ id: currentUser.id, email: currentUser.email }]);
+
                 closeAuthModal();
                 await updateAuthUI();
                 fetchSongs();
@@ -651,6 +681,50 @@
             `).join('');
         }
 
+        // HÀM LẤY VÀ HIỂN THỊ DANH SÁCH TÀI KHOẢN NGƯỜI DÙNG CHO ADMIN
+        async function fetchAdminUsers() {
+            const container = document.getElementById('admin-users-list');
+            const countEl = document.getElementById('total-users-count');
+            if (!container) return;
+
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                container.innerHTML = `<p class="text-xs text-red-400">Lỗi tải danh sách thành viên: ${error.message}</p>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic">Chưa có người dùng nào đăng ký.</p>`;
+                countEl.textContent = `(0 thành viên)`;
+                return;
+            }
+
+            countEl.textContent = `(${data.length} thành viên)`;
+
+            container.innerHTML = data.map((user, index) => {
+                const userEmail = user.email || `Thành viên #${index + 1} (ID: ${user.id.slice(0, 8)})`;
+                const userBalance = (user.balance || 0).toLocaleString();
+                const createdAt = user.created_at ? new Date(user.created_at).toLocaleString('vi-VN') : 'Không rõ';
+
+                return `
+                <div class="bg-black/60 p-3 rounded-xl border border-amber-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="space-y-1 overflow-hidden">
+                        <p class="text-xs text-gray-200 truncate">📧 Email: <b class="text-amber-400">${userEmail}</b></p>
+                        <p class="text-[11px] text-gray-400">🆔 ID: <span class="font-mono text-gray-500">${user.id}</span></p>
+                        <p class="text-[11px] text-gray-400">📅 Ngày đăng ký: <span class="text-gray-300">${createdAt}</span></p>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-[10px] text-gray-400 uppercase font-semibold">Số dư ví</p>
+                        <p class="text-xs font-black text-emerald-400">${userBalance} VNĐ</p>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
         async function approveDeposit(depositId, userId, amount) {
             if (!confirm(`Xác nhận duyệt cộng ${amount.toLocaleString()} VNĐ cho người dùng này?`)) return;
 
@@ -680,6 +754,7 @@
 
             alert("Đã duyệt và cộng tiền thành công cho khách hàng!");
             fetchAdminDeposits();
+            fetchAdminUsers();
             await updateAuthUI();
         }
 

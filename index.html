@@ -193,21 +193,18 @@
             statusEl.textContent = "Đang tải file lên hệ thống...";
 
             try {
-                // Upload file lên Supabase Storage
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('songs')
                     .upload(fileName, file, { upsert: true });
 
                 if (uploadError) throw new Error("Lỗi Storage: " + uploadError.message);
 
-                // Lấy URL công khai
                 const { data: publicURLData } = supabaseClient.storage
                     .from('songs')
                     .getPublicUrl(fileName);
 
                 const fileUrl = publicURLData.publicUrl;
 
-                // Lưu vào Database
                 const { error: insertError } = await supabaseClient
                     .from('songs')
                     .insert([{ title, artist, price, file_url: fileUrl }]);
@@ -230,13 +227,13 @@
         }
 
         function playSong(url, title, artist) {
-    document.getElementById('player-title').textContent = title;
-    document.getElementById('player-artist').textContent = artist;
-    audioElement.src = url;
-    audioElement.load(); // Thêm dòng này để ép trình duyệt đọc thông tin file nhạc ngay lập tức
-    audioElement.play();
-    playPauseBtn.textContent = "⏸";
-}
+            document.getElementById('player-title').textContent = title;
+            document.getElementById('player-artist').textContent = artist;
+            audioElement.src = url;
+            audioElement.load(); // Ép trình duyệt đọc metadata ngay lập tức
+            audioElement.play();
+            playPauseBtn.textContent = "⏸";
+        }
 
         function togglePlay() {
             if (!audioElement.src) return;
@@ -249,24 +246,29 @@
             }
         }
 
-        audioElement.addEventListener('timeupdate', () => {
-            if (audioElement.duration) {
-                progressBar.value = (audioElement.currentTime / audioElement.duration) * 100;
-                currentTimeEl.textContent = formatTime(audioElement.currentTime);
+        // Bắt sự kiện cập nhật thời lượng cực nhạy cho iOS/Safari
+        audioElement.addEventListener('durationchange', () => {
+            if (audioElement.duration && !isNaN(audioElement.duration)) {
+                totalTimeEl.textContent = formatTime(audioElement.duration);
             }
         });
 
-        audioElement.addEventListener('loadedmetadata', () => {
-            totalTimeEl.textContent = formatTime(audioElement.duration);
+        audioElement.addEventListener('timeupdate', () => {
+            if (audioElement.duration && !isNaN(audioElement.duration)) {
+                progressBar.value = (audioElement.currentTime / audioElement.duration) * 100;
+                currentTimeEl.textContent = formatTime(audioElement.currentTime);
+                totalTimeEl.textContent = formatTime(audioElement.duration);
+            }
         });
 
         progressBar.addEventListener('input', () => {
-            if (audioElement.duration) {
+            if (audioElement.duration && !isNaN(audioElement.duration)) {
                 audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
             }
         });
 
         function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
             const min = Math.floor(seconds / 60);
             const sec = Math.floor(seconds % 60);
             return `${min}:${sec < 10 ? '0' : ''}${sec}`;

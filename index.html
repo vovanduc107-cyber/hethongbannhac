@@ -233,13 +233,19 @@
         }
 
         function openAuthModal(mode) {
-            currentMode = mode;
-            document.getElementById('auth-modal').classList.remove('hidden');
-            document.getElementById('auth-email').value = '';
-            document.getElementById('auth-password').value = '';
-            document.getElementById('auth-msg').innerText = '';
-            updateModalUI();
-        }
+    currentMode = mode;
+    let modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.getElementById('auth-email').value = '';
+        document.getElementById('auth-password').value = '';
+        const msgEl = document.getElementById('auth-msg');
+        if (msgEl) msgEl.innerText = '';
+        updateModalUI();
+    } else {
+        alert('Chưa tìm thấy khung HTML của modal đăng nhập. Vui lòng kiểm tra lại phần mã giao diện modal.');
+    }
+}
 
         function closeAuthModal() {
             document.getElementById('auth-modal').classList.add('hidden');

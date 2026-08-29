@@ -140,7 +140,7 @@
         </div>
     </main>
 
-    <!-- Bottom Music Player Bar (Giao diện cố định dưới chân y hệt ảnh mẫu) -->
+    <!-- Bottom Music Player Bar -->
     <div class="fixed bottom-0 left-0 right-0 bg-darkBg/95 backdrop-blur-xl border-t border-borderDark z-40 px-4 py-3 flex items-center justify-between shadow-2xl">
         <div class="flex items-center space-x-3 w-1/4">
             <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white shadow">
@@ -213,11 +213,19 @@
         </div>
     </div>
 
-    <!-- Script Xử Lý Giao Diện & Tính Năng -->
+    <!-- Script Xử Lý Kết Nối & Tính Năng -->
     <script>
         const SUPABASE_URL = 'https://znunswdfeylrmunntmhk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudW5zd2RmZXlscm11bm50bWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjM2MzMyODczNTl9.W54V_aY34eCgV3aO0Tq2_XzZ1K6k3_qV8Y9m4_8p2_o';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Khởi tạo Supabase client chuẩn chống lỗi Load failed
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        });
 
         const ADMIN_EMAIL = 'vovanduc107@gmail.com';
         let currentMode = 'login';
@@ -326,10 +334,8 @@
                     msgEl.innerText = 'Lỗi: ' + error.message;
                     submitBtn.disabled = false;
                 } else {
-                    alert('Đăng ký thành công! Bạn có thể đăng nhập ngay.');
-                    currentMode = 'login';
-                    updateModalUI();
-                    submitBtn.disabled = false;
+                    alert('Đăng ký thành công!');
+                    location.reload();
                 }
             } else if (currentMode === 'forgot') {
                 msgEl.innerText = 'Đang gửi link khôi phục...';

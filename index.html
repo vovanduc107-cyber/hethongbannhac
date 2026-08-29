@@ -24,7 +24,6 @@
             </div>
         </div>
         <div class="flex items-center space-x-3">
-            <span id="user-email" class="text-xs text-gray-300 hidden md:inline"></span>
             <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
         </div>
     </header>
@@ -90,12 +89,15 @@
                 </div>
                 <div class="w-full flex items-center space-x-2 text-[10px] text-gray-400">
                     <span id="current-time">00:00</span>
-                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500" disabled>
+                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
                     <span id="total-time">00:00</span>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Thẻ Audio Ẩn -->
+    <audio id="audio-element" preload="auto"></audio>
 
     <!-- Modal Thanh Toán QR Ngân Hàng -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
@@ -117,7 +119,7 @@
         </div>
     </div>
 
-    <!-- Script Xử Lý Web Audio API (Tương thích tuyệt đối iOS/Safari) -->
+    <!-- Script Xử Lý -->
     <script>
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
@@ -128,19 +130,13 @@
         const ACCOUNT_NO = "1903xxxxxxxxx";
         const ACCOUNT_NAME = "VO VAN DUC";
 
+        const audioElement = document.getElementById('audio-element');
         const playPauseBtn = document.getElementById('play-pause-btn');
         const progressBar = document.getElementById('progress-bar');
         const currentTimeEl = document.getElementById('current-time');
         const totalTimeEl = document.getElementById('total-time');
 
-        let audioCtx = null;
-        let audioBuffer = null;
-        let sourceNode = null;
-        let startTime = 0;
-        let pauseOffset = 0;
-        let isPlaying = false;
-        let currentSongUrl = '';
-        let timerInterval = null;
+        let isUserSeeking = false;
 
         document.addEventListener("DOMContentLoaded", fetchSongs);
 
@@ -231,123 +227,76 @@
             }
         }
 
-        async function playSong(url, title, artist) {
+        function playSong(url, title, artist) {
             document.getElementById('player-title').textContent = title;
             document.getElementById('player-artist').textContent = artist;
             totalTimeEl.textContent = "Đang tải...";
             currentTimeEl.textContent = "00:00";
             progressBar.value = 0;
-            progressBar.disabled = true;
 
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                await audioCtx.resume();
-            }
-
-            stopCurrentAudio();
-            currentSongUrl = url;
-
-            try {
-                const response = await fetch(url);
-                const arrayBuffer = await response.arrayBuffer();
-                
-                // Giải mã dữ liệu âm thanh trực tiếp bằng Web Audio API
-                audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-
-                totalTimeEl.textContent = formatTime(audioBuffer.duration);
-                progressBar.disabled = false;
-                
-                startPlayback(0);
-            } catch (err) {
-                console.error("Lỗi giải mã audio:", err);
-                totalTimeEl.textContent = "Lỗi tải file";
-            }
-        }
-
-        function startPlayback(offset) {
-            if (!audioBuffer) return;
-            stopSourceOnly();
-
-            sourceNode = audioCtx.createBufferSource();
-            sourceNode.buffer = audioBuffer;
-            sourceNode.connect(audioCtx.destination);
-
-            sourceNode.onended = () => {
-                if (isPlaying && (audioCtx.currentTime - startTime >= audioBuffer.duration)) {
-                    stopCurrentAudio();
-                    playPauseBtn.textContent = "▶";
-                    progressBar.value = 0;
-                    currentTimeEl.textContent = "00:00";
-                }
-            };
-
-            sourceNode.start(0, offset);
-            startTime = audioCtx.currentTime - offset;
-            isPlaying = true;
-            playPauseBtn.textContent = "⏸";
-
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (!isPlaying) return;
-                let currentPos = audioCtx.currentTime - startTime;
-                if (currentPos >= audioBuffer.duration) {
-                    currentPos = audioBuffer.duration;
-                }
-                currentTimeEl.textContent = formatTime(currentPos);
-                progressBar.value = (currentPos / audioBuffer.duration) * 100;
-            }, 200);
-        }
-
-        function stopSourceOnly() {
-            if (sourceNode) {
-                try { sourceNode.stop(); } catch(e) {}
-                sourceNode.disconnect();
-                sourceNode = null;
-            }
-        }
-
-        function stopCurrentAudio() {
-            stopSourceOnly();
-            isPlaying = false;
-            pauseOffset = 0;
-            clearInterval(timerInterval);
+            audioElement.src = url;
+            audioElement.load();
+            
+            audioElement.play().then(() => {
+                playPauseBtn.textContent = "⏸";
+            }).catch(e => {
+                console.log("Auto-play prevented:", e);
+                playPauseBtn.textContent = "▶";
+            });
         }
 
         function togglePlay() {
-            if (!audioBuffer) return;
-
-            if (isPlaying) {
-                // Đang chạy thì bấm Pause
-                pauseOffset = audioCtx.currentTime - startTime;
-                stopSourceOnly();
-                isPlaying = false;
-                playPauseBtn.textContent = "▶";
-                clearInterval(timerInterval);
+            if (!audioElement.src) return;
+            if (audioElement.paused) {
+                audioElement.play();
+                playPauseBtn.textContent = "⏸";
             } else {
-                // Đang dừng thì bấm Play tiếp tục từ vị trí cũ
-                if (pauseOffset >= audioBuffer.duration) {
-                    pauseOffset = 0;
-                }
-                startPlayback(pauseOffset);
+                audioElement.pause();
+                playPauseBtn.textContent = "▶";
             }
         }
 
-        // Tua nhạc mượt mà trên iPhone
+        // Cập nhật thời lượng chuẩn xác khi Safari đọc được metadata
+        function checkAudioDuration() {
+            if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration !== Infinity) {
+                totalTimeEl.textContent = formatTime(audioElement.duration);
+            }
+        }
+
+        audioElement.addEventListener('loadedmetadata', checkAudioDuration);
+        audioElement.addEventListener('durationchange', checkAudioDuration);
+        audioElement.addEventListener('canplaythrough', checkAudioDuration);
+
+        audioElement.addEventListener('timeupdate', () => {
+            checkAudioDuration();
+            if (!isUserSeeking && audioElement.duration && !isNaN(audioElement.duration)) {
+                const percent = (audioElement.currentTime / audioElement.duration) * 100;
+                progressBar.value = percent;
+                currentTimeEl.textContent = formatTime(audioElement.currentTime);
+            }
+        });
+
+        progressBar.addEventListener('mousedown', () => { isUserSeeking = true; });
+        progressBar.addEventListener('touchstart', () => { isUserSeeking = true; });
+
         progressBar.addEventListener('input', () => {
-            if (!audioBuffer) return;
-            const seekTime = (progressBar.value / 100) * audioBuffer.duration;
-            currentTimeEl.textContent = formatTime(seekTime);
+            if (audioElement.duration && !isNaN(audioElement.duration)) {
+                const time = (progressBar.value / 100) * audioElement.duration;
+                currentTimeEl.textContent = formatTime(time);
+            }
         });
 
         progressBar.addEventListener('change', () => {
-            if (!audioBuffer) return;
-            const seekTime = (progressBar.value / 100) * audioBuffer.duration;
-            pauseOffset = seekTime;
-            if (isPlaying) {
-                startPlayback(pauseOffset);
+            isUserSeeking = false;
+            if (audioElement.duration && !isNaN(audioElement.duration)) {
+                audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
             }
+        });
+
+        audioElement.addEventListener('ended', () => {
+            playPauseBtn.textContent = "▶";
+            progressBar.value = 0;
+            currentTimeEl.textContent = "00:00";
         });
 
         function formatTime(seconds) {

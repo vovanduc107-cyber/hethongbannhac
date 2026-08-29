@@ -10,17 +10,42 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { background-color: #0b0f19; color: #fff; font-family: system-ui, -apple-system, sans-serif; }
+        @keyframes wave {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(14deg); }
+            40% { transform: rotate(-8deg); }
+            60% { transform: rotate(14deg); }
+            80% { transform: rotate(-4deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .flag-anim {
+            display: inline-block;
+            animation: wave 2.5s infinite;
+            transform-origin: 70% 70%;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .glow-bg {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
     </style>
 </head>
-<body class="min-h-screen pb-32">
+<body class="min-h-screen pb-32 relative overflow-x-hidden">
+
+    <!-- Hiệu ứng nền động sảnh -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none glow-bg"></div>
 
     <!-- Header -->
     <header class="flex justify-between items-center p-4 border-b border-gray-800 bg-[#111827]/80 backdrop-blur sticky top-0 z-50">
         <div class="flex items-center space-x-2">
-            <div class="bg-blue-600 p-2 rounded-lg text-white font-bold">🎵</div>
+            <div class="bg-blue-600 p-2 rounded-lg text-white font-bold shadow-lg shadow-blue-600/30">🎵</div>
             <div>
-                <h1 class="font-bold text-lg leading-tight">HTBN</h1>
-                <p class="text-xs text-gray-400">HỆ THỐNG BÁN NHẠC</p>
+                <h1 class="font-bold text-lg leading-tight flex items-center gap-1.5">
+                    HTBN <span class="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-normal">PRO</span>
+                </h1>
+                <p class="text-[10px] text-gray-400">HỆ THỐNG BÁN NHẠC</p>
             </div>
         </div>
         <div class="flex items-center space-x-2" id="auth-header-action">
@@ -28,8 +53,26 @@
         </div>
     </header>
 
-    <main class="max-w-2xl mx-auto p-4 space-y-6">
-        <!-- Form Quản Trị Đăng Tải (Hiện khi đã đăng nhập) -->
+    <main class="max-w-2xl mx-auto p-4 space-y-6 relative z-10">
+        
+        <!-- Sảnh Chào Mừng Động (Cờ VN + Đồng Hồ Giờ VN) -->
+        <section class="bg-gradient-to-r from-[#161f31] to-[#1f293d] border border-blue-500/20 p-4 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 text-center sm:text-left">
+                <div class="text-3xl flag-anim bg-red-600/20 p-2 rounded-2xl border border-red-500/30">🇻🇳</div>
+                <div>
+                    <h2 class="text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-1">
+                        Sảnh Âm Nhạc <span class="text-red-500 font-extrabold">Việt Nam</span>
+                    </h2>
+                    <p class="text-[11px] text-gray-400">Không gian mua bán & bản quyền track độc quyền</p>
+                </div>
+            </div>
+            <div class="bg-[#0b0f19]/80 border border-gray-800 px-4 py-2 rounded-xl text-center shrink-0">
+                <p class="text-[10px] text-gray-400 uppercase tracking-wider">Giờ Việt Nam (GMT+7)</p>
+                <p id="live-clock" class="text-sm font-mono font-bold text-blue-400">00:00:00</p>
+            </div>
+        </section>
+
+        <!-- Form Quản Trị Đăng Tải (Chỉ Admin thấy) -->
         <section id="admin-section" class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl shadow-xl space-y-4 hidden">
             <h2 class="text-blue-400 font-bold text-base flex items-center gap-2">
                 ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
@@ -188,6 +231,9 @@
         const BANK_ID = "TCB";
         const ACCOUNT_NO = "1903xxxxxxxxx";
         const ACCOUNT_NAME = "VO VAN DUC";
+        
+        // Email chính thức của anh dùng làm Admin duy nhất được nghe nhạc
+        const ADMIN_EMAIL = "vovanduc@admin.com"; 
 
         const playPauseBtn = document.getElementById('play-pause-btn');
         const progressBar = document.getElementById('progress-bar');
@@ -204,23 +250,43 @@
         let currentUser = null;
 
         document.addEventListener("DOMContentLoaded", async () => {
+            // Chạy đồng hồ giờ Việt Nam real-time
+            setInterval(updateClock, 1000);
+            updateClock();
+
             const { data } = await supabaseClient.auth.getUser();
             currentUser = data.user;
             updateAuthUI();
             fetchSongs();
         });
 
+        function updateClock() {
+            const now = new Date();
+            // Lấy giờ chính xác theo múi giờ Việt Nam (Asia/Ho_Chi_Minh)
+            const options = { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const timeString = new Intl.DateTimeFormat('vi-VN', options).format(now);
+            document.getElementById('live-clock').textContent = timeString;
+        }
+
         function updateAuthUI() {
             const authHeaderAction = document.getElementById('auth-header-action');
             const adminSection = document.getElementById('admin-section');
 
             if (currentUser) {
-                // Đã đăng nhập -> Mặc định là Admin quản lý trang web này
-                authHeaderAction.innerHTML = `
-                    <span class="text-[11px] text-blue-400 font-semibold hidden sm:inline">👑 Quản Trị Viên</span>
-                    <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
-                `;
-                adminSection.classList.remove('hidden');
+                const isAdmin = (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+                if (isAdmin) {
+                    authHeaderAction.innerHTML = `
+                        <span class="text-[11px] text-blue-400 font-semibold hidden sm:inline">👑 Quản Trị Viên</span>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                    `;
+                    adminSection.classList.remove('hidden');
+                } else {
+                    authHeaderAction.innerHTML = `
+                        <span class="text-[11px] text-gray-300 font-semibold hidden sm:inline truncate max-w-[120px]">${currentUser.email}</span>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                    `;
+                    adminSection.classList.add('hidden');
+                }
             } else {
                 authHeaderAction.innerHTML = `
                     <button onclick="openAuthModal('login')" class="bg-blue-600/20 text-blue-400 border border-blue-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-600/30 transition">Đăng Nhập</button>
@@ -332,13 +398,15 @@
                 return;
             }
 
+            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+
             listContainer.innerHTML = data.map(song => `
                 <div class="bg-[#161f31] border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-3">
                     <div class="flex items-center space-x-3 overflow-hidden">
-                        <button onclick="playSong('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
+                        <button onclick="handlePlayClick('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
                         <div class="truncate">
                             <h3 class="text-sm font-bold text-gray-100 truncate">${song.title}</h3>
-                            <p class="text-xs text-gray-400 truncate">${song.artist}</p>
+                            <p class="text-xs text-gray-400 truncate">${song.artist} ${!isAdmin ? '<span class="text-yellow-500/80 text-[10px] ml-1">(Chỉ hiển thị thời gian)</span>' : ''}</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0">
@@ -347,6 +415,19 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function handlePlayClick(url, title, artist) {
+            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            if (!isAdmin) {
+                alert("Tính năng phát nhạc chỉ dành riêng cho Admin! Khách hàng vui lòng liên hệ Admin để mua bản quyền.");
+                document.getElementById('player-title').textContent = title;
+                document.getElementById('player-artist').textContent = artist + " (Khách: Không có quyền nghe)";
+                totalTimeEl.textContent = "--:--";
+                currentTimeEl.textContent = "00:00";
+                return;
+            }
+            playSong(url, title, artist);
         }
 
         async function uploadSong() {
@@ -486,6 +567,11 @@
         }
 
         function togglePlay() {
+            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            if (!isAdmin) {
+                alert("Chỉ Admin mới có quyền phát nhạc hệ thống!");
+                return;
+            }
             if (!audioBuffer) return;
 
             if (isPlaying) {

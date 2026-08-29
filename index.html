@@ -43,11 +43,12 @@
             <div id="auth-container">
                 <!-- Chưa đăng nhập -->
                 <div id="auth-buttons" class="flex items-center space-x-2">
-                    <button onclick="openAuthModal()" class="px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-500 rounded-xl transition shadow-lg shadow-blue-600/20">Quản Trị Viên (Admin)</button>
+                    <button onclick="openAuthModal('login')" class="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white transition">Đăng Nhập</button>
+                    <button onclick="openAuthModal('signup')" class="px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-500 rounded-xl transition shadow-lg shadow-blue-600/20">Đăng Ký</button>
                 </div>
                 <!-- Đã đăng nhập -->
                 <div id="user-info" class="hidden items-center space-x-3">
-                    <span id="user-email" class="text-xs text-blue-400 font-bold hidden sm:inline-block">Admin: vovanduc107@gmail.com</span>
+                    <span id="user-email-display" class="text-xs text-blue-400 font-bold hidden sm:inline-block"></span>
                     <button onclick="logout()" class="px-3.5 py-2 text-xs font-bold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/20 rounded-xl transition flex items-center space-x-1.5">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>Đăng Xuất</span>
@@ -68,7 +69,7 @@
             </div>
         </div>
 
-        <!-- Tiêu đề Kho Nhạc & Nút Đăng Nhạc (Chỉ hiện khi Admin đăng nhập) -->
+        <!-- Tiêu đề Kho Nhạc & Nút Đăng Nhạc (Chỉ hiện với Admin) -->
         <div class="flex items-center justify-between">
             <h3 class="text-xl font-extrabold text-white flex items-center space-x-2">
                 <i class="fa-solid fa-music text-blue-500"></i>
@@ -123,23 +124,33 @@
         </div>
     </main>
 
-    <!-- Modal Đăng Nhập Admin Cứng -->
+    <!-- Modal Đăng Nhập / Đăng Ký / Quên Mật Khẩu -->
     <div id="auth-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-cardBg border border-gray-800 rounded-3xl w-full max-w-md p-6 relative shadow-2xl space-y-5">
             <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-xl font-extrabold text-white text-center">Đăng Nhập Quản Trị Viên</h3>
+            <h3 id="modal-title" class="text-xl font-extrabold text-white text-center">Đăng Nhập Tài Khoản</h3>
             
             <div class="space-y-3">
                 <div>
-                    <label class="text-xs text-gray-400 mb-1 block">Mật khẩu Admin</label>
-                    <input type="password" id="admin-pass" placeholder="Nhập mật khẩu quản trị..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+                    <label class="text-xs text-gray-400 mb-1 block">Email của bạn</label>
+                    <input type="email" id="auth-email" placeholder="name@example.com" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                 </div>
+                <div id="password-field-container">
+                    <label class="text-xs text-gray-400 mb-1 block">Mật khẩu</label>
+                    <input type="password" id="auth-password" placeholder="••••••••" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+                </div>
+            </div>
+
+            <!-- Nút Quên mật khẩu & Chuyển đổi tab -->
+            <div class="flex items-center justify-between text-xs">
+                <button type="button" id="forgot-pass-link" onclick="switchToForgotMode()" class="text-blue-400 hover:underline">Quên mật khẩu?</button>
+                <button type="button" id="switch-mode-btn" onclick="toggleAuthMode()" class="text-gray-400 hover:text-white transition">Chưa có tài khoản? Đăng ký</button>
             </div>
 
             <p id="auth-msg" class="text-xs text-center text-red-400 h-4"></p>
 
-            <button onclick="handleAdminLogin()" class="w-full py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition">
-                Truy Cập Quản Trị
+            <button onclick="handleAuthSubmit()" id="auth-submit-btn" class="w-full py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition">
+                Đăng Nhập
             </button>
         </div>
     </div>
@@ -150,50 +161,141 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudW5zd2RmZXlscm11bm50bWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjM2MzMyODczNTl9.W54V_aY34eCgV3aO0Tq2_XzZ1K6k3_qV8Y9m4_8p2_o';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Mật khẩu quản trị của anh (có thể đổi tuỳ ý ở đây)
-        const ADMIN_PASSWORD_SECRET = 'admin123456'; 
+        // Email Quản Trị Viên của anh (để hiện nút đăng nhạc)
+        const ADMIN_EMAIL = 'vovanduc107@gmail.com';
+
+        let currentMode = 'login'; // 'login', 'signup', 'forgot'
 
         document.addEventListener('DOMContentLoaded', () => {
-            checkLoginState();
+            checkUserSession();
             fetchSongs();
         });
 
-        function checkLoginState() {
-            const isAdmin = localStorage.getItem('htbn_admin_logged');
-            if (isAdmin === 'true') {
+        async function checkUserSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) {
                 document.getElementById('auth-buttons').classList.add('hidden');
-                document.getElementById('user-info').classList.remove('hidden');
-                document.getElementById('user-info').classList.add('flex');
-                document.getElementById('btn-toggle-upload').classList.remove('hidden');
-                document.getElementById('btn-toggle-upload').classList.add('flex');
+                const userInfo = document.getElementById('user-info');
+                userInfo.classList.remove('hidden');
+                userInfo.classList.add('flex');
+                document.getElementById('user-email-display').innerText = session.user.email;
+
+                // Nếu đúng email của anh thì hiện nút đăng nhạc
+                if (session.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    document.getElementById('btn-toggle-upload').classList.remove('hidden');
+                    document.getElementById('btn-toggle-upload').classList.add('flex');
+                }
             }
         }
 
-        function openAuthModal() {
+        function openAuthModal(mode) {
+            currentMode = mode;
             document.getElementById('auth-modal').classList.remove('hidden');
-            document.getElementById('admin-pass').value = '';
+            document.getElementById('auth-email').value = '';
+            document.getElementById('auth-password').value = '';
             document.getElementById('auth-msg').innerText = '';
+            updateModalUI();
         }
 
         function closeAuthModal() {
             document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        function handleAdminLogin() {
-            const pass = document.getElementById('admin-pass').value.trim();
-            const msgEl = document.getElementById('auth-msg');
-
-            if (pass === ADMIN_PASSWORD_SECRET) {
-                localStorage.setItem('htbn_admin_logged', 'true');
-                closeAuthModal();
-                location.reload();
+        function toggleAuthMode() {
+            if (currentMode === 'login' || currentMode === 'forgot') {
+                currentMode = 'signup';
             } else {
-                msgEl.innerText = 'Sai mật khẩu quản trị!';
+                currentMode = 'login';
+            }
+            updateModalUI();
+        }
+
+        function switchToForgotMode() {
+            currentMode = 'forgot';
+            updateModalUI();
+        }
+
+        function updateModalUI() {
+            const titleEl = document.getElementById('modal-title');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const passContainer = document.getElementById('password-field-container');
+            const switchBtn = document.getElementById('switch-mode-btn');
+            const forgotLink = document.getElementById('forgot-pass-link');
+
+            if (currentMode === 'login') {
+                titleEl.innerText = 'Đăng Nhập Tài Khoản';
+                submitBtn.innerText = 'Đăng Nhập';
+                passContainer.style.display = 'block';
+                switchBtn.innerText = 'Chưa có tài khoản? Đăng ký';
+                forgotLink.style.display = 'block';
+            } else if (currentMode === 'signup') {
+                titleEl.innerText = 'Đăng Ký Tài Khoản Mới';
+                submitBtn.innerText = 'Đăng Ký';
+                passContainer.style.display = 'block';
+                switchBtn.innerText = 'Đã có tài khoản? Đăng nhập';
+                forgotLink.style.display = 'none';
+            } else if (currentMode === 'forgot') {
+                titleEl.innerText = 'Khôi Phục Mật Khẩu';
+                submitBtn.innerText = 'Gửi Link Đổi Mật Khẩu';
+                passContainer.style.display = 'none';
+                switchBtn.innerText = 'Quay lại đăng nhập';
+                forgotLink.style.display = 'none';
+            }
+            document.getElementById('auth-msg').innerText = '';
+        }
+
+        async function handleAuthSubmit() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const msgEl = document.getElementById('auth-msg');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            if (!email) {
+                msgEl.innerText = 'Vui lòng nhập email!';
+                return;
+            }
+
+            submitBtn.disabled = true;
+
+            if (currentMode === 'login') {
+                msgEl.innerText = 'Đang đăng nhập...';
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) {
+                    msgEl.innerText = 'Lỗi: ' + error.message;
+                    submitBtn.disabled = false;
+                } else {
+                    location.reload();
+                }
+            } else if (currentMode === 'signup') {
+                msgEl.innerText = 'Đang đăng ký tài khoản...';
+                const { error } = await supabaseClient.auth.signUp({ email, password });
+                if (error) {
+                    msgEl.innerText = 'Lỗi: ' + error.message;
+                    submitBtn.disabled = false;
+                } else {
+                    alert('Đăng ký thành công! Bạn đã có thể đăng nhập.');
+                    currentMode = 'login';
+                    updateModalUI();
+                    submitBtn.disabled = false;
+                }
+            } else if (currentMode === 'forgot') {
+                msgEl.innerText = 'Đang gửi link khôi phục...';
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.href,
+                });
+                if (error) {
+                    msgEl.innerText = 'Lỗi: ' + error.message;
+                    submitBtn.disabled = false;
+                } else {
+                    alert('Đã gửi email khôi phục mật khẩu! Vui lòng kiểm tra hộp thư của bạn.');
+                    closeAuthModal();
+                    submitBtn.disabled = false;
+                }
             }
         }
 
-        function logout() {
-            localStorage.removeItem('htbn_admin_logged');
+        async function logout() {
+            await supabaseClient.auth.signOut();
             location.reload();
         }
 
@@ -222,7 +324,6 @@
             btnEl.disabled = true;
             msgEl.innerText = 'Đang tải file lên hệ thống...';
 
-            // Upload file lên Supabase Storage bucket 'songs'
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
                 .from('songs')
                 .upload(fileName, file);
@@ -233,12 +334,10 @@
                 return;
             }
 
-            // Lấy URL public
             const { data: { publicUrl } } = supabaseClient.storage
                 .from('songs')
                 .getPublicUrl(fileName);
 
-            // Lưu vào Database bảng 'songs'
             const { error: dbError } = await supabaseClient
                 .from('songs')
                 .insert([{ title, artist, price: Number(price), file_url: publicUrl }]);

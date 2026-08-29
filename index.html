@@ -74,6 +74,33 @@
             </div>
         </div>
 
+        <!-- Admin Upload Section (Chỉ hiện khi đúng tài khoản Admin) -->
+        <div id="admin-upload-section" class="hidden bg-cardBg border border-blue-500/30 rounded-2xl p-4 space-y-3 shadow-lg">
+            <h3 class="text-sm font-bold text-blue-400 flex items-center space-x-2">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Trang Quản Trị - Đăng Tải Track Nhạc Mới (MP3 / WAV)</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] text-gray-400 mb-1">Tên Bài Hát / Track</label>
+                    <input type="text" id="upload-title" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Nhập tên track nhạc...">
+                </div>
+                <div>
+                    <label class="block text-[11px] text-gray-400 mb-1">Nghệ Sĩ / Producer</label>
+                    <input type="text" id="upload-artist" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Nhập tên nghệ sĩ...">
+                </div>
+            </div>
+            <div>
+                <label class="block text-[11px] text-gray-400 mb-1">Chọn File Âm Thanh (MP3 hoặc WAV)</label>
+                <input type="file" id="upload-file" accept=".mp3,.wav" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-gray-300 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+            </div>
+            <button type="button" onclick="uploadSong()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-xs font-semibold rounded-lg transition shadow-md flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-upload"></i>
+                <span>Tải Lên Hệ Thống</span>
+            </button>
+            <div id="upload-status" class="text-xs text-center hidden"></div>
+        </div>
+
         <!-- Music List Section -->
         <div class="space-y-3">
             <h3 class="text-base font-bold flex items-center space-x-2">
@@ -142,7 +169,7 @@
     <!-- JavaScript Logic & Supabase Initialization -->
     <script>
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
         
         let supabaseClient = null;
         try {
@@ -213,6 +240,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             const authBtns = document.getElementById('auth-buttons');
             const userInfo = document.getElementById('user-info');
             const emailDisplay = document.getElementById('user-email-display');
+            const adminSection = document.getElementById('admin-upload-section');
 
             if (session && session.user) {
                 if (authBtns) authBtns.classList.add('hidden');
@@ -221,13 +249,22 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     userInfo.classList.add('flex');
                 }
                 if (emailDisplay) emailDisplay.innerText = session.user.email;
+
+                // Kiểm tra quyền Admin cho email của anh
+                if (session.user.email === 'vovanduc107@gmail.com') {
+                    if (adminSection) adminSection.classList.remove('hidden');
+                } else {
+                    if (adminSection) adminSection.classList.add('hidden');
+                }
             } else {
                 if (authBtns) authBtns.classList.remove('hidden');
                 if (userInfo) {
                     userInfo.classList.add('hidden');
                     userInfo.classList.remove('flex');
                 }
+                if (adminSection) adminSection.classList.add('hidden');
             }
+            loadSongs();
         }
 
         async function logout() {
@@ -235,6 +272,122 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 await supabaseClient.auth.signOut();
                 checkUserSession();
             }
+        }
+
+        // Chức năng upload file nhạc MP3/WAV dành cho Admin
+        async function uploadSong() {
+            const title = document.getElementById('upload-title').value.trim();
+            const artist = document.getElementById('upload-artist').value.trim();
+            const fileInput = document.getElementById('upload-file');
+            const statusEl = document.getElementById('upload-status');
+
+            if (!title || !artist || fileInput.files.length === 0) {
+                statusEl.innerText = 'Vui lòng điền đủ tên, nghệ sĩ và chọn file nhạc.';
+                statusEl.className = 'text-xs text-center text-red-400';
+                statusEl.classList.remove('hidden');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const fileName = `${Date.now()}_${file.name}`;
+
+            statusEl.innerText = 'Đang tải file lên hệ thống...';
+            statusEl.className = 'text-xs text-center text-blue-400';
+            statusEl.classList.remove('hidden');
+
+            try {
+                // Upload file lên Supabase Storage (bucket tên là 'songs', anh nhớ tạo bucket này trên Supabase)
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('songs')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                // Lấy Public URL của file
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('songs')
+                    .getPublicUrl(fileName);
+
+                // Lưu thông tin vào bảng cơ sở dữ liệu 'songs'
+                const { error: dbError } = await supabaseClient
+                    .from('songs')
+                    .insert([{ title, artist, file_url: publicUrl }]);
+
+                if (dbError) throw dbError;
+
+                statusEl.innerText = 'Tải lên thành công!';
+                statusEl.className = 'text-xs text-center text-green-400';
+                
+                // Reset form
+                document.getElementById('upload-title').value = '';
+                document.getElementById('upload-artist').value = '';
+                fileInput.value = '';
+                loadSongs();
+            } catch (err) {
+                statusEl.innerText = 'Lỗi: ' + err.message;
+                statusEl.className = 'text-xs text-center text-red-400';
+            }
+        }
+
+        // Tải danh sách bài hát từ Supabase
+        async function loadSongs() {
+            const songListEl = document.getElementById('song-list');
+            if (!supabaseClient) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('songs')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    // Nếu chưa có bảng songs thì hiển thị thông báo nhẹ nhàng
+                    songListEl.innerHTML = '<p class="text-xs text-gray-400 italic">Chưa có bài hát nào trên hệ thống.</p>';
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    songListEl.innerHTML = '<p class="text-xs text-gray-400 italic">Chưa có bài hát nào trên hệ thống.</p>';
+                    return;
+                }
+
+                songListEl.innerHTML = '';
+                data.forEach(song => {
+                    const songItem = document.createElement('div');
+                    songItem.className = 'bg-cardBg border border-borderDark p-3 rounded-xl flex items-center justify-between hover:border-blue-500/50 transition';
+                    songItem.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <button onclick="playSong('${song.file_url}', '${song.title}', '${song.artist}')" class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition shadow">
+                                <i class="fa-solid fa-play text-xs"></i>
+                            </button>
+                            <div>
+                                <div class="text-xs font-bold text-white">${song.title}</div>
+                                <div class="text-[10px] text-gray-400">${song.artist}</div>
+                            </div>
+                        </div>
+                        <a href="${song.file_url}" download class="px-2.5 py-1 text-[10px] font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-600 hover:text-white rounded-lg transition flex items-center space-x-1">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Tải về</span>
+                        </a>
+                    `;
+                    songListEl.appendChild(songItem);
+                });
+            } catch (err) {
+                console.error("Lỗi tải danh sách nhạc:", err);
+            }
+        }
+
+        function playSong(url, title, artist) {
+            const audio = document.getElementById('audio-element');
+            const titleEl = document.getElementById('current-title');
+            const artistEl = document.getElementById('current-artist');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+
+            audio.src = url;
+            audio.play();
+            titleEl.innerText = title;
+            artistEl.innerText = artist;
+            playPauseBtn.innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
         }
 
         // Lắng nghe sự kiện click nút bấm an toàn cho mọi trình duyệt di động (iOS Safari)

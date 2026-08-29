@@ -59,12 +59,50 @@
             </div>
         </div>
 
+        <!-- Form Đăng Nhạc (Ẩn mặc định, chỉ hiện khi bấm nút Đăng nhạc) -->
+        <div id="upload-section" class="hidden bg-cardBg border border-blue-500/40 rounded-3xl p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <h3 class="text-lg font-extrabold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-blue-500"></i>
+                    <span>Đăng Tải Bài Hát Mới Lên Kho</span>
+                </h3>
+                <button onclick="toggleUploadForm()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Tên bài hát</label>
+                    <input type="text" id="song-title" placeholder="VD: Nhạc Dance Cuốn..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Ca sĩ / Producer</label>
+                    <input type="text" id="song-artist" placeholder="VD: DJ Nam..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Giá tiền (VNĐ)</label>
+                    <input type="number" id="song-price" placeholder="VD: 50000" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                </div>
+            </div>
+            <div>
+                <label class="text-xs text-gray-400 mb-1 block">Chọn file nhạc định dạng MP3</label>
+                <input type="file" id="song-file" accept="audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30">
+            </div>
+            <p id="upload-msg" class="text-xs text-center text-red-400 h-4"></p>
+            <button onclick="uploadSong()" id="upload-btn" class="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white transition shadow-lg shadow-blue-600/30">Xác Nhận Đăng Bài</button>
+        </div>
+
         <!-- Danh sách bài hát -->
         <div>
-            <h3 class="text-xl font-extrabold text-white mb-4 flex items-center space-x-2">
-                <i class="fa-solid fa-music text-blue-500"></i>
-                <span>Kho Nhạc Độc Quyền</span>
-            </h3>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-extrabold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-music text-blue-500"></i>
+                    <span>Kho Nhạc Độc Quyền</span>
+                </h3>
+                <!-- Nút mở form đăng nhạc (Chỉ hiện khi đã đăng nhập) -->
+                <button id="btn-toggle-upload" onclick="toggleUploadForm()" class="hidden px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition shadow-lg shadow-blue-600/20 flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Đăng Nhạc Mới</span>
+                </button>
+            </div>
             <div id="songs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Dữ liệu bài hát sẽ được load tự động vào đây -->
                 <p class="text-gray-400 text-sm">Đang tải danh sách nhạc...</p>
@@ -72,7 +110,7 @@
         </div>
     </div>
 
-    <!-- Music Player Bar (Cố định ở dưới màn hình) -->
+    <!-- Music Player Bar -->
     <div id="player-bar" class="fixed bottom-0 left-0 right-0 bg-cardBg/95 backdrop-blur-md border-t border-gray-800 p-4 hidden z-40">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -109,7 +147,7 @@
         </div>
     </div>
 
-    <!-- Script kết nối Supabase và xử lý dữ liệu -->
+    <!-- Script xử lý -->
     <script>
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable__7Et13j4E-G_NXYwpRwxTw_cibLQfW2'; 
@@ -166,12 +204,74 @@
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('user-info').classList.add('flex');
                 document.getElementById('user-email').innerText = session.user.email;
+                // Hiển thị nút "Đăng Nhạc Mới" khi đã đăng nhập
+                document.getElementById('btn-toggle-upload').classList.remove('hidden');
+                document.getElementById('btn-toggle-upload').classList.add('flex');
             }
         }
 
         async function handleLogout() {
             await supabaseClient.auth.signOut();
             location.reload();
+        }
+
+        function toggleUploadForm() {
+            const form = document.getElementById('upload-section');
+            form.classList.toggle('hidden');
+        }
+
+        // Xử lý upload bài hát mới
+        async function uploadSong() {
+            const title = document.getElementById('song-title').value;
+            const artist = document.getElementById('song-artist').value;
+            const price = document.getElementById('song-price').value;
+            const fileInput = document.getElementById('song-file');
+            const msgEl = document.getElementById('upload-msg');
+            const submitBtn = document.getElementById('upload-btn');
+
+            if (!title || !artist || !price || fileInput.files.length === 0) {
+                msgEl.innerText = 'Vui lòng điền đầy đủ thông tin và chọn file nhạc!';
+                return;
+            }
+
+            submitBtn.innerText = 'Đang tải lên file...';
+            submitBtn.disabled = true;
+
+            const file = fileInput.files[0];
+            const fileName = Date.now() + '_' + file.name;
+
+            // 1. Upload file lên Storage bucket 'songs'
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                .from('songs')
+                .upload(fileName, file);
+
+            if (uploadError) {
+                msgEl.innerText = 'Lỗi upload file: ' + uploadError.message;
+                submitBtn.innerText = 'Xác Nhận Đăng Bài';
+                submitBtn.disabled = false;
+                return;
+            }
+
+            // 2. Lấy public URL của file
+            const { data: publicUrlData } = supabaseClient.storage
+                .from('songs')
+                .getPublicUrl(fileName);
+
+            const file_url = publicUrlData.publicUrl;
+
+            // 3. Lưu thông tin vào bảng 'songs'
+            const { error: dbError } = await supabaseClient
+                .from('songs')
+                .insert([{ title, artist, price: parseFloat(price), file_url }]);
+
+            if (dbError) {
+                msgEl.innerText = 'Lỗi lưu database: ' + dbError.message;
+                submitBtn.innerText = 'Xác Nhận Đăng Bài';
+                submitBtn.disabled = false;
+            } else {
+                alert('Đăng bài hát thành công!');
+                location.reload();
+            }
         }
 
         // Tải danh sách bài hát từ Supabase

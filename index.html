@@ -3,199 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTBN STORE - Hệ Thống Bán Nhạc Độc Quyền</title>
+    <title>HTBN - Hệ Thống Bán Nhạc</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#090a10',
-                        cardBg: '#121420',
+                        darkBg: '#0b0f19',
+                        cardBg: '#111827',
                     }
                 }
             }
         }
     </script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-darkBg text-gray-100 font-sans pb-32">
+<body class="bg-darkBg text-gray-100 min-h-screen font-sans selection:bg-blue-600 selection:text-white">
 
-    <!-- Top Navbar -->
-    <header class="sticky top-0 z-40 bg-darkBg/90 backdrop-blur-md border-b border-gray-800 px-4 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <!-- Header / Navbar -->
+    <header class="border-b border-gray-800 bg-darkBg/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                    <span class="text-white font-extrabold text-xl">H</span>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-xl shadow-lg shadow-blue-500/30">
+                    H
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-lg tracking-wider text-white">HTBN</h1>
-                    <p class="text-xs text-gray-400">HỆ THỐNG BÁN NHẠC</p>
+                    <h1 class="font-extrabold tracking-wider text-lg leading-tight">HTBN</h1>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest">Hệ Thống Bán Nhạc</p>
                 </div>
             </div>
-            
-            <div class="flex items-center space-x-3" id="auth-buttons">
-                <button onclick="openAuthModal('login')" class="px-4 py-2 rounded-xl text-sm font-semibold border border-blue-500/50 hover:bg-blue-500/10 transition">Đăng Nhập</button>
-                <button onclick="openAuthModal('register')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-95 transition shadow-lg shadow-purple-500/25">Đăng Ký</button>
-            </div>
-            
-            <div class="hidden items-center space-x-3" id="user-info">
-                <span class="text-xs text-gray-300" id="user-email"></span>
-                <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30">Đăng Xuất</button>
+
+            <!-- Auth Area -->
+            <div id="auth-container">
+                <!-- Chưa đăng nhập -->
+                <div id="auth-buttons" class="flex items-center space-x-2">
+                    <button onclick="openAuthModal('login')" class="px-4 py-2 text-sm font-semibold hover:text-blue-400 transition">Đăng Nhập</button>
+                    <button onclick="openAuthModal('signup')" class="px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-500 rounded-xl transition shadow-lg shadow-blue-600/20">Đăng Ký</button>
+                </div>
+                <!-- Đã đăng nhập -->
+                <div id="user-info" class="hidden items-center space-x-3">
+                    <span id="user-email" class="text-xs text-gray-300 font-medium hidden sm:inline-block"></span>
+                    <button onclick="logout()" class="px-3.5 py-2 text-xs font-bold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/20 rounded-xl transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Đăng Xuất</span>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 mt-6 space-y-8">
+    <main class="max-w-7xl mx-auto px-4 mt-6 space-y-8 pb-16">
         <!-- Banner -->
-        <div class="relative rounded-3xl bg-gradient-to-r from-blue-900/60 via-purple-900/50 to-indigo-950 border border-blue-500/30 p-6 sm:p-8 overflow-hidden shadow-2xl">
-            <div class="relative z-10 space-y-4 max-w-lg">
+        <div class="relative rounded-3xl bg-gradient-to-r from-blue-900/60 via-purple-900/50 to-indigo-900/60 p-8 md:p-12 border border-blue-500/20 overflow-hidden shadow-2xl">
+            <div class="relative z-10 space-y-3 max-w-xl">
                 <span class="text-xs font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30">HTBN – Hệ Thống Bán Nhạc</span>
                 <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-wide leading-tight">MUA TRACK NHẠC CHẤT LƯỢNG CAO</h2>
                 <p class="text-gray-300 text-sm">Kho nhạc độc quyền dành cho DJ, producer, ca sĩ và những người yêu âm nhạc.</p>
             </div>
         </div>
 
-        <!-- Form Đăng Nhạc (Ẩn mặc định, chỉ hiện khi bấm nút Đăng nhạc) -->
+        <!-- Tiêu đề Kho Nhạc & Nút Đăng Nhạc (Chỉ Admin mới thấy) -->
+        <div class="flex items-center justify-between">
+            <h3 class="text-xl font-extrabold text-white flex items-center space-x-2">
+                <i class="fa-solid fa-music text-blue-500"></i>
+                <span>Kho Nhạc Độc Quyền</span>
+            </h3>
+            <!-- Nút bật tắt form đăng nhạc (Mặc định ẩn) -->
+            <button id="btn-toggle-upload" onclick="toggleUploadForm()" class="hidden items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-blue-600/25">
+                <i class="fa-solid fa-plus"></i>
+                <span>Đăng Nhạc Mới</span>
+            </button>
+        </div>
+
+        <!-- Form Đăng Nhạc (Ẩn mặc định) -->
         <div id="upload-section" class="hidden bg-cardBg border border-blue-500/40 rounded-3xl p-6 shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-gray-800 pb-3">
                 <h3 class="text-lg font-extrabold text-white flex items-center space-x-2">
                     <i class="fa-solid fa-cloud-arrow-up text-blue-500"></i>
                     <span>Đăng Tải Bài Hát Mới Lên Kho</span>
                 </h3>
-                <button onclick="toggleUploadForm()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="toggleUploadForm()" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
+            
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="text-xs text-gray-400 mb-1 block">Tên bài hát</label>
-                    <input type="text" id="song-title" placeholder="VD: Nhạc Dance Cuốn..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                    <input type="text" id="song-title" placeholder="VD: Nhạc Dance Cuốn..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                 </div>
                 <div>
                     <label class="text-xs text-gray-400 mb-1 block">Ca sĩ / Producer</label>
-                    <input type="text" id="song-artist" placeholder="VD: DJ Nam..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                    <input type="text" id="song-artist" placeholder="VD: DJ Nam..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                 </div>
                 <div>
                     <label class="text-xs text-gray-400 mb-1 block">Giá tiền (VNĐ)</label>
-                    <input type="number" id="song-price" placeholder="VD: 50000" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                    <input type="number" id="song-price" placeholder="VD: 50000" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                 </div>
             </div>
+            
             <div>
-                <label class="text-xs text-gray-400 mb-1 block">Chọn file nhạc định dạng MP3, WAV, FLAC</label>
+                <label class="text-xs text-gray-400 mb-1 block">Chọn file nhạc (MP3, WAV, FLAC...)</label>
                 <input type="file" id="song-file" accept=".mp3,.wav,.flac,.m4a,audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30">
             </div>
+
             <p id="upload-msg" class="text-xs text-center text-red-400 h-4"></p>
-            <button onclick="uploadSong()" id="upload-btn" class="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white transition shadow-lg shadow-blue-600/30">Xác Nhận Đăng Bài</button>
+            
+            <button onclick="uploadSong()" id="upload-btn" class="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-600/30 transition">
+                Xác Nhận Đăng Bài
+            </button>
         </div>
 
         <!-- Danh sách bài hát -->
-        <div>
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-extrabold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-music text-blue-500"></i>
-                    <span>Kho Nhạc Độc Quyền</span>
-                </h3>
-                <!-- Nút mở form đăng nhạc (Chỉ hiện khi đã đăng nhập) -->
-                <button id="btn-toggle-upload" onclick="toggleUploadForm()" class="hidden px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition shadow-lg shadow-blue-600/20 flex items-center space-x-2">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Đăng Nhạc Mới</span>
-                </button>
-            </div>
-            <div id="songs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dữ liệu bài hát sẽ được load tự động vào đây -->
-                <p class="text-gray-400 text-sm">Đang tải danh sách nhạc...</p>
-            </div>
+        <div id="songs-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <p class="text-gray-500 text-sm italic col-span-full">Chưa có bài nhạc nào được đăng tải.</p>
         </div>
-    </div>
+    </main>
 
-    <!-- Music Player Bar -->
-    <div id="player-bar" class="fixed bottom-0 left-0 right-0 bg-cardBg/95 backdrop-blur-md border-t border-gray-800 p-4 hidden z-40">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                    <i class="fa-solid fa-compact-disc fa-spin text-xl"></i>
-                </div>
-                <div>
-                    <h4 id="player-title" class="text-sm font-bold text-white">Tên bài hát</h4>
-                    <p id="player-artist" class="text-xs text-gray-400">Ca sĩ</p>
-                </div>
-            </div>
-            <audio id="audio-element" controls class="h-10 outline-none"></audio>
-        </div>
-    </div>
-
-    <!-- Modal Đăng Ký / Đăng Nhập -->
-    <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-cardBg border border-gray-800 rounded-3xl p-6 w-full max-w-md relative space-y-4">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 id="modal-title" class="text-xl font-extrabold text-white text-center">Đăng Ký Tài Khoản</h3>
+    <!-- Modal Đăng Nhập / Đăng Ký -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-gray-800 rounded-3xl w-full max-w-md p-6 relative shadow-2xl space-y-5">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="modal-title" class="text-xl font-extrabold text-white text-center">Đăng Nhập Tài Khoản</h3>
             
             <div class="space-y-3">
                 <div>
-                    <label class="text-xs text-gray-400 mb-1 block">Email</label>
-                    <input type="email" id="auth-email" placeholder="Nhập email của bạn..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                    <label class="text-xs text-gray-400 mb-1 block">Email của bạn</label>
+                    <input type="email" id="auth-email" placeholder="name@gmail.com" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                 </div>
                 <div>
                     <label class="text-xs text-gray-400 mb-1 block">Mật khẩu</label>
-                    <input type="password" id="auth-password" placeholder="Nhập mật khẩu..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+                    <input type="password" id="auth-password" placeholder="••••••••" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                 </div>
-                <p id="auth-msg" class="text-xs text-center text-red-400 h-4"></p>
-                <button onclick="handleAuthSubmit()" id="auth-submit-btn" class="w-full py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white transition shadow-lg shadow-blue-600/30">Đăng Ký Ngay</button>
             </div>
+
+            <p id="auth-msg" class="text-xs text-center text-red-400 h-4"></p>
+
+            <button onclick="handleAuthSubmit()" id="auth-submit-btn" class="w-full py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition">
+                Tiếp Tục
+            </button>
         </div>
     </div>
 
-    <!-- Script xử lý -->
+    <!-- Script kết nối Supabase và xử lý logic -->
     <script>
-        const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable__7Et13j4E-G_NXYwpRwxTw_cibLQfW2'; 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = 'https://znunswdfeylrmunntmhk.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudW5zd2RmZXlscm11bm50bWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjM2MzMyODczNTl9.W54V_aY34eCgV3aO0Tq2_XzZ1K6k3_qV8Y9m4_8p2_o';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentMode = 'register';
+        let currentAuthMode = 'login';
 
-        function openAuthModal(mode) {
-            currentMode = mode;
-            document.getElementById('auth-modal').classList.remove('hidden');
-            document.getElementById('modal-title').innerText = mode === 'register' ? 'Đăng Ký Tài Khoản' : 'Đăng Nhập';
-            document.getElementById('auth-submit-btn').innerText = mode === 'register' ? 'Đăng Ký Ngay' : 'Đăng Nhập';
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-            document.getElementById('auth-msg').innerText = '';
-        }
-
-        async function handleAuthSubmit() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            const msgEl = document.getElementById('auth-msg');
-
-            if (!email || !password) {
-                msgEl.innerText = 'Vui lòng nhập đầy đủ email và mật khẩu!';
-                return;
-            }
-
-            if (currentMode === 'register') {
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) {
-                    msgEl.innerText = error.message;
-                } else {
-                    msgEl.className = 'text-xs text-center text-green-400 h-4';
-                    msgEl.innerText = 'Đăng ký thành công! Hãy kiểm tra email xác nhận.';
-                }
-            } else {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) {
-                    msgEl.innerText = 'Sai email hoặc mật khẩu!';
-                } else {
-                    msgEl.className = 'text-xs text-center text-green-400 h-4';
-                    msgEl.innerText = 'Đăng nhập thành công!';
-                    setTimeout(() => { location.reload(); }, 1000);
-                }
-            }
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            checkUser();
+            fetchSongs();
+        });
 
         async function checkUser() {
             const { data: { session } } = await supabaseClient.auth.getSession();
@@ -204,135 +170,146 @@
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('user-info').classList.add('flex');
                 document.getElementById('user-email').innerText = session.user.email;
-                // Hiển thị nút "Đăng Nhạc Mới" khi đã đăng nhập
-                document.getElementById('btn-toggle-upload').classList.remove('hidden');
-                document.getElementById('btn-toggle-upload').classList.add('flex');
+                
+                // CHỈ HIỆN NÚT ĐĂNG NHẠC NẾU ĐÚNG EMAIL ADMIN CỦA ANH
+                if (session.user.email === 'vovanduc107@gmail.com') {
+                    document.getElementById('btn-toggle-upload').classList.remove('hidden');
+                    document.getElementById('btn-toggle-upload').classList.add('flex');
+                }
             }
         }
 
-        async function handleLogout() {
+        function toggleUploadForm() {
+            const section = document.getElementById('upload-section');
+            section.classList.toggle('hidden');
+        }
+
+        function openAuthModal(mode) {
+            currentAuthMode = mode;
+            document.getElementById('modal-title').innerText = mode === 'login' ? 'Đăng Nhập Tài Khoản' : 'Đăng Ký Tài Khoản Mới';
+            document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Đăng Nhập' : 'Đăng Ký';
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('auth-msg').innerText = '';
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        async function handleAuthSubmit() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
+            const msgEl = document.getElementById('auth-msg');
+
+            if (!email || !password) {
+                msgEl.innerText = 'Vui lòng điền đầy đủ thông tin!';
+                return;
+            }
+
+            msgEl.innerText = 'Đang xử lý...';
+
+            if (currentAuthMode === 'signup') {
+                const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                if (error) {
+                    msgEl.innerText = error.message;
+                } else {
+                    alert('Đăng ký thành công! Vui lòng đăng nhập.');
+                    openAuthModal('login');
+                }
+            } else {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) {
+                    msgEl.innerText = error.message;
+                } else {
+                    closeAuthModal();
+                    location.reload();
+                }
+            }
+        }
+
+        async function logout() {
             await supabaseClient.auth.signOut();
             location.reload();
         }
 
-        function toggleUploadForm() {
-            const form = document.getElementById('upload-section');
-            form.classList.toggle('hidden');
-        }
-
-        // Xử lý upload bài hát mới
         async function uploadSong() {
-            const title = document.getElementById('song-title').value;
-            const artist = document.getElementById('song-artist').value;
-            const price = document.getElementById('song-price').value;
+            const title = document.getElementById('song-title').value.trim();
+            const artist = document.getElementById('song-artist').value.trim();
+            const price = document.getElementById('song-price').value.trim();
             const fileInput = document.getElementById('song-file');
             const msgEl = document.getElementById('upload-msg');
-            const submitBtn = document.getElementById('upload-btn');
+            const btnEl = document.getElementById('upload-btn');
 
             if (!title || !artist || !price || fileInput.files.length === 0) {
                 msgEl.innerText = 'Vui lòng điền đầy đủ thông tin và chọn file nhạc!';
                 return;
             }
 
-            submitBtn.innerText = 'Đang tải lên file...';
-            submitBtn.disabled = true;
-
             const file = fileInput.files[0];
-            const fileName = Date.now() + '_' + file.name;
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
 
-            // 1. Upload file lên Storage bucket 'songs'
+            btnEl.disabled = true;
+            msgEl.innerText = 'Đang tải file lên hệ thống...';
+
+            // Upload lên Storage Supabase (bucket 'songs')
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
                 .from('songs')
                 .upload(fileName, file);
 
             if (uploadError) {
                 msgEl.innerText = 'Lỗi upload file: ' + uploadError.message;
-                submitBtn.innerText = 'Xác Nhận Đăng Bài';
-                submitBtn.disabled = false;
+                btnEl.disabled = false;
                 return;
             }
 
-            // 2. Lấy public URL của file
-            const { data: publicUrlData } = supabaseClient.storage
+            // Lấy URL public của file
+            const { data: { publicUrl } } = supabaseClient.storage
                 .from('songs')
                 .getPublicUrl(fileName);
 
-            const file_url = publicUrlData.publicUrl;
-
-            // 3. Lưu thông tin vào bảng 'songs'
+            // Lưu thông tin vào Database bảng 'songs'
             const { error: dbError } = await supabaseClient
                 .from('songs')
-                .insert([{ title, artist, price: parseFloat(price), file_url }]);
+                .insert([{ title, artist, price: Number(price), file_url: publicUrl }]);
 
             if (dbError) {
                 msgEl.innerText = 'Lỗi lưu database: ' + dbError.message;
-                submitBtn.innerText = 'Xác Nhận Đăng Bài';
-                submitBtn.disabled = false;
+                btnEl.disabled = false;
             } else {
                 alert('Đăng bài hát thành công!');
                 location.reload();
             }
         }
 
-        // Tải danh sách bài hát từ Supabase
-        async function loadSongs() {
+        async function fetchSongs() {
             const container = document.getElementById('songs-container');
-            const { data: songs, error } = await supabaseClient.from('songs').select('*');
+            const { data: songs, error } = await supabaseClient
+                .from('songs')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            if (error) {
-                container.innerHTML = `<p class="text-red-400 text-sm">Lỗi tải dữ liệu nhạc: ${error.message}</p>`;
+            if (error || !songs || songs.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm italic col-span-full">Chưa có bài nhạc nào được đăng tải.</p>';
                 return;
             }
 
-            if (!songs || songs.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 text-sm">Chưa có bài nhạc nào được đăng tải.</p>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            songs.forEach(song => {
-                container.innerHTML += `
-                    <div class="bg-cardBg border border-gray-800 rounded-3xl p-5 space-y-4 shadow-xl hover:border-blue-500/50 transition">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                                <i class="fa-solid fa-music"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-extrabold text-white text-base">${song.title}</h4>
-                                <p class="text-xs text-gray-400">${song.artist}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-800/80">
-                            <span class="text-sm font-bold text-cyan-400">${Number(song.price).toLocaleString()} VNĐ</span>
-                            <div class="space-x-2">
-                                <button onclick="playSong('${song.title}', '${song.artist}', '${song.file_url}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/30 transition">
-                                    <i class="fa-solid fa-play mr-1"></i> Nghe thử
-                                </button>
-                                <button onclick="buySong('${song.title}', ${song.price})" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-90 transition">
-                                    Mua ngay
-                                </button>
-                            </div>
-                        </div>
+            container.innerHTML = songs.map(song => `
+                <div class="bg-cardBg border border-gray-800 rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-lg">
+                    <div>
+                        <h4 class="font-bold text-white text-base truncate">${song.title}</h4>
+                        <p class="text-xs text-gray-400 mt-0.5 truncate">${song.artist}</p>
                     </div>
-                `;
-            });
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-800">
+                        <span class="text-emerald-400 font-extrabold text-sm">${Number(song.price).toLocaleString('vi-VN')} đ</span>
+                        <a href="${song.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-xs font-semibold rounded-xl transition flex items-center space-x-1">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Tải về</span>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
         }
-
-        function playSong(title, artist, url) {
-            document.getElementById('player-bar').classList.remove('hidden');
-            document.getElementById('player-title').innerText = title;
-            document.getElementById('player-artist').innerText = artist;
-            const audio = document.getElementById('audio-element');
-            audio.src = url;
-            audio.play();
-        }
-
-        function buySong(title, price) {
-            alert(`Bạn đã chọn mua bài: "${title}" với giá ${price.toLocaleString()} VNĐ. Tính năng thanh toán sẽ được tích hợp tiếp theo!`);
-        }
-
-        checkUser();
-        loadSongs();
     </script>
 </body>
 </html>

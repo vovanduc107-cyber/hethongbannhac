@@ -20,8 +20,6 @@
             }
         }
     </script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -81,7 +79,6 @@
                     <span class="text-[10px] text-gray-400 uppercase tracking-wider">Hài Lòng Dịch Vụ</span>
                 </div>
             </div>
-            <!-- Decorative Glow -->
             <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
         </div>
 
@@ -152,7 +149,6 @@
             </div>
         </div>
         
-        <!-- Player Controls -->
         <div class="flex flex-col items-center space-y-1 w-2/4 max-w-md">
             <div class="flex items-center space-x-5 text-gray-300">
                 <button class="hover:text-white transition"><i class="fa-solid fa-shuffle text-xs"></i></button>
@@ -172,7 +168,6 @@
             </div>
         </div>
 
-        <!-- Volume / Extra -->
         <div class="hidden md:flex items-center space-x-3 w-1/4 justify-end text-gray-400">
             <i class="fa-solid fa-volume-high text-xs"></i>
             <input type="range" min="0" max="1" step="0.05" value="1" onchange="setVolume(this.value)" class="w-20 accent-blue-500 cursor-pointer">
@@ -199,7 +194,6 @@
                 </div>
             </div>
 
-            <!-- Nút Quên mật khẩu & Chuyển đổi tab -->
             <div class="flex items-center justify-between text-xs">
                 <button type="button" id="forgot-pass-link" onclick="switchToForgotMode()" class="text-blue-400 hover:underline">Quên mật khẩu?</button>
                 <button type="button" id="switch-mode-btn" onclick="toggleAuthMode()" class="text-gray-400 hover:text-white transition">Chưa có tài khoản? Đăng ký</button>
@@ -213,21 +207,12 @@
         </div>
     </div>
 
-    <!-- Script Xử Lý Kết Nối & Tính Năng -->
+    <!-- Script Xử Lý Trực Tiếp Chuẩn Xác -->
     <script>
         const SUPABASE_URL = 'https://znunswdfeylrmunntmhk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudW5zd2RmZXlscm11bm50bWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjM2MzMyODczNTl9.W54V_aY34eCgV3aO0Tq2_XzZ1K6k3_qV8Y9m4_8p2_o';
-        
-        // Khởi tạo Supabase client chuẩn chống lỗi Load failed
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true,
-                detectSessionInUrl: true
-            }
-        });
-
         const ADMIN_EMAIL = 'vovanduc107@gmail.com';
+
         let currentMode = 'login';
         let currentSongUrl = '';
         const audioElement = document.getElementById('audio-element');
@@ -237,16 +222,21 @@
             fetchSongs();
         });
 
-        async function checkUserSession() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session && session.user) {
+        function getStoredUser() {
+            const userStr = localStorage.getItem('htbn_user');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        function checkUserSession() {
+            const user = getStoredUser();
+            if (user) {
                 document.getElementById('auth-buttons').classList.add('hidden');
                 const userInfo = document.getElementById('user-info');
                 userInfo.classList.remove('hidden');
                 userInfo.classList.add('flex');
-                document.getElementById('user-email-display').innerText = session.user.email;
+                document.getElementById('user-email-display').innerText = user.email;
 
-                if (session.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     document.getElementById('btn-toggle-upload').classList.remove('hidden');
                     document.getElementById('btn-toggle-upload').classList.add('flex');
                 }
@@ -318,41 +308,64 @@
 
             submitBtn.disabled = true;
 
-            if (currentMode === 'login') {
-                msgEl.innerText = 'Đang đăng nhập...';
-                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) {
-                    msgEl.innerText = 'Lỗi: ' + error.message;
-                    submitBtn.disabled = false;
-                } else {
+            try {
+                if (currentMode === 'login') {
+                    msgEl.innerText = 'Đang đăng nhập...';
+                    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error_description || data.msg || 'Sai email hoặc mật khẩu');
+
+                    localStorage.setItem('htbn_user', JSON.stringify({ email: data.user.email, token: data.access_token }));
                     location.reload();
-                }
-            } else if (currentMode === 'signup') {
-                msgEl.innerText = 'Đang đăng ký tài khoản...';
-                const { error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) {
-                    msgEl.innerText = 'Lỗi: ' + error.message;
+
+                } else if (currentMode === 'signup') {
+                    msgEl.innerText = 'Đang đăng ký tài khoản...';
+                    const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error_description || data.msg || 'Không thể đăng ký');
+
+                    alert('Đăng ký thành công! Vui lòng bấm đăng nhập.');
+                    currentMode = 'login';
+                    updateModalUI();
                     submitBtn.disabled = false;
-                } else {
-                    alert('Đăng ký thành công!');
-                    location.reload();
-                }
-            } else if (currentMode === 'forgot') {
-                msgEl.innerText = 'Đang gửi link khôi phục...';
-                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
-                if (error) {
-                    msgEl.innerText = 'Lỗi: ' + error.message;
-                    submitBtn.disabled = false;
-                } else {
-                    alert('Đã gửi email khôi phục mật khẩu! Vui lòng kiểm tra hộp thư.');
+
+                } else if (currentMode === 'forgot') {
+                    msgEl.innerText = 'Đang gửi link...';
+                    const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY
+                        },
+                        body: JSON.stringify({ email, redirect_to: window.location.href })
+                    });
+                    if (!res.ok) throw new Error('Không thể gửi yêu cầu khôi phục');
+                    alert('Đã gửi email khôi phục mật khẩu!');
                     closeAuthModal();
                     submitBtn.disabled = false;
                 }
+            } catch (err) {
+                msgEl.innerText = 'Lỗi: ' + err.message;
+                submitBtn.disabled = false;
             }
         }
 
-        async function logout() {
-            await supabaseClient.auth.signOut();
+        function logout() {
+            localStorage.removeItem('htbn_user');
             location.reload();
         }
 
@@ -373,6 +386,12 @@
                 return;
             }
 
+            const user = getStoredUser();
+            if (!user) {
+                alert('Vui lòng đăng nhập tài khoản Admin trước!');
+                return;
+            }
+
             const file = fileInput.files[0];
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
@@ -380,57 +399,84 @@
             btnEl.disabled = true;
             msgEl.innerText = 'Đang tải file lên hệ thống...';
 
-            const { error: uploadError } = await supabaseClient.storage.from('songs').upload(fileName, file);
-            if (uploadError) {
-                msgEl.innerText = 'Lỗi upload: ' + uploadError.message;
-                btnEl.disabled = false;
-                return;
-            }
+            try {
+                // Upload Storage trực tiếp
+                const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/songs/${fileName}`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${user.token}`,
+                        'Content-Type': file.type || 'audio/mpeg'
+                    },
+                    body: file
+                });
+                if (!uploadRes.ok) throw new Error('Lỗi khi tải file nhạc lên Storage');
 
-            const { data: { publicUrl } } = supabaseClient.storage.from('songs').getPublicUrl(fileName);
+                const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/songs/${fileName}`;
 
-            const { error: dbError } = await supabaseClient.from('songs').insert([{ title, artist, price: Number(price), file_url: publicUrl }]);
-            if (dbError) {
-                msgEl.innerText = 'Lỗi database: ' + dbError.message;
-                btnEl.disabled = false;
-            } else {
+                // Insert Database trực tiếp
+                const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/songs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${user.token}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ title, artist, price: Number(price), file_url: publicUrl })
+                });
+                if (!dbRes.ok) throw new Error('Lỗi khi lưu thông tin bài hát');
+
                 alert('Đăng bài hát thành công!');
                 location.reload();
+            } catch (err) {
+                msgEl.innerText = 'Lỗi: ' + err.message;
+                btnEl.disabled = false;
             }
         }
 
         async function fetchSongs() {
             const container = document.getElementById('songs-container');
-            const { data: songs, error } = await supabaseClient.from('songs').select('*').order('created_at', { ascending: false });
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/songs?select=*&order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                const songs = await res.json();
 
-            if (error || !songs || songs.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-sm italic col-span-full">Chưa có bài nhạc nào được đăng tải.</p>';
-                return;
+                if (!res.ok || !songs || songs.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-sm italic col-span-full">Chưa có bài nhạc nào được đăng tải.</p>';
+                    return;
+                }
+
+                container.innerHTML = songs.map(song => `
+                    <div class="bg-cardBg border border-borderDark rounded-2xl p-4 flex flex-col justify-between space-y-4 shadow-xl hover:border-blue-500/50 transition group">
+                        <div class="relative rounded-xl bg-gradient-to-br from-blue-950 to-indigo-950 aspect-video flex items-center justify-center overflow-hidden border border-borderDark">
+                            <i class="fa-solid fa-waveform text-blue-400 text-3xl group-hover:scale-110 transition"></i>
+                            <button onclick="playSong('${song.file_url}', '${song.title.replace(/'/g, "\\'")}', '${song.artist.replace(/'/g, "\\'")}')" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition backdrop-blur-[2px]">
+                                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition">
+                                    <i class="fa-solid fa-play ml-0.5 text-sm"></i>
+                                </div>
+                            </button>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm truncate">${song.title}</h4>
+                            <p class="text-xs text-gray-400 mt-0.5 truncate">${song.artist}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-borderDark">
+                            <span class="text-emerald-400 font-extrabold text-xs">${Number(song.price).toLocaleString('vi-VN')} đ</span>
+                            <a href="${song.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-xs font-semibold rounded-xl transition flex items-center space-x-1">
+                                <i class="fa-solid fa-download"></i>
+                                <span>Tải về</span>
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<p class="text-gray-500 text-sm italic col-span-full">Không thể tải danh sách bài hát.</p>';
             }
-
-            container.innerHTML = songs.map(song => `
-                <div class="bg-cardBg border border-borderDark rounded-2xl p-4 flex flex-col justify-between space-y-4 shadow-xl hover:border-blue-500/50 transition group">
-                    <div class="relative rounded-xl bg-gradient-to-br from-blue-950 to-indigo-950 aspect-video flex items-center justify-center overflow-hidden border border-borderDark">
-                        <i class="fa-solid fa-waveform text-blue-400 text-3xl group-hover:scale-110 transition"></i>
-                        <button onclick="playSong('${song.file_url}', '${song.title.replace(/'/g, "\\'")}', '${song.artist.replace(/'/g, "\\'")}')" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition backdrop-blur-[2px]">
-                            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition">
-                                <i class="fa-solid fa-play ml-0.5 text-sm"></i>
-                            </div>
-                        </button>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-white text-sm truncate">${song.title}</h4>
-                        <p class="text-xs text-gray-400 mt-0.5 truncate">${song.artist}</p>
-                    </div>
-                    <div class="flex items-center justify-between pt-2 border-t border-borderDark">
-                        <span class="text-emerald-400 font-extrabold text-xs">${Number(song.price).toLocaleString('vi-VN')} đ</span>
-                        <a href="${song.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-xs font-semibold rounded-xl transition flex items-center space-x-1">
-                            <i class="fa-solid fa-download"></i>
-                            <span>Tải về</span>
-                        </a>
-                    </div>
-                </div>
-            `).join('');
         }
 
         // Music Player Logic

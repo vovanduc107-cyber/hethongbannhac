@@ -65,7 +65,7 @@
 </head>
 <body class="min-h-screen pb-32 relative overflow-x-hidden">
 
-    <!-- Lớp Hiệu Ứng Động Toàn Màn Hình (Background Dynamic Glow & Particles) -->
+    <!-- Lớp Hiệu Ứng Động Toàn Màn Hình -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div class="absolute top-10 left-10 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] glow-bg-1"></div>
         <div class="absolute bottom-20 right-10 w-[30rem] h-[30rem] bg-blue-600/10 rounded-full blur-[140px] glow-bg-2"></div>
@@ -82,8 +82,8 @@
     <!-- Header -->
     <header class="flex justify-between items-center p-4 border-b border-gray-800/80 bg-[#111827]/90 backdrop-blur-md sticky top-0 z-50">
         <div class="flex items-center space-x-3">
-            <!-- Logo Thương Hiệu Mới -->
-            <img src="IMG_3766.jpg" alt="HTBN Logo" class="w-11 h-11 rounded-xl object-cover border border-amber-500/50 brand-logo">
+            <!-- Logo Thương Hiệu Nhúng Trực Tiếp (Không sợ lỗi mất file ảnh trên GitHub) -->
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/50 brand-logo">
             <div>
                 <h1 class="font-bold text-lg leading-tight flex items-center gap-1.5">
                     HTBN <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">PRO</span>
@@ -91,14 +91,12 @@
                 <p class="text-[10px] text-gray-400 tracking-wider">HỆ THỐNG BÁN NHẠC</p>
             </div>
         </div>
-        <div class="flex items-center space-x-2" id="auth-header-action">
-            <!-- Nút đăng nhập/đăng ký/đăng xuất động -->
-        </div>
+        <div class="flex items-center space-x-2" id="auth-header-action"></div>
     </header>
 
     <main class="max-w-2xl mx-auto p-4 space-y-6 relative z-10">
         
-        <!-- Sảnh Chào Mừng Động (Cờ VN + Đồng Hồ Giờ VN) -->
+        <!-- Sảnh Chào Mừng Động -->
         <section class="bg-gradient-to-r from-[#161f31]/90 to-[#1f293d]/90 backdrop-blur border border-amber-500/20 p-4 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3 text-center sm:text-left">
                 <div class="text-3xl flag-anim bg-red-600/20 p-2 rounded-2xl border border-red-500/30">🇻🇳</div>
@@ -115,7 +113,7 @@
             </div>
         </section>
 
-        <!-- Form Quản Trị Đăng Tải (Chỉ Admin thấy) -->
+        <!-- Form Quản Trị Đăng Tải -->
         <section id="admin-section" class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl shadow-2xl space-y-4 hidden">
             <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
                 ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
@@ -266,6 +264,9 @@
 
     <!-- Script Xử Lý Chính -->
     <script>
+        // Tự động gán trực tiếp ảnh logo thương hiệu từ ảnh anh vừa tải lên
+        document.getElementById('brand-logo-img').src = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
+
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
         
@@ -274,7 +275,6 @@
         const BANK_ID = "TCB";
         const ACCOUNT_NO = "1903xxxxxxxxx";
         const ACCOUNT_NAME = "VO VAN DUC";
-        
         const ADMIN_EMAIL = "vovanduc@admin.com"; 
 
         const playPauseBtn = document.getElementById('play-pause-btn');

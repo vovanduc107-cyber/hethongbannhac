@@ -43,12 +43,11 @@
             <div id="auth-container">
                 <!-- Chưa đăng nhập -->
                 <div id="auth-buttons" class="flex items-center space-x-2">
-                    <button onclick="openAuthModal('login')" class="px-4 py-2 text-sm font-semibold hover:text-blue-400 transition">Đăng Nhập</button>
-                    <button onclick="openAuthModal('signup')" class="px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-500 rounded-xl transition shadow-lg shadow-blue-600/20">Đăng Ký</button>
+                    <button onclick="openAuthModal()" class="px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-500 rounded-xl transition shadow-lg shadow-blue-600/20">Quản Trị Viên (Admin)</button>
                 </div>
                 <!-- Đã đăng nhập -->
                 <div id="user-info" class="hidden items-center space-x-3">
-                    <span id="user-email" class="text-xs text-gray-300 font-medium hidden sm:inline-block"></span>
+                    <span id="user-email" class="text-xs text-blue-400 font-bold hidden sm:inline-block">Admin: vovanduc107@gmail.com</span>
                     <button onclick="logout()" class="px-3.5 py-2 text-xs font-bold bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/20 rounded-xl transition flex items-center space-x-1.5">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>Đăng Xuất</span>
@@ -69,13 +68,12 @@
             </div>
         </div>
 
-        <!-- Tiêu đề Kho Nhạc & Nút Đăng Nhạc (Chỉ Admin mới thấy) -->
+        <!-- Tiêu đề Kho Nhạc & Nút Đăng Nhạc (Chỉ hiện khi Admin đăng nhập) -->
         <div class="flex items-center justify-between">
             <h3 class="text-xl font-extrabold text-white flex items-center space-x-2">
                 <i class="fa-solid fa-music text-blue-500"></i>
                 <span>Kho Nhạc Độc Quyền</span>
             </h3>
-            <!-- Nút bật tắt form đăng nhạc (Mặc định ẩn) -->
             <button id="btn-toggle-upload" onclick="toggleUploadForm()" class="hidden items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-blue-600/25">
                 <i class="fa-solid fa-plus"></i>
                 <span>Đăng Nhạc Mới</span>
@@ -121,74 +119,59 @@
 
         <!-- Danh sách bài hát -->
         <div id="songs-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <p class="text-gray-500 text-sm italic col-span-full">Chưa có bài nhạc nào được đăng tải.</p>
+            <p class="text-gray-500 text-sm italic col-span-full">Đang tải danh sách bài hát...</p>
         </div>
     </main>
 
-    <!-- Modal Đăng Nhập / Đăng Ký -->
+    <!-- Modal Đăng Nhập Admin Cứng -->
     <div id="auth-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-cardBg border border-gray-800 rounded-3xl w-full max-w-md p-6 relative shadow-2xl space-y-5">
             <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 id="modal-title" class="text-xl font-extrabold text-white text-center">Đăng Nhập Tài Khoản</h3>
+            <h3 class="text-xl font-extrabold text-white text-center">Đăng Nhập Quản Trị Viên</h3>
             
             <div class="space-y-3">
                 <div>
-                    <label class="text-xs text-gray-400 mb-1 block">Email của bạn</label>
-                    <input type="email" id="auth-email" placeholder="name@gmail.com" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400 mb-1 block">Mật khẩu</label>
-                    <input type="password" id="auth-password" placeholder="••••••••" class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+                    <label class="text-xs text-gray-400 mb-1 block">Mật khẩu Admin</label>
+                    <input type="password" id="admin-pass" placeholder="Nhập mật khẩu quản trị..." class="w-full bg-darkBg border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                 </div>
             </div>
 
             <p id="auth-msg" class="text-xs text-center text-red-400 h-4"></p>
 
-            <button onclick="handleAuthSubmit()" id="auth-submit-btn" class="w-full py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition">
-                Tiếp Tục
+            <button onclick="handleAdminLogin()" class="w-full py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition">
+                Truy Cập Quản Trị
             </button>
         </div>
     </div>
 
-    <!-- Script kết nối Supabase và xử lý logic -->
+    <!-- Script Xử Lý -->
     <script>
         const SUPABASE_URL = 'https://znunswdfeylrmunntmhk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudW5zd2RmZXlscm11bm50bWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjM2MzMyODczNTl9.W54V_aY34eCgV3aO0Tq2_XzZ1K6k3_qV8Y9m4_8p2_o';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentAuthMode = 'login';
+        // Mật khẩu quản trị của anh (có thể đổi tuỳ ý ở đây)
+        const ADMIN_PASSWORD_SECRET = 'admin123456'; 
 
         document.addEventListener('DOMContentLoaded', () => {
-            checkUser();
+            checkLoginState();
             fetchSongs();
         });
 
-        async function checkUser() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
+        function checkLoginState() {
+            const isAdmin = localStorage.getItem('htbn_admin_logged');
+            if (isAdmin === 'true') {
                 document.getElementById('auth-buttons').classList.add('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('user-info').classList.add('flex');
-                document.getElementById('user-email').innerText = session.user.email;
-                
-                // CHỈ HIỆN NÚT ĐĂNG NHẠC NẾU ĐÚNG EMAIL ADMIN CỦA ANH
-                if (session.user.email === 'vovanduc107@gmail.com') {
-                    document.getElementById('btn-toggle-upload').classList.remove('hidden');
-                    document.getElementById('btn-toggle-upload').classList.add('flex');
-                }
+                document.getElementById('btn-toggle-upload').classList.remove('hidden');
+                document.getElementById('btn-toggle-upload').classList.add('flex');
             }
         }
 
-        function toggleUploadForm() {
-            const section = document.getElementById('upload-section');
-            section.classList.toggle('hidden');
-        }
-
-        function openAuthModal(mode) {
-            currentAuthMode = mode;
-            document.getElementById('modal-title').innerText = mode === 'login' ? 'Đăng Nhập Tài Khoản' : 'Đăng Ký Tài Khoản Mới';
-            document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Đăng Nhập' : 'Đăng Ký';
+        function openAuthModal() {
             document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('admin-pass').value = '';
             document.getElementById('auth-msg').innerText = '';
         }
 
@@ -196,40 +179,27 @@
             document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        async function handleAuthSubmit() {
-            const email = document.getElementById('auth-email').value.trim();
-            const password = document.getElementById('auth-password').value.trim();
+        function handleAdminLogin() {
+            const pass = document.getElementById('admin-pass').value.trim();
             const msgEl = document.getElementById('auth-msg');
 
-            if (!email || !password) {
-                msgEl.innerText = 'Vui lòng điền đầy đủ thông tin!';
-                return;
-            }
-
-            msgEl.innerText = 'Đang xử lý...';
-
-            if (currentAuthMode === 'signup') {
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) {
-                    msgEl.innerText = error.message;
-                } else {
-                    alert('Đăng ký thành công! Vui lòng đăng nhập.');
-                    openAuthModal('login');
-                }
+            if (pass === ADMIN_PASSWORD_SECRET) {
+                localStorage.setItem('htbn_admin_logged', 'true');
+                closeAuthModal();
+                location.reload();
             } else {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) {
-                    msgEl.innerText = error.message;
-                } else {
-                    closeAuthModal();
-                    location.reload();
-                }
+                msgEl.innerText = 'Sai mật khẩu quản trị!';
             }
         }
 
-        async function logout() {
-            await supabaseClient.auth.signOut();
+        function logout() {
+            localStorage.removeItem('htbn_admin_logged');
             location.reload();
+        }
+
+        function toggleUploadForm() {
+            const section = document.getElementById('upload-section');
+            section.classList.toggle('hidden');
         }
 
         async function uploadSong() {
@@ -252,7 +222,7 @@
             btnEl.disabled = true;
             msgEl.innerText = 'Đang tải file lên hệ thống...';
 
-            // Upload lên Storage Supabase (bucket 'songs')
+            // Upload file lên Supabase Storage bucket 'songs'
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
                 .from('songs')
                 .upload(fileName, file);
@@ -263,12 +233,12 @@
                 return;
             }
 
-            // Lấy URL public của file
+            // Lấy URL public
             const { data: { publicUrl } } = supabaseClient.storage
                 .from('songs')
                 .getPublicUrl(fileName);
 
-            // Lưu thông tin vào Database bảng 'songs'
+            // Lưu vào Database bảng 'songs'
             const { error: dbError } = await supabaseClient
                 .from('songs')
                 .insert([{ title, artist, price: Number(price), file_url: publicUrl }]);

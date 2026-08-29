@@ -23,13 +23,13 @@
                 <p class="text-xs text-gray-400">HỆ THỐNG BÁN NHẠC</p>
             </div>
         </div>
-        <div class="flex items-center space-x-3" id="auth-header-action">
-            <!-- Nút chuyển đổi dựa trên trạng thái đăng nhập -->
+        <div class="flex items-center space-x-2" id="auth-header-action">
+            <!-- Nút đăng nhập/đăng ký/đăng xuất động -->
         </div>
     </header>
 
     <main class="max-w-2xl mx-auto p-4 space-y-6">
-        <!-- Form Quản Trị Đăng Tải (Chỉ hiện khi là Admin) -->
+        <!-- Form Quản Trị Đăng Tải (Chỉ Admin thấy) -->
         <section id="admin-section" class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl shadow-xl space-y-4 hidden">
             <h2 class="text-blue-400 font-bold text-base flex items-center gap-2">
                 ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
@@ -71,13 +71,13 @@
             </div>
         </section>
 
-        <!-- Mục Liên Hệ Hỗ Trợ Cho Khách Hàng -->
+        <!-- Mục Liên Hệ Hỗ Trợ -->
         <section class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl space-y-3">
             <h2 class="text-blue-400 font-bold text-sm flex items-center gap-2">
                 💬 Hỗ Trợ & Liên Hệ Admin
             </h2>
             <p class="text-xs text-gray-300 leading-relaxed">
-                Quý khách cần mua bản quyền beat/track hoặc cần hỗ trợ thanh toán, vui lòng liên hệ trực tiếp với Admin qua thông tin bên dưới:
+                Quý khách cần mua bản quyền beat/track hoặc hỗ trợ thanh toán, vui lòng liên hệ trực tiếp với Admin:
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex items-center gap-2">
@@ -116,19 +116,45 @@
         </div>
     </footer>
 
-    <!-- Modal Đăng Nhập Admin -->
-    <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <!-- Modal Đăng Nhập / Đăng Ký Khách & Admin -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4">
-            <h3 class="font-bold text-base text-white text-center">Đăng Nhập Quản Trị Viên</h3>
-            <div>
-                <label class="block text-xs text-gray-400 mb-1">Mật khẩu Admin</label>
-                <input type="password" id="admin-pass" placeholder="Nhập mật khẩu..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 text-white">
+            <div class="flex border-b border-gray-700 text-xs font-semibold">
+                <button onclick="switchAuthTab('login')" id="tab-login-btn" class="w-1/2 py-2 text-blue-400 border-b-2 border-blue-500">Đăng Nhập</button>
+                <button onclick="switchAuthTab('register')" id="tab-register-btn" class="w-1/2 py-2 text-gray-400">Đăng Ký</button>
             </div>
-            <p id="login-error" class="text-xs text-red-400 text-center hidden"></p>
-            <div class="flex gap-2">
-                <button onclick="closeLoginModal()" class="w-1/2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2.5 rounded-xl text-xs transition">Hủy</button>
-                <button onclick="submitAdminLogin()" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-xs transition">Xác Nhận</button>
+
+            <!-- Form Đăng Nhập -->
+            <div id="form-login" class="space-y-3">
+                <h3 class="font-bold text-sm text-white text-center">Đăng Nhập Tài Khoản</h3>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Email</label>
+                    <input type="email" id="login-email" placeholder="Nhập email..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Mật khẩu</label>
+                    <input type="password" id="login-pass" placeholder="Nhập mật khẩu..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <p id="login-error" class="text-[11px] text-red-400 text-center hidden"></p>
+                <button onclick="handleUserLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đăng Nhập</button>
             </div>
+
+            <!-- Form Đăng Ký -->
+            <div id="form-register" class="space-y-3 hidden">
+                <h3 class="font-bold text-sm text-white text-center">Đăng Ký Tài Khoản Mới</h3>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Email</label>
+                    <input type="email" id="reg-email" placeholder="Nhập email..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Mật khẩu</label>
+                    <input type="password" id="reg-pass" placeholder="Ít nhất 6 ký tự..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <p id="reg-error" class="text-[11px] text-red-400 text-center hidden"></p>
+                <button onclick="handleUserRegister()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đăng Ký Tài Khoản</button>
+            </div>
+
+            <button onclick="closeAuthModal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded-xl text-xs transition">Đóng lại</button>
         </div>
     </div>
 
@@ -162,7 +188,7 @@
         const BANK_ID = "TCB";
         const ACCOUNT_NO = "1903xxxxxxxxx";
         const ACCOUNT_NAME = "VO VAN DUC";
-        const ADMIN_SECRET_PASS = "admin123456"; // Anh có thể đổi mật khẩu này theo ý muốn
+        const ADMIN_EMAIL = "vovanduc@admin.com"; // Email quy định là Admin của anh
 
         const playPauseBtn = document.getElementById('play-pause-btn');
         const progressBar = document.getElementById('progress-bar');
@@ -176,58 +202,126 @@
         let pauseOffset = 0;
         let isPlaying = false;
         let timerInterval = null;
+        let currentUser = null;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            checkAuthUI();
+        document.addEventListener("DOMContentLoaded", async () => {
+            const { data } = await supabaseClient.auth.getUser();
+            currentUser = data.user;
+            updateAuthUI();
             fetchSongs();
         });
 
-        function checkAuthUI() {
-            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+        function updateAuthUI() {
             const authHeaderAction = document.getElementById('auth-header-action');
             const adminSection = document.getElementById('admin-section');
 
-            if (isAdmin) {
-                authHeaderAction.innerHTML = `<button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>`;
-                adminSection.classList.remove('hidden');
+            if (currentUser) {
+                const isAdmin = (currentUser.email === ADMIN_EMAIL);
+                if (isAdmin) {
+                    authHeaderAction.innerHTML = `
+                        <span class="text-[11px] text-blue-400 font-semibold hidden sm:inline">👑 Admin</span>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                    `;
+                    adminSection.classList.remove('hidden');
+                } else {
+                    authHeaderAction.innerHTML = `
+                        <span class="text-[11px] text-gray-300 font-semibold hidden sm:inline truncate max-w-[120px]">${currentUser.email}</span>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                    `;
+                    adminSection.classList.add('hidden');
+                }
             } else {
-                authHeaderAction.innerHTML = `<button onclick="openLoginModal()" class="bg-blue-600/20 text-blue-400 border border-blue-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-600/30 transition">🔐 Admin Đăng Nhập</button>`;
+                authHeaderAction.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="bg-blue-600/20 text-blue-400 border border-blue-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-600/30 transition">Đăng Nhập</button>
+                    <button onclick="openAuthModal('register')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-700 transition">Đăng Ký</button>
+                `;
                 adminSection.classList.add('hidden');
             }
         }
 
-        function openLoginModal() {
-            document.getElementById('login-pass').value = '';
-            document.getElementById('login-error').classList.add('hidden');
-            document.getElementById('login-modal').classList.remove('hidden');
+        function openAuthModal(tab) {
+            switchAuthTab(tab);
+            document.getElementById('auth-modal').classList.remove('hidden');
         }
 
-        function closeLoginModal() {
-            document.getElementById('login-modal').classList.add('hidden');
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        function submitAdminLogin() {
-            const pass = document.getElementById('admin-pass').value;
-            const errEl = document.getElementById('login-error');
-            if (pass === ADMIN_SECRET_PASS) {
-                localStorage.setItem('htbn_is_admin', 'true');
-                closeLoginModal();
-                checkAuthUI();
+        function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+
+            if (tab === 'login') {
+                loginBtn.className = "w-1/2 py-2 text-blue-400 border-b-2 border-blue-500";
+                regBtn.className = "w-1/2 py-2 text-gray-400";
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
             } else {
-                errEl.textContent = "Mật khẩu quản trị không đúng!";
-                errEl.classList.remove('hidden');
+                regBtn.className = "w-1/2 py-2 text-emerald-400 border-b-2 border-emerald-500";
+                loginBtn.className = "w-1/2 py-2 text-gray-400";
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
             }
         }
 
-        function handleLogout() {
-            localStorage.removeItem('htbn_is_admin');
+        async function handleUserRegister() {
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-pass').value.trim();
+            const errEl = document.getElementById('reg-error');
+
+            if (!email || !password) {
+                errEl.textContent = "Vui lòng nhập đầy đủ email và mật khẩu!";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+            } else {
+                alert("Đăng ký thành công! Hãy đăng nhập ngay.");
+                switchAuthTab('login');
+            }
+        }
+
+        async function handleUserLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-pass').value.trim();
+            const errEl = document.getElementById('login-error');
+
+            if (!email || !password) {
+                errEl.textContent = "Vui lòng nhập đầy đủ email và mật khẩu!";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+            } else {
+                currentUser = data.user;
+                closeAuthModal();
+                updateAuthUI();
+                fetchSongs();
+            }
+        }
+
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            currentUser = null;
             stopCurrentAudio();
-            checkAuthUI();
+            updateAuthUI();
+            fetchSongs();
             document.getElementById('player-title').textContent = "Chưa chọn bài hát";
             document.getElementById('player-artist').textContent = "HTBN Music Player";
             totalTimeEl.textContent = "00:00";
             currentTimeEl.textContent = "00:00";
-            alert("Đã đăng xuất tài khoản quản trị!");
+            alert("Đã đăng xuất thành công!");
         }
 
         async function fetchSongs() {
@@ -247,7 +341,7 @@
                 return;
             }
 
-            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+            const isAdmin = currentUser && (currentUser.email === ADMIN_EMAIL);
 
             listContainer.innerHTML = data.map(song => `
                 <div class="bg-[#161f31] border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-3">
@@ -267,11 +361,11 @@
         }
 
         function handlePlayClick(url, title, artist) {
-            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+            const isAdmin = currentUser && (currentUser.email === ADMIN_EMAIL);
             if (!isAdmin) {
-                alert("Tính năng phát nhạc bảo mật chỉ dành riêng cho Admin! Khách hàng vui lòng liên hệ Admin hoặc mua bản quyền để nhận file nhạc.");
+                alert("Tính năng phát nhạc chỉ dành riêng cho Admin! Khách hàng vui lòng liên hệ Admin để mua bản quyền.");
                 document.getElementById('player-title').textContent = title;
-                document.getElementById('player-artist').textContent = artist + " (Chỉ Admin mới nghe được)";
+                document.getElementById('player-artist').textContent = artist + " (Khách: Chỉ xem thời gian)";
                 totalTimeEl.textContent = "--:--";
                 currentTimeEl.textContent = "00:00";
                 return;
@@ -416,7 +510,7 @@
         }
 
         function togglePlay() {
-            const isAdmin = localStorage.getItem('htbn_is_admin') === 'true';
+            const isAdmin = currentUser && (currentUser.email === ADMIN_EMAIL);
             if (!isAdmin) {
                 alert("Chỉ Admin mới có quyền phát nhạc hệ thống!");
                 return;
@@ -444,7 +538,7 @@
         });
 
         progressBar.addEventListener('change', () => {
-            if (!audioBuffer) return;
+            if (!audioBuffer, audioBuffer) return;
             const seekTime = (progressBar.value / 100) * audioBuffer.duration;
             pauseOffset = seekTime;
             if (isPlaying) {

@@ -6,7 +6,6 @@
     <title>HTBN STORE - Hệ Thống Bán Nhạc Độc Quyền</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Thư viện kết nối Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
@@ -86,7 +85,7 @@
     <!-- Script kết nối Supabase -->
     <script>
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable__7Et13j4E-G_NXYw...'; // Điền phần khóa của bạn vào đây nếu cần đầy đủ
+        const SUPABASE_ANON_KEY = 'sb_publishable__7Et13j4E-G_NXYwDZjPqVw_xxxxxxxx'; 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentMode = 'register';
@@ -94,7 +93,7 @@
         function openAuthModal(mode) {
             currentMode = mode;
             document.getElementById('auth-modal').classList.remove('hidden');
-            document.getElementById('modal-titleinnerText = mode === 'register' ? 'Đăng Ký Tài Khoản' : 'Đăng Nhập';
+            document.getElementById('modal-title').innerText = mode === 'register' ? 'Đăng Ký Tài Khoản' : 'Đăng Nhập';
             document.getElementById('auth-submit-btn').innerText = mode === 'register' ? 'Đăng Ký Ngay' : 'Đăng Nhập';
         }
 

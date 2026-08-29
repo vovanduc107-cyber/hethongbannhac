@@ -39,9 +39,10 @@
 
         <!-- Auth & Contact Area -->
         <div class="flex items-center space-x-2">
-            <a href="https://zalo.me/sdt_cua_anh" target="_blank" class="px-3 py-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-600 hover:text-white rounded-lg transition flex items-center space-x-1 shadow-md">
+            <!-- NÚT HỖ TRỢ TRÊN HEADER: Thay '0912345678' thành số Zalo/SĐT của anh -->
+            <a href="https://zalo.me/0912345678" target="_blank" class="px-3 py-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-600 hover:text-white rounded-lg transition flex items-center space-x-1 shadow-md">
                 <i class="fa-solid fa-headset"></i>
-                <span class="hidden sm:inline">Hỗ Trợ</span>
+                <span class="hidden sm:inline">0912.345.678</span>
             </a>
             <div id="auth-container">
                 <div id="auth-buttons" class="flex items-center space-x-2">
@@ -122,16 +123,24 @@
             </div>
         </div>
 
-        <!-- Support / Contact Box for Users -->
+        <!-- Support / Contact Box for Users: Thay thông tin liên hệ của anh ở đây -->
         <div class="bg-cardBg border border-borderDark rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="space-y-1 text-center sm:text-left">
                 <h4 class="text-sm font-bold text-gray-200">Bạn cần tư vấn hoặc mua bản quyền độc quyền?</h4>
-                <p class="text-xs text-gray-400">Liên hệ trực tiếp với admin để được hỗ trợ nhanh chóng 24/7.</p>
+                <p class="text-xs text-gray-400">Liên hệ trực tiếp Zalo/Hotline: <span class="text-emerald-400 font-bold">0912.345.678</span> để được hỗ trợ 24/7.</p>
             </div>
-            <a href="https://zalo.me/sdt_cua_anh" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-xs font-semibold rounded-xl transition shadow-lg flex items-center space-x-2 shrink-0">
-                <i class="fa-solid fa-comments"></i>
-                <span>Chat với Admin</span>
-            </a>
+            <div class="flex items-center space-x-2 shrink-0">
+                <!-- Nút Zalo -->
+                <a href="https://zalo.me/0912345678" target="_blank" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-xs font-semibold rounded-xl transition shadow-lg flex items-center space-x-1.5">
+                    <i class="fa-solid fa-comment-sms"></i>
+                    <span>Chat Zalo</span>
+                </a>
+                <!-- Nút Gọi Điện Nhanh -->
+                <a href="tel:0912345678" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-xs font-semibold rounded-xl transition shadow-lg flex items-center space-x-1.5">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>Gọi Ngay</span>
+                </a>
+            </div>
         </div>
     </main>
 
@@ -295,7 +304,6 @@
             }
         }
 
-        // Chức năng upload file nhạc MP3/WAV kèm giá tiền
         async function uploadSong() {
             const title = document.getElementById('upload-title').value.trim();
             const artist = document.getElementById('upload-artist').value.trim();
@@ -348,7 +356,6 @@
             }
         }
 
-        // Tải danh sách bài hát hiển thị kèm giá tiền
         async function loadSongs() {
             const songListEl = document.getElementById('song-list');
             if (!supabaseClient) return;
@@ -380,7 +387,7 @@
                         </div>
                         <div class="flex items-center space-x-2 shrink-0">
                             <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">${song.price || 'Liên hệ'}</span>
-                            <a href="https://zalo.me/sdt_cua_anh" target="_blank" class="px-2.5 py-1 text-[10px] font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-600 hover:text-white rounded-lg transition flex items-center space-x-1">
+                            <a href="https://zalo.me/0961413154" target="_blank" class="px-2.5 py-1 text-[10px] font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-600 hover:text-white rounded-lg transition flex items-center space-x-1">
                                 <i class="fa-solid fa-cart-shopping"></i>
                                 <span>Mua ngay</span>
                             </a>

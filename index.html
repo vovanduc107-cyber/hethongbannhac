@@ -1,437 +1,326 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTBN - Hệ Thống Bán Nhạc</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#0b0f19',
-                        cardBg: '#131c2e',
-                        borderDark: '#1e293b'
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS SDK -->
+    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #0b0f19; color: #fff; font-family: system-ui, -apple-system, sans-serif; }
+    </style>
 </head>
-<body class="bg-darkBg text-white min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white pb-24">
+<body class="min-h-screen pb-24">
 
     <!-- Header -->
-    <header class="border-b border-borderDark bg-cardBg/50 backdrop-blur-md sticky top-0 z-40 px-4 py-3 flex items-center justify-between">
+    <header class="flex justify-between items-center p-4 border-b border-gray-800 bg-[#111827]/80 backdrop-blur sticky top-0 z-50">
         <div class="flex items-center space-x-2">
-            <div class="bg-blue-600 text-white font-bold p-2 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <i class="fa-solid fa-music"></i>
-            </div>
+            <div class="bg-blue-600 p-2 rounded-lg text-white font-bold">🎵</div>
             <div>
-                <h1 class="font-bold text-sm leading-tight">HTBN</h1>
-                <p class="text-[10px] text-gray-400">HỆ THỐNG BÁN NHẠC</p>
+                <h1 class="font-bold text-lg leading-tight">HTBN</h1>
+                <p class="text-xs text-gray-400">HỆ THỐNG BÁN NHẠC</p>
             </div>
         </div>
-
-        <!-- Auth & Contact Area -->
-        <div class="flex items-center space-x-2">
-            <!-- NÚT HỖ TRỢ TRÊN HEADER: Thay '0961413154' thành số Zalo/SĐT của anh -->
-            <a href="https://zalo.me/0961413154" target="_blank" class="px-3 py-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-600 hover:text-white rounded-lg transition flex items-center space-x-1 shadow-md">
-                <i class="fa-solid fa-headset"></i>
-                <span class="hidden sm:inline">096.1413.154</span>
-            </a>
-            <div id="auth-container">
-                <div id="auth-buttons" class="flex items-center space-x-2">
-                    <button type="button" id="btn-login" class="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-md">Đăng Nhập</button>
-                    <button type="button" id="btn-signup" class="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition shadow-md">Đăng Ký</button>
-                </div>
-                <div id="user-info" class="hidden items-center space-x-2">
-                    <span id="user-email-display" class="text-xs text-blue-400 font-bold hidden md:inline"></span>
-                    <button type="button" onclick="logout()" class="px-3 py-1.5 text-xs font-semibold text-red-400 hover:text-white bg-red-500/10 hover:bg-red-600 rounded-lg transition flex items-center space-x-1">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span>Đăng Xuất</span>
-                    </button>
-                </div>
-            </div>
+        <div class="flex items-center space-x-3">
+            <span id="user-email" class="text-xs text-gray-300 hidden md:inline"></span>
+            <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-4xl w-full mx-auto p-4 flex-grow space-y-6">
-        <!-- Hero Banner -->
-        <div class="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-borderDark rounded-2xl p-6 relative overflow-hidden shadow-xl">
-            <div class="relative z-10 space-y-2">
-                <span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">HTBN – HỆ THỐNG BÁN NHẠC</span>
-                <h2 class="text-2xl font-black tracking-tight">MUA TRACK NHẠC CHẤT LƯỢNG CAO</h2>
-                <p class="text-xs text-gray-300 max-w-lg">Kho nhạc độc quyền dành cho DJ, producer, ca sĩ và những người yêu âm nhạc.</p>
-                <div class="grid grid-cols-2 gap-4 pt-2">
-                    <div class="bg-cardBg/80 border border-borderDark p-3 rounded-xl">
-                        <div class="text-lg font-bold text-blue-400">10.432+</div>
-                        <div class="text-[10px] text-gray-400 uppercase">Track chất lượng cao</div>
-                    </div>
-                    <div class="bg-cardBg/80 border border-borderDark p-3 rounded-xl">
-                        <div class="text-lg font-bold text-purple-400">99.9%</div>
-                        <div class="text-[10px] text-gray-400 uppercase">Hài lòng dịch vụ</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Admin Upload Section (Chỉ hiện khi đúng tài khoản Admin) -->
-        <div id="admin-upload-section" class="hidden bg-cardBg border border-blue-500/30 rounded-2xl p-4 space-y-3 shadow-lg">
-            <h3 class="text-sm font-bold text-blue-400 flex items-center space-x-2">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                <span>Trang Quản Trị - Đăng Tải Track Nhạc Mới (MP3 / WAV)</span>
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-[11px] text-gray-400 mb-1">Tên Bài Hát</label>
-                    <input type="text" id="upload-title" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Nhập tên track...">
-                </div>
-                <div>
-                    <label class="block text-[11px] text-gray-400 mb-1">Nghệ Sĩ / Producer</label>
-                    <input type="text" id="upload-artist" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Nhập tên nghệ sĩ...">
-                </div>
-                <div>
-                    <label class="block text-[11px] text-gray-400 mb-1">Giá Tiền (VNĐ)</label>
-                    <input type="text" id="upload-price" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Ví dụ: 500.000 hoặc Miễn phí">
-                </div>
-            </div>
+    <main class="max-w-2xl mx-auto p-4 space-y-6">
+        <!-- Form Quản Trị Đăng Tải -->
+        <section class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl shadow-xl space-y-4">
+            <h2 class="text-blue-400 font-bold text-base flex items-center gap-2">
+                ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới (MP3 / WAV)
+            </h2>
+            
             <div>
-                <label class="block text-[11px] text-gray-400 mb-1">Chọn File Âm Thanh (MP3 hoặc WAV)</label>
-                <input type="file" id="upload-file" accept=".mp3,.wav" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-gray-300 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                <label class="block text-xs text-gray-400 mb-1">Tên Bài Hát</label>
+                <input type="text" id="song-title" placeholder="Nhập tên track..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500">
             </div>
-            <button type="button" onclick="uploadSong()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-xs font-semibold rounded-lg transition shadow-md flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-upload"></i>
-                <span>Tải Lên Hệ Thống</span>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Nghệ Sĩ / Producer</label>
+                <input type="text" id="song-artist" placeholder="Nhập tên nghệ sĩ..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Giá Tiền (VNĐ hoặc Miễn phí)</label>
+                <input type="text" id="song-price" placeholder="Ví dụ: 500.000 hoặc Miễn phí" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh (MP3 hoặc WAV)</label>
+                <input type="file" id="song-file" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+            </div>
+
+            <button onclick="uploadSong()" id="upload-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/20 text-sm">
+                📤 Tải Lên Hệ Thống
             </button>
-            <div id="upload-status" class="text-xs text-center hidden"></div>
-        </div>
+            <p id="upload-status" class="text-xs text-center font-medium"></p>
+        </section>
 
-        <!-- Music List Section -->
-        <div class="space-y-3">
-            <h3 class="text-base font-bold flex items-center space-x-2">
-                <i class="fa-solid fa-music text-blue-500"></i>
-                <span>Kho Nhạc Độc Quyền & Mới Nhất</span>
-            </h3>
-            <div id="song-list" class="space-y-2">
-                <p class="text-xs text-gray-400 italic">Đang tải danh sách bài hát...</p>
+        <!-- Kho Nhạc -->
+        <section class="space-y-3">
+            <h2 class="text-blue-400 font-bold text-base flex items-center gap-2">
+                🎵 Kho Nhạc Độc Quyền & Mới Nhất
+            </h2>
+            <div id="songs-list" class="space-y-3">
+                <p class="text-xs text-gray-500 italic">Đang tải danh sách bài hát...</p>
             </div>
-        </div>
-
-        <!-- Support / Contact Box for Users: Thay thông tin liên hệ của anh ở đây -->
-        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="space-y-1 text-center sm:text-left">
-                <h4 class="text-sm font-bold text-gray-200">Bạn cần tư vấn hoặc mua bản quyền độc quyền?</h4>
-                <p class="text-xs text-gray-400">Liên hệ trực tiếp Zalo/Hotline: <span class="text-emerald-400 font-bold">0912.345.678</span> để được hỗ trợ 24/7.</p>
-            </div>
-            <div class="flex items-center space-x-2 shrink-0">
-                <!-- Nút Zalo -->
-                <a href="https://zalo.me/0961413154" target="_blank" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-xs font-semibold rounded-xl transition shadow-lg flex items-center space-x-1.5">
-                    <i class="fa-solid fa-comment-sms"></i>
-                    <span>Chat Zalo</span>
-                </a>
-                <!-- Nút Gọi Điện Nhanh -->
-                <a href="tel:0961413154" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-xs font-semibold rounded-xl transition shadow-lg flex items-center space-x-1.5">
-                    <i class="fa-solid fa-phone"></i>
-                    <span>Gọi Ngay</span>
-                </a>
-            </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Audio Player Bar -->
-    <div class="fixed bottom-0 left-0 right-0 bg-cardBg/95 backdrop-blur-md border-t border-borderDark p-3 z-40">
-        <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
-            <div class="flex items-center space-x-3 w-1/3">
-                <div class="w-10 h-10 bg-blue-600/20 border border-blue-500/30 rounded-lg flex items-center justify-center text-blue-400 shadow-inner">
-                    <i class="fa-solid fa-compact-disc animate-spin"></i>
-                </div>
+    <!-- Thanh Player Cố Định Dưới Đáy -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#111827]/95 backdrop-blur border-t border-gray-800 p-3 z-50">
+        <div class="max-w-2xl mx-auto flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 overflow-hidden">
+                <div class="w-10 h-10 bg-blue-600/20 border border-blue-500/30 rounded-xl flex items-center justify-center text-blue-400 shrink-0">🎵</div>
                 <div class="truncate">
-                    <div id="current-title" class="text-xs font-bold truncate">Chưa chọn bài hát</div>
-                    <div id="current-artist" class="text-[10px] text-gray-400 truncate">HTBN Music Player</div>
+                    <p id="player-title" class="text-xs font-bold truncate text-gray-200">Chưa chọn bài hát</p>
+                    <p id="player-artist" class="text-[10px] text-gray-400 truncate">HTBN Music Player</p>
                 </div>
             </div>
 
-            <div class="flex flex-col items-center w-1/3 space-y-1">
-                <div class="flex items-center space-x-4">
-                    <button type="button" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-backward-step"></i></button>
-                    <button type="button" id="play-pause-btn" class="w-9 h-9 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg"><i class="fa-solid fa-play text-xs"></i></button>
-                    <button type="button" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-forward-step"></i></button>
+            <div class="flex flex-col items-center flex-1 max-w-xs">
+                <div class="flex items-center space-x-4 mb-1">
+                    <button onclick="togglePlay()" id="play-pause-btn" class="w-9 h-9 bg-white text-black rounded-full flex items-center justify-center font-bold hover:scale-105 transition">▶</button>
                 </div>
                 <div class="w-full flex items-center space-x-2 text-[10px] text-gray-400">
                     <span id="current-time">00:00</span>
-                    <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-borderDark rounded-lg appearance-none cursor-pointer accent-blue-500">
-                    <span id="duration">00:00</span>
+                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    <span id="total-time">00:00</span>
                 </div>
             </div>
-
-            <div class="w-1/3 flex justify-end">
-                <audio id="audio-element"></audio>
-            </div>
         </div>
-    </div>
+    </footer>
 
-    <!-- Auth Modal Overlay -->
-    <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-        <div class="bg-cardBg border border-borderDark w-full max-w-sm rounded-2xl p-6 text-white relative shadow-2xl space-y-4">
-            <button type="button" onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">&times;</button>
-            <h3 id="auth-modal-title" class="text-lg font-bold">Đăng Nhập</h3>
-            <div id="auth-msg" class="text-xs text-red-400 hidden"></div>
+    <!-- Audio Element Ẩn -->
+    <audio id="audio-element"></audio>
+
+    <!-- Modal Thanh Toán QR Ngân Hàng (Tự động) -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4 text-center">
+            <h3 class="font-bold text-base text-white">Quét Mã QR Thanh Toán</h3>
+            <p id="modal-song-info" class="text-xs text-gray-400"></p>
             
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] text-gray-400 mb-1">Email</label>
-                    <input type="email" id="auth-email" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Nhập email của bạn">
-                </div>
-                <div>
-                    <label class="block text-[11px] text-gray-400 mb-1">Mật khẩu</label>
-                    <input type="password" id="auth-password" class="w-full bg-darkBg border border-borderDark rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Nhập mật khẩu">
-                </div>
-                <button type="button" onclick="submitAuthForm()" id="auth-submit-btn" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-xs font-semibold rounded-lg transition shadow-md">Tiếp tục</button>
+            <!-- Khu vực hiển thị mã QR VietQR -->
+            <div class="bg-white p-3 rounded-xl inline-block mx-auto">
+                <img id="qr-code-img" src="" alt="QR Code" class="w-48 h-48 mx-auto object-contain">
             </div>
+
+            <div class="text-xs text-gray-300 bg-[#0b0f19] p-3 rounded-xl text-left space-y-1">
+                <p>🏦 Ngân hàng: <b class="text-blue-400">Techcombank (Ví dụ)</b></p>
+                <p>👤 Chủ tài khoản: <b class="text-blue-400">VO VAN DUC</b></p>
+                <p>💳 Số tài khoản: <b class="text-blue-400">1903xxxxxxxxx</b></p>
+                <p>📝 Nội dung chuyển khoản: <b id="qr-note" class="text-yellow-400">HTBN MUA [ID]</b></p>
+            </div>
+
+            <p class="text-[11px] text-yellow-400">Sau khi chuyển khoản thành công, hệ thống sẽ tự động duyệt quyền tải nhạc cho anh!</p>
+
+            <button onclick="closeCheckoutModal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đóng lại</button>
         </div>
     </div>
 
-    <!-- JavaScript Logic & Supabase Initialization -->
+    <!-- Script Xử Lý Logic Supabase & Audio -->
     <script>
-        const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
+        // Cấu hình thông tin Supabase của anh (Thay bằng thông số dự án của anh nếu có thay đổi)
+        const SUPABASE_URL = 'https://[YOUR_SUPABASE_PROJECT_ID].supabase.co';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
         
-        let supabaseClient = null;
-        try {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (e) {
-            console.error("Lỗi khởi tạo Supabase:", e);
-        }
+        // Khởi tạo Supabase client (Nếu dùng file js sdk trực tiếp)
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let currentAuthMode = 'login';
+        // Thông tin Ngân hàng nhận tiền tự động (Cấu hình VietQR)
+        const BANK_ID = "VCB"; // Mã ngân hàng (Ví dụ: VCB, TCB, MB,...)
+        const ACCOUNT_NO = "1067823099"; // Số tài khoản ngân hàng của anh
+        const ACCOUNT_NAME = "LE THI YEN NHI"; // Tên chủ tài khoản viết hoa không dấu
 
-        function openAuthModal(mode) {
-            currentAuthMode = mode;
-            const modal = document.getElementById('auth-modal');
-            const title = document.getElementById('auth-modal-title');
-            if (modal) {
-                modal.classList.remove('hidden');
-                if (title) title.innerText = mode === 'login' ? 'Đăng Nhập Hệ Thống' : 'Đăng Ký Tài Khoản';
-                document.getElementById('auth-email').value = '';
-                document.getElementById('auth-password').value = '';
-                document.getElementById('auth-msg').classList.add('hidden');
-            }
-        }
+        const audioElement = document.getElementById('audio-element');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
 
-        function closeAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            if (modal) modal.classList.add('hidden');
-        }
+        let currentPlayingUrl = '';
 
-        async function submitAuthForm() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            const msgEl = document.getElementById('auth-msg');
+        // Tải danh sách bài hát ngay khi mở trang
+        document.addEventListener("DOMContentLoaded", fetchSongs);
 
-            if (!email || !password) {
-                msgEl.innerText = 'Vui lòng nhập đầy đủ thông tin.';
-                msgEl.classList.remove('hidden');
+        async function fetchSongs() {
+            const listContainer = document.getElementById('songs-list');
+            const { data, error } = await supabaseClient
+                .from('songs')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                listContainer.innerHTML = `<p class="text-xs text-red-400">Lỗi tải danh sách nhạc: ${error.message}</p>`;
                 return;
             }
 
-            if (!supabaseClient) {
-                msgEl.innerText = 'Lỗi kết nối cơ sở dữ liệu Supabase.';
-                msgEl.classList.remove('hidden');
+            if (!data || data.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Chưa có bài hát nào trên hệ thống.</p>`;
                 return;
             }
 
-            try {
-                let res;
-                if (currentAuthMode === 'login') {
-                    res = await supabaseClient.auth.signInWithPassword({ email, password });
-                } else {
-                    res = await supabaseClient.auth.signUp({ email, password });
-                }
-
-                if (res.error) throw res.error;
-
-                alert(currentAuthMode === 'login' ? 'Đăng nhập thành công!' : 'Đăng ký thành công!');
-                closeAuthModal();
-                checkUserSession();
-            } catch (err) {
-                msgEl.innerText = err.message;
-                msgEl.classList.remove('hidden');
-            }
-        }
-
-        async function checkUserSession() {
-            if (!supabaseClient) return;
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            const authBtns = document.getElementById('auth-buttons');
-            const userInfo = document.getElementById('user-info');
-            const emailDisplay = document.getElementById('user-email-display');
-            const adminSection = document.getElementById('admin-upload-section');
-
-            if (session && session.user) {
-                if (authBtns) authBtns.classList.add('hidden');
-                if (userInfo) {
-                    userInfo.classList.remove('hidden');
-                    userInfo.classList.add('flex');
-                }
-                if (emailDisplay) emailDisplay.innerText = session.user.email;
-
-                if (session.user.email === 'vovanduc107@gmail.com') {
-                    if (adminSection) adminSection.classList.remove('hidden');
-                } else {
-                    if (adminSection) adminSection.classList.add('hidden');
-                }
-            } else {
-                if (authBtns) authBtns.classList.remove('hidden');
-                if (userInfo) {
-                    userInfo.classList.add('hidden');
-                    userInfo.classList.remove('flex');
-                }
-                if (adminSection) adminSection.classList.add('hidden');
-            }
-            loadSongs();
-        }
-
-        async function logout() {
-            if (supabaseClient) {
-                await supabaseClient.auth.signOut();
-                checkUserSession();
-            }
+            listContainer.innerHTML = data.map(song => `
+                <div class="bg-[#161f31] border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-3">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <button onclick="playSong('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
+                        <div class="truncate">
+                            <h3 class="text-sm font-bold text-gray-100 truncate">${song.title}</h3>
+                            <p class="text-xs text-gray-400 truncate">${song.artist}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <span class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">${song.price}</span>
+                        <button onclick="openCheckout('${song.id}', '${song.title}', '${song.price}')" class="bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-600/30 px-3 py-1.5 rounded-xl text-xs font-semibold transition">Mua ngay</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         async function uploadSong() {
-            const title = document.getElementById('upload-title').value.trim();
-            const artist = document.getElementById('upload-artist').value.trim();
-            const price = document.getElementById('upload-price').value.trim() || 'Liên hệ';
-            const fileInput = document.getElementById('upload-file');
+            const title = document.getElementById('song-title').value.trim();
+            const artist = document.getElementById('song-artist').value.trim();
+            const price = document.getElementById('song-price').value.trim();
+            const fileInput = document.getElementById('song-file');
             const statusEl = document.getElementById('upload-status');
 
-            if (!title || !artist || fileInput.files.length === 0) {
-                statusEl.innerText = 'Vui lòng điền đủ tên, nghệ sĩ và chọn file nhạc.';
-                statusEl.className = 'text-xs text-center text-red-400';
-                statusEl.classList.remove('hidden');
+            if (!title || !artist || !price || fileInput.files.length === 0) {
+                statusEl.className = "text-xs text-center font-medium text-red-400";
+                statusEl.textContent = "Vui lòng điền đầy đủ thông tin và chọn file nhạc!";
                 return;
             }
 
             const file = fileInput.files[0];
             const fileName = `${Date.now()}_${file.name}`;
 
-            statusEl.innerText = 'Đang tải file lên hệ thống...';
-            statusEl.className = 'text-xs text-center text-blue-400';
-            statusEl.classList.remove('hidden');
+            statusEl.className = "text-xs text-center font-medium text-yellow-400";
+            statusEl.textContent = "Đang tải file lên hệ thống...";
 
-            try {
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from('songs')
-                    .upload(fileName, file);
+            // 1. Upload file lên Supabase Storage bucket 'songs'
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                .from('songs')
+                .upload(fileName, file);
 
-                if (uploadError) throw uploadError;
-
-                const { data: { publicUrl } } = supabaseClient.storage
-                    .from('songs')
-                    .getPublicUrl(fileName);
-
-                const { error: dbError } = await supabaseClient
-                    .from('songs')
-                    .insert([{ title, artist, price, file_url: publicUrl }]);
-
-                if (dbError) throw dbError;
-
-                statusEl.innerText = 'Tải lên thành công!';
-                statusEl.className = 'text-xs text-center text-green-400';
-                
-                document.getElementById('upload-title').value = '';
-                document.getElementById('upload-artist').value = '';
-                document.getElementById('upload-price').value = '';
-                fileInput.value = '';
-                loadSongs();
-            } catch (err) {
-                statusEl.innerText = 'Lỗi: ' + err.message;
-                statusEl.className = 'text-xs text-center text-red-400';
+            if (uploadError) {
+                statusEl.className = "text-xs text-center font-medium text-red-400";
+                statusEl.textContent = `Lỗi tải file: ${uploadError.message}`;
+                return;
             }
-        }
 
-        async function loadSongs() {
-            const songListEl = document.getElementById('song-list');
-            if (!supabaseClient) return;
+            // 2. Lấy Public URL của file vừa upload
+            const { data: publicURLData } = supabaseClient.storage
+                .from('songs')
+                .getPublicUrl(fileName);
 
-            try {
-                const { data, error } = await supabaseClient
-                    .from('songs')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+            const fileUrl = publicURLData.publicUrl;
 
-                if (error || !data || data.length === 0) {
-                    songListEl.innerHTML = '<p class="text-xs text-gray-400 italic">Chưa có bài hát nào trên hệ thống.</p>';
-                    return;
-                }
+            // 3. Lưu thông tin bài hát vào bảng 'songs'
+            const { error: insertError } = await supabaseClient
+                .from('songs')
+                .insert([{ title, artist, price, file_url: fileUrl }]);
 
-                songListEl.innerHTML = '';
-                data.forEach(song => {
-                    const songItem = document.createElement('div');
-                    songItem.className = 'bg-cardBg border border-borderDark p-3 rounded-xl flex items-center justify-between hover:border-blue-500/50 transition';
-                    songItem.innerHTML = `
-                        <div class="flex items-center space-x-3 truncate mr-2">
-                            <button onclick="playSong('${song.file_url}', '${song.title}', '${song.artist}')" class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition shadow shrink-0">
-                                <i class="fa-solid fa-play text-xs"></i>
-                            </button>
-                            <div class="truncate">
-                                <div class="text-xs font-bold text-white truncate">${song.title}</div>
-                                <div class="text-[10px] text-gray-400 truncate">${song.artist}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2 shrink-0">
-                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">${song.price || 'Liên hệ'}</span>
-                            <a href="https://zalo.me/0961413154" target="_blank" class="px-2.5 py-1 text-[10px] font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-600 hover:text-white rounded-lg transition flex items-center space-x-1">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                                <span>Mua ngay</span>
-                            </a>
-                        </div>
-                    `;
-                    songListEl.appendChild(songItem);
-                });
-            } catch (err) {
-                console.error("Lỗi tải danh sách nhạc:", err);
+            if (insertError) {
+                statusEl.className = "text-xs text-center font-medium text-red-400";
+                statusEl.textContent = `Lỗi lưu Database: ${insertError.message}`;
+                return;
             }
+
+            statusEl.className = "text-xs text-center font-medium text-emerald-400";
+            statusEl.textContent = "Tải lên thành công!";
+            
+            // Reset form và load lại danh sách
+            document.getElementById('song-title').value = '';
+            document.getElementById('song-artist').value = '';
+            document.getElementById('song-price').value = '';
+            fileInput.value = '';
+            fetchSongs();
         }
 
         function playSong(url, title, artist) {
-            const audio = document.getElementById('audio-element');
-            const titleEl = document.getElementById('current-title');
-            const artistEl = document.getElementById('current-artist');
-            const playPauseBtn = document.getElementById('play-pause-btn');
-
-            audio.src = url;
-            audio.play();
-            titleEl.innerText = title;
-            artistEl.innerText = artist;
-            playPauseBtn.innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
+            document.getElementById('player-title').textContent = title;
+            document.getElementById('player-artist').textContent = artist;
+            audioElement.src = url;
+            audioElement.play();
+            playPauseBtn.textContent = "⏸";
+            currentPlayingUrl = url;
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            checkUserSession();
-
-            const loginBtn = document.getElementById('btn-login');
-            const signupBtn = document.getElementById('btn-signup');
-
-            if (loginBtn) {
-                loginBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openAuthModal('login');
-                });
+        function togglePlay() {
+            if (!audioElement.src) return;
+            if (audioElement.paused) {
+                audioElement.play();
+                playPauseBtn.textContent = "⏸";
+            } else {
+                audioElement.pause();
+                playPauseBtn.textContent = "▶";
             }
-            if (signupBtn) {
-                signupBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openAuthModal('signup');
-                });
+        }
+
+        // Cập nhật thanh progress bar và thời gian bài hát
+        audioElement.addEventListener('timeupdate', () => {
+            if (audioElement.duration) {
+                const progressPercent = (audioElement.currentTime / audioElement.duration) * 100;
+                progressBar.value = progressPercent;
+                currentTimeEl.textContent = formatTime(audioElement.currentTime);
             }
         });
+
+        // Khi load xong thông tin metadata của file audio -> Hiển thị tổng thời gian chính xác
+        audioElement.addEventListener('loadedmetadata', () => {
+            totalTimeEl.textContent = formatTime(audioElement.duration);
+        });
+
+        progressBar.addEventListener('input', () => {
+            if (audioElement.duration) {
+                audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
+            }
+        });
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        // Hiển thị Modal QR thanh toán tự động VietQR
+        function openCheckout(id, title, price) {
+            const modal = document.getElementById('checkout-modal');
+            const modalSongInfo = document.getElementById('modal-song-info');
+            const qrImg = document.getElementById('qr-code-img');
+            const qrNote = document.getElementById('qr-note');
+
+            modalSongInfo.textContent = `Bài hát: ${title} - Giá: ${price}`;
+            
+            // Lọc giá tiền dạng số để tạo mã QR tự động (ví dụ: "600.000" -> "600000")
+            const cleanPrice = price.replace(/[^0-9]/g, '');
+            const addInfo = `HTBN MUA ${id}`;
+            qrNote.textContent = addInfo;
+
+            // Sử dụng API VietQR công khai để tạo mã QR tự động điền sẵn số tiền và nội dung chuyển khoản
+            if (cleanPrice) {
+                const qrUrl = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${cleanPrice}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
+                qrImg.src = qrUrl;
+            } else {
+                qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function handleLogout() {
+            alert("Đã đăng xuất hệ thống!");
+            location.reload();
+        }
     </script>
 </body>
 </html>

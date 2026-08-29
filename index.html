@@ -33,7 +33,7 @@
         <!-- Form Quản Trị Đăng Tải -->
         <section class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl shadow-xl space-y-4">
             <h2 class="text-blue-400 font-bold text-base flex items-center gap-2">
-                ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới (MP3 / WAV)
+                ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
             </h2>
             
             <div>
@@ -48,11 +48,11 @@
 
             <div>
                 <label class="block text-xs text-gray-400 mb-1">Giá Tiền (VNĐ hoặc Miễn phí)</label>
-                <input type="text" id="song-price" placeholder="Ví dụ: 500.000 hoặc Miễn phí" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500">
+                <input type="text" id="song-price" placeholder="Ví dụ: 600.000 hoặc Miễn phí" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500">
             </div>
 
             <div>
-                <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh (MP3 hoặc WAV)</label>
+                <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh</label>
                 <input type="file" id="song-file" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
             </div>
 
@@ -100,43 +100,36 @@
     <!-- Audio Element Ẩn -->
     <audio id="audio-element"></audio>
 
-    <!-- Modal Thanh Toán QR Ngân Hàng (Tự động) -->
+    <!-- Modal Thanh Toán QR Ngân Hàng -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4 text-center">
             <h3 class="font-bold text-base text-white">Quét Mã QR Thanh Toán</h3>
             <p id="modal-song-info" class="text-xs text-gray-400"></p>
             
-            <!-- Khu vực hiển thị mã QR VietQR -->
             <div class="bg-white p-3 rounded-xl inline-block mx-auto">
                 <img id="qr-code-img" src="" alt="QR Code" class="w-48 h-48 mx-auto object-contain">
             </div>
 
             <div class="text-xs text-gray-300 bg-[#0b0f19] p-3 rounded-xl text-left space-y-1">
-                <p>🏦 Ngân hàng: <b class="text-blue-400">Techcombank (Ví dụ)</b></p>
+                <p>🏦 Ngân hàng: <b class="text-blue-400">Techcombank</b></p>
                 <p>👤 Chủ tài khoản: <b class="text-blue-400">VO VAN DUC</b></p>
-                <p>💳 Số tài khoản: <b class="text-blue-400">1903xxxxxxxxx</b></p>
-                <p>📝 Nội dung chuyển khoản: <b id="qr-note" class="text-yellow-400">HTBN MUA [ID]</b></p>
+                <p>📝 Nội dung: <b id="qr-note" class="text-yellow-400">HTBN MUA</b></p>
             </div>
-
-            <p class="text-[11px] text-yellow-400">Sau khi chuyển khoản thành công, hệ thống sẽ tự động duyệt quyền tải nhạc cho anh!</p>
 
             <button onclick="closeCheckoutModal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đóng lại</button>
         </div>
     </div>
 
-    <!-- Script Xử Lý Logic Supabase & Audio -->
+    <!-- Script Xử Lý -->
     <script>
-        // Cấu hình thông tin Supabase của anh (Thay bằng thông số dự án của anh nếu có thay đổi)
-        const SUPABASE_URL = 'https://[YOUR_SUPABASE_PROJECT_ID].supabase.co';
-        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
         
-        // Khởi tạo Supabase client (Nếu dùng file js sdk trực tiếp)
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Thông tin Ngân hàng nhận tiền tự động (Cấu hình VietQR)
-        const BANK_ID = "VCB"; // Mã ngân hàng (Ví dụ: VCB, TCB, MB,...)
-        const ACCOUNT_NO = "1067823099"; // Số tài khoản ngân hàng của anh
-        const ACCOUNT_NAME = "LE THI YEN NHI"; // Tên chủ tài khoản viết hoa không dấu
+        const BANK_ID = "TCB";
+        const ACCOUNT_NO = "1903xxxxxxxxx";
+        const ACCOUNT_NAME = "VO VAN DUC";
 
         const audioElement = document.getElementById('audio-element');
         const playPauseBtn = document.getElementById('play-pause-btn');
@@ -144,9 +137,6 @@
         const currentTimeEl = document.getElementById('current-time');
         const totalTimeEl = document.getElementById('total-time');
 
-        let currentPlayingUrl = '';
-
-        // Tải danh sách bài hát ngay khi mở trang
         document.addEventListener("DOMContentLoaded", fetchSongs);
 
         async function fetchSongs() {
@@ -157,7 +147,7 @@
                 .order('id', { ascending: false });
 
             if (error) {
-                listContainer.innerHTML = `<p class="text-xs text-red-400">Lỗi tải danh sách nhạc: ${error.message}</p>`;
+                listContainer.innerHTML = `<p class="text-xs text-red-400">Lỗi tải danh sách: ${error.message}</p>`;
                 return;
             }
 
@@ -192,54 +182,51 @@
 
             if (!title || !artist || !price || fileInput.files.length === 0) {
                 statusEl.className = "text-xs text-center font-medium text-red-400";
-                statusEl.textContent = "Vui lòng điền đầy đủ thông tin và chọn file nhạc!";
+                statusEl.textContent = "Vui lòng điền đủ thông tin và chọn file nhạc!";
                 return;
             }
 
             const file = fileInput.files[0];
-            const fileName = `${Date.now()}_${file.name}`;
+            const fileName = `song_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
 
             statusEl.className = "text-xs text-center font-medium text-yellow-400";
             statusEl.textContent = "Đang tải file lên hệ thống...";
 
-            // 1. Upload file lên Supabase Storage bucket 'songs'
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                .from('songs')
-                .upload(fileName, file);
+            try {
+                // Upload file lên Supabase Storage
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('songs')
+                    .upload(fileName, file, { upsert: true });
 
-            if (uploadError) {
+                if (uploadError) throw new Error("Lỗi Storage: " + uploadError.message);
+
+                // Lấy URL công khai
+                const { data: publicURLData } = supabaseClient.storage
+                    .from('songs')
+                    .getPublicUrl(fileName);
+
+                const fileUrl = publicURLData.publicUrl;
+
+                // Lưu vào Database
+                const { error: insertError } = await supabaseClient
+                    .from('songs')
+                    .insert([{ title, artist, price, file_url: fileUrl }]);
+
+                if (insertError) throw new Error("Lỗi Database: " + insertError.message);
+
+                statusEl.className = "text-xs text-center font-medium text-emerald-400";
+                statusEl.textContent = "Tải lên thành công!";
+                
+                document.getElementById('song-title').value = '';
+                document.getElementById('song-artist').value = '';
+                document.getElementById('song-price').value = '';
+                fileInput.value = '';
+                fetchSongs();
+
+            } catch (err) {
                 statusEl.className = "text-xs text-center font-medium text-red-400";
-                statusEl.textContent = `Lỗi tải file: ${uploadError.message}`;
-                return;
+                statusEl.textContent = err.message;
             }
-
-            // 2. Lấy Public URL của file vừa upload
-            const { data: publicURLData } = supabaseClient.storage
-                .from('songs')
-                .getPublicUrl(fileName);
-
-            const fileUrl = publicURLData.publicUrl;
-
-            // 3. Lưu thông tin bài hát vào bảng 'songs'
-            const { error: insertError } = await supabaseClient
-                .from('songs')
-                .insert([{ title, artist, price, file_url: fileUrl }]);
-
-            if (insertError) {
-                statusEl.className = "text-xs text-center font-medium text-red-400";
-                statusEl.textContent = `Lỗi lưu Database: ${insertError.message}`;
-                return;
-            }
-
-            statusEl.className = "text-xs text-center font-medium text-emerald-400";
-            statusEl.textContent = "Tải lên thành công!";
-            
-            // Reset form và load lại danh sách
-            document.getElementById('song-title').value = '';
-            document.getElementById('song-artist').value = '';
-            document.getElementById('song-price').value = '';
-            fileInput.value = '';
-            fetchSongs();
         }
 
         function playSong(url, title, artist) {
@@ -248,7 +235,6 @@
             audioElement.src = url;
             audioElement.play();
             playPauseBtn.textContent = "⏸";
-            currentPlayingUrl = url;
         }
 
         function togglePlay() {
@@ -262,16 +248,13 @@
             }
         }
 
-        // Cập nhật thanh progress bar và thời gian bài hát
         audioElement.addEventListener('timeupdate', () => {
             if (audioElement.duration) {
-                const progressPercent = (audioElement.currentTime / audioElement.duration) * 100;
-                progressBar.value = progressPercent;
+                progressBar.value = (audioElement.currentTime / audioElement.duration) * 100;
                 currentTimeEl.textContent = formatTime(audioElement.currentTime);
             }
         });
 
-        // Khi load xong thông tin metadata của file audio -> Hiển thị tổng thời gian chính xác
         audioElement.addEventListener('loadedmetadata', () => {
             totalTimeEl.textContent = formatTime(audioElement.duration);
         });
@@ -288,28 +271,19 @@
             return `${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
-        // Hiển thị Modal QR thanh toán tự động VietQR
         function openCheckout(id, title, price) {
             const modal = document.getElementById('checkout-modal');
-            const modalSongInfo = document.getElementById('modal-song-info');
-            const qrImg = document.getElementById('qr-code-img');
-            const qrNote = document.getElementById('qr-note');
-
-            modalSongInfo.textContent = `Bài hát: ${title} - Giá: ${price}`;
-            
-            // Lọc giá tiền dạng số để tạo mã QR tự động (ví dụ: "600.000" -> "600000")
+            document.getElementById('modal-song-info').textContent = `Bài: ${title} - Giá: ${price}`;
             const cleanPrice = price.replace(/[^0-9]/g, '');
             const addInfo = `HTBN MUA ${id}`;
-            qrNote.textContent = addInfo;
+            document.getElementById('qr-note').textContent = addInfo;
 
-            // Sử dụng API VietQR công khai để tạo mã QR tự động điền sẵn số tiền và nội dung chuyển khoản
+            const qrImg = document.getElementById('qr-code-img');
             if (cleanPrice) {
-                const qrUrl = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${cleanPrice}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
-                qrImg.src = qrUrl;
+                qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${cleanPrice}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
             } else {
                 qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
             }
-
             modal.classList.remove('hidden');
         }
 
@@ -318,7 +292,7 @@
         }
 
         function handleLogout() {
-            alert("Đã đăng xuất hệ thống!");
+            alert("Đã đăng xuất!");
             location.reload();
         }
     </script>

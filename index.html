@@ -3,510 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTBN - Hệ Thống Bán Nhạc (Pro Dashboard)</title>
+    <title>HTBN - Hệ Thống Bán Nhạc</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #060911; color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: #0b0f19; color: #fff; font-family: system-ui, -apple-system, sans-serif; }
         
-        /* Hiệu ứng phát sáng neon */
-        .neon-glow {
-            box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+        /* Hiệu ứng vẫy cờ Việt Nam */
+        @keyframes wave {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(14deg); }
+            40% { transform: rotate(-8deg); }
+            60% { transform: rotate(14deg); }
+            80% { transform: rotate(-4deg); }
+            100% { transform: rotate(0deg); }
         }
-        .neon-border {
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-        .neon-border:focus-within {
-            border-color: rgba(99, 102, 241, 0.8);
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        .flag-anim {
+            display: inline-block;
+            animation: wave 2.5s infinite;
+            transform-origin: 70% 70%;
         }
 
-        /* Tùy chỉnh thanh cuộn */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #060911; }
-        ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+        /* Hiệu ứng chuyển động nền sảnh và toàn trang */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        .glow-bg-1 { animation: pulseGlow 6s ease-in-out infinite; }
+        .glow-bg-2 { animation: pulseGlow 8s ease-in-out infinite reverse; }
+
+        /* Hiệu ứng hạt lấp lánh toàn màn hình */
+        @keyframes floatParticle {
+            0% { transform: translateY(0px) translateX(0px); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(251,191,36,0.8) 0%, rgba(59,130,246,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatParticle linear infinite;
+        }
+
+        /* Hiệu ứng logo thương hiệu phát sáng nhẹ */
+        .brand-logo {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .brand-logo:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.8);
+        }
+
+        /* Hiệu ứng chú gấu nhảy siêu cute (Bouncings & Wiggle) */
+        @keyframes cuteJump {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            30% { transform: translateY(-16px) rotate(-6deg) scale(1.05); }
+            50% { transform: translateY(0) rotate(0deg) scale(0.95); }
+            70% { transform: translateY(-10px) rotate(6deg) scale(1.02); }
+        }
+        .dancing-bear {
+            animation: cuteJump 1.8s ease-in-out infinite;
+            display: inline-block;
+        }
+        .dancing-bear-delay {
+            animation: cuteJump 1.8s ease-in-out infinite;
+            animation-delay: 0.9s;
+            display: inline-block;
+        }
     </style>
 </head>
-<body class="min-h-screen pb-36 relative overflow-x-hidden">
+<body class="min-h-screen pb-32 relative overflow-x-hidden">
 
-    <!-- App Layout Tổng Thể (Sidebar + Main Content) -->
-    <div class="flex min-h-screen">
+    <!-- Lớp Hiệu Ứng Động Toàn Màn Hình -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-10 left-10 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] glow-bg-1"></div>
+        <div class="absolute bottom-20 right-10 w-[30rem] h-[30rem] bg-blue-600/10 rounded-full blur-[140px] glow-bg-2"></div>
+        <div class="absolute top-1/2 left-1/3 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] glow-bg-1"></div>
         
-        <!-- SIDEBAR TRÁI (Cố định, chuẩn phong cách Web Pro trong ảnh) -->
-        <aside class="w-64 bg-[#0a0f1d] border-r border-gray-800/80 flex flex-col fixed inset-y-0 left-0 z-40 hidden lg:flex">
-            <!-- Logo Thương Hiệu -->
-            <div class="p-6 flex items-center space-x-3 border-b border-gray-800/60">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center font-black text-white text-xl tracking-wider shadow-lg shadow-indigo-500/30">
-                    H
-                </div>
-                <div>
-                    <h1 class="font-black text-lg tracking-wider bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">HTBN</h1>
-                    <p class="text-[10px] text-gray-400 font-medium tracking-widest">HỆ THỐNG BÁN NHẠC</p>
-                </div>
-            </div>
-
-            <!-- Menu Điều Hướng Chính -->
-            <div class="px-4 py-6 flex-1 space-y-6 overflow-y-auto">
-                <div class="space-y-1.5">
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold text-xs shadow-lg shadow-indigo-600/25">
-                        <span class="text-base">🏠</span> <span>Trang Chủ</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 font-medium text-xs transition">
-                        <span class="text-base">🛍️</span> <span>Cửa Hàng</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 font-medium text-xs transition">
-                        <span class="text-base">🎛️</span> <span>Thể Loại</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 font-medium text-xs transition">
-                        <span class="text-base">🎤</span> <span>Nghệ Sĩ</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 font-medium text-xs transition">
-                        <span class="text-base">🎧</span> <span>DJ Mix</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 font-medium text-xs transition">
-                        <span class="text-base">👑</span> <span>Gói Thành Viên</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 font-medium text-xs transition relative">
-                        <span class="text-base">🔥</span> <span>Khuyến Mãi</span>
-                        <span class="absolute right-3 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">HOT</span>
-                    </a>
-                </div>
-
-                <!-- Bộ Lọc Nâng Cao (Bên Cột Trái) -->
-                <div class="pt-4 border-t border-gray-800/80 space-y-4">
-                    <div class="flex items-center justify-between text-xs font-bold text-gray-300">
-                        <span>BỘ LỌC</span>
-                        <button onclick="resetFilters()" class="text-[10px] text-indigo-400 hover:underline">Đặt lại</button>
-                    </div>
-
-                    <!-- Ô tìm kiếm bộ lọc -->
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 text-xs">🔍</span>
-                        <input type="text" id="filter-search-input" placeholder="Tìm kiếm track..." class="w-full bg-[#04060b] border border-gray-800 rounded-xl pl-8 pr-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-indigo-500">
-                    </div>
-
-                    <!-- Thể loại checkbox -->
-                    <div class="space-y-2">
-                        <p class="text-[11px] font-semibold text-gray-400 tracking-wider">THỂ LOẠI</p>
-                        <div class="space-y-1.5 text-xs text-gray-300 max-h-40 overflow-y-auto pr-1">
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded"> All Genres</span> <span class="text-[10px] text-gray-500">10.432</span></label>
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded"> EDM</span> <span class="text-[10px] text-gray-500">2.231</span></label>
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded"> House</span> <span class="text-[10px] text-gray-500">1.543</span></label>
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded"> Hip Hop</span> <span class="text-[10px] text-gray-500">1.287</span></label>
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded"> Remix</span> <span class="text-[10px] text-gray-500">2.113</span></label>
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded"> Pop</span> <span class="text-[10px] text-gray-500">1.023</span></label>
-                        </div>
-                    </div>
-
-                    <!-- Định dạng file -->
-                    <div class="space-y-2 pt-2">
-                        <p class="text-[11px] font-semibold text-gray-400 tracking-wider">ĐỊNH DẠNG</p>
-                        <div class="space-y-1.5 text-xs text-gray-300">
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded" checked> WAV</span> <span class="text-[10px] text-gray-500">6.231</span></label>
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded" checked> MP3</span> <span class="text-[10px] text-gray-500">10.432</span></label>
-                            <label class="flex items-center justify-between cursor-pointer hover:text-white"><span class="flex items-center gap-2"><input type="checkbox" class="accent-indigo-500 rounded"> FLAC</span> <span class="text-[10px] text-gray-500">2.432</span></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- MAIN CONTENT CONTAINER -->
-        <div class="flex-1 lg:pl-64 flex flex-col min-w-0">
-            
-            <!-- HEADER CHÍNH PHÍA TRÊN -->
-            <header class="h-20 bg-[#0a0f1d]/90 backdrop-blur-md border-b border-gray-800/80 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
-                <!-- Thanh tìm kiếm tổng -->
-                <div class="flex-1 max-w-md mr-4">
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 text-sm">🔍</span>
-                        <input type="text" placeholder="Tìm kiếm track, nghệ sĩ, thể loại..." class="w-full bg-[#111827] border border-gray-800 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
-                </div>
-
-                <!-- Tiện ích phải Header (Giỏ hàng, Thông báo, Nút Đăng nhập/Đăng ký) -->
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                    <!-- Giỏ hàng -->
-                    <button class="relative p-2.5 bg-[#111827] border border-gray-800 rounded-2xl text-gray-300 hover:text-white transition">
-                        🛒
-                        <span class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">3</span>
-                    </button>
-                    <!-- Yêu thích / Thông báo -->
-                    <button class="relative p-2.5 bg-[#111827] border border-gray-800 rounded-2xl text-gray-300 hover:text-white transition">
-                        🔔
-                        <span class="absolute -top-1 -right-1 bg-pink-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">8</span>
-                    </button>
-
-                    <!-- Nút Auth -->
-                    <div id="auth-header-action" class="flex items-center space-x-2">
-                        <button onclick="openAuthModal('login')" class="px-4 py-2.5 rounded-2xl bg-[#111827] border border-gray-800 text-xs font-semibold hover:border-indigo-500 transition">ĐĂNG NHẬP</button>
-                        <button onclick="openAuthModal('register')" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-xs font-bold text-white shadow-lg shadow-indigo-600/30 hover:opacity-90 transition">ĐĂNG KÝ</button>
-                    </div>
-                </div>
-            </header>
-
-            <!-- NỘI DUNG TRANG CHÍNH (Grid chia 2 cột như ảnh: Trái nội dung lớn, Phải bảng xếp hạng & profile) -->
-            <main class="p-4 sm:p-8 flex-1 grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
-                
-                <!-- CỘT TRÁI (Chiếm 2 cột trên màn hình rộng): Banner Hero, Track Mới Nhất, Bộ Sưu Tập -->
-                <div class="xl:col-span-2 space-y-8">
-                    
-                    <!-- BANNER HERO LỚN (Giống hệt ảnh mẫu) -->
-                    <section class="relative bg-gradient-to-r from-[#10172a] via-[#151c33] to-[#1e1b4b] border border-indigo-500/30 rounded-3xl p-6 sm:p-8 overflow-hidden shadow-2xl">
-                        <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none"></div>
-                        <div class="relative z-10 max-w-lg space-y-4">
-                            <div class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/30 px-3 py-1 rounded-full text-[11px] font-semibold text-indigo-300">
-                                <span>⚡</span> <span>HTBN - HỆ THỐNG BÁN NHẠC</span>
-                            </div>
-                            <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight">
-                                MUA TRACK NHẠC <br><span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">CHẤT LƯỢNG CAO</span>
-                            </h2>
-                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                                Kho nhạc độc quyền dành cho DJ, producer, ca sĩ và những người yêu âm nhạc.
-                            </p>
-                            <div class="flex flex-wrap items-center gap-3 pt-2">
-                                <button class="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-xs shadow-xl shadow-indigo-600/30 hover:scale-105 transition flex items-center gap-2">
-                                    <span>⚡</span> KHÁM PHÁ TRACK
-                                </button>
-                                <button class="px-6 py-3 rounded-2xl bg-[#0a0f1d]/80 border border-gray-700 text-white font-bold text-xs hover:bg-gray-800 transition flex items-center gap-2">
-                                    <span>▶</span> NGHE THỬ NGAY
-                                </button>
-                            </div>
-
-                            <!-- Thống kê nhanh dưới banner -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-gray-800/80 text-xs">
-                                <div>
-                                    <p class="font-black text-white text-sm">10.432+</p>
-                                    <p class="text-[10px] text-gray-400">Track chất lượng cao</p>
-                                </div>
-                                <div>
-                                    <p class="font-black text-white text-sm">2.543+</p>
-                                    <p class="text-[10px] text-gray-400">Nghệ sĩ & Producer</p>
-                                </div>
-                                <div>
-                                    <p class="font-black text-white text-sm">99.9%</p>
-                                    <p class="text-[10px] text-gray-400">Hài lòng dịch vụ</p>
-                                </div>
-                                <div>
-                                    <p class="font-black text-white text-sm">58.291+</p>
-                                    <p class="text-[10px] text-gray-400">Khách hàng tin tưởng</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- SECTION: TRACK MỚI NHẤT & TẤT CẢ/EDM/HOUSE/REMIX -->
-                    <section class="space-y-4">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <h3 class="font-black text-base sm:text-lg flex items-center gap-2 text-white">
-                                🎵 TRACK MỚI NHẤT
-                            </h3>
-                            <!-- Tabs thể loại ngang -->
-                            <div class="flex items-center space-x-1 overflow-x-auto pb-2 sm:pb-0 text-xs font-semibold bg-[#0a0f1d] p-1.5 rounded-2xl border border-gray-800">
-                                <button class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white shadow">TẤT CẢ</button>
-                                <button class="px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">EDM</button>
-                                <button class="px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">HOUSE</button>
-                                <button class="px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">REMIX</button>
-                                <button class="px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">INSTRUMENTAL</button>
-                                <button class="px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">DJ MIX</button>
-                                <a href="#" class="px-3 py-1.5 text-indigo-400 hover:underline shrink-0">Xem tất cả &gt;</a>
-                            </div>
-                        </div>
-
-                        <!-- DANH SÁCH TRACK (Grid sản phẩm âm nhạc hiển thị từ Supabase hoặc Mockup chuẩn) -->
-                        <div id="songs-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Được render động từ JavaScript hoặc hiển thị mẫu chuẩn phong cách ảnh -->
-                            <p class="text-xs text-gray-500 italic col-span-full">Đang tải danh sách bài hát từ cơ sở dữ liệu...</p>
-                        </div>
-                    </section>
-
-                    <!-- KHU VỰC QUẢN TRỊ ADMIN (Chỉ hiển thị khi đăng nhập email admin) -->
-                    <section id="admin-section" class="bg-[#0a0f1d] border border-gray-800 p-6 rounded-3xl space-y-4 hidden shadow-xl">
-                        <h3 class="text-indigo-400 font-bold text-base flex items-center gap-2">
-                            ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
-                        </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Tên Bài Hát</label>
-                                <input type="text" id="song-title" placeholder="Nhập tên track..." class="w-full bg-[#04060b] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Nghệ Sĩ / Producer</label>
-                                <input type="text" id="song-artist" placeholder="Nhập nghệ sĩ..." class="w-full bg-[#04060b] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Giá Tiền (VNĐ)</label>
-                                <input type="text" id="song-price" placeholder="Ví dụ: 99.000đ" class="w-full bg-[#04060b] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh (.mp3)</label>
-                            <input type="file" id="song-file" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700">
-                        </div>
-                        <button onclick="uploadSong()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
-                            📤 Tải Lên Hệ Thống Ngay
-                        </button>
-                        <p id="upload-status" class="text-xs text-center font-medium"></p>
-                    </section>
-
-                    <!-- BANNER DƯỚI (Exclusive Tracks, DJ Mix Collection, Flash Sale) -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-gradient-to-br from-indigo-950/60 to-purple-950/60 border border-indigo-500/30 p-5 rounded-3xl space-y-3 relative overflow-hidden">
-                            <span class="text-xs font-bold text-indigo-400">EXCLUSIVE</span>
-                            <h4 class="font-black text-sm text-white">EXCLUSIVE TRACKS</h4>
-                            <p class="text-[11px] text-gray-300">Độc quyền tại HTBN</p>
-                            <button class="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-xl shadow hover:opacity-90 transition">KHÁM PHÁ</button>
-                        </div>
-                        <div class="bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-500/30 p-5 rounded-3xl space-y-3 relative overflow-hidden">
-                            <span class="text-xs font-bold text-blue-400">COLLECTION</span>
-                            <h4 class="font-black text-sm text-white">DJ MIX COLLECTION</h4>
-                            <p class="text-[11px] text-gray-300">Set nhạc DJ chất lượng cao</p>
-                            <button class="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl shadow hover:opacity-90 transition">KHÁM PHÁ</button>
-                        </div>
-                        <div class="bg-gradient-to-br from-pink-950/60 to-purple-950/60 border border-pink-500/30 p-5 rounded-3xl space-y-3 relative overflow-hidden">
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-pink-400">FLASH SALE</span>
-                                <span class="text-[10px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full font-bold">GIẢM 50%</span>
-                            </div>
-                            <h4 class="font-black text-sm text-white">GÓI THÀNH VIÊN</h4>
-                            <p class="text-[11px] text-gray-300">Tiết kiệm đến 50% chi phí</p>
-                            <button class="px-4 py-2 bg-pink-600 text-white text-xs font-semibold rounded-xl shadow hover:opacity-90 transition">XEM NGAY</button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- CỘT PHẢI (Top Selling Tracks, Thể Loại Hot, Hoạt Động Gần Đây & User Profile) -->
-                <div class="space-y-6">
-                    
-                    <!-- USER PROFILE CARD -->
-                    <div class="bg-[#0a0f1d] border border-gray-800 p-4 rounded-3xl flex items-center space-x-3 shadow-lg">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center font-bold text-lg text-white shadow">
-                            KP
-                        </div>
-                        <div class="flex-1 truncate">
-                            <p class="text-[10px] text-gray-400">Xin chào!</p>
-                            <h4 class="font-bold text-sm text-white truncate">Khánh Producer</h4>
-                            <span class="inline-block mt-0.5 px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[10px] font-bold border border-indigo-500/30">PRO MEMBER</span>
-                        </div>
-                    </div>
-
-                    <!-- TOP SELLING TRACKS -->
-                    <div class="bg-[#0a0f1d] border border-gray-800 p-5 rounded-3xl space-y-4 shadow-xl">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-black text-sm text-white">TOP SELLING TRACKS</h4>
-                            <a href="#" class="text-xs text-indigo-400 hover:underline">Xem tất cả &gt;</a>
-                        </div>
-                        <div class="space-y-3">
-                            <!-- Item Top 1 -->
-                            <div class="flex items-center justify-between gap-2 group cursor-pointer">
-                                <div class="flex items-center space-x-3 truncate">
-                                    <span class="text-xs font-bold text-gray-500 w-4">01</span>
-                                    <div class="w-10 h-10 rounded-xl bg-gray-800 bg-cover bg-center shrink-0 border border-gray-700" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop&q=60');"></div>
-                                    <div class="truncate">
-                                        <p class="text-xs font-bold text-white truncate group-hover:text-indigo-400 transition">Tận Cùng Nỗi Đau Vol.1</p>
-                                        <p class="text-[10px] text-gray-400 truncate">Hoàng Rew Mix</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-400 shrink-0">99.000đ</span>
-                            </div>
-                            <!-- Item Top 2 -->
-                            <div class="flex items-center justify-between gap-2 group cursor-pointer">
-                                <div class="flex items-center space-x-3 truncate">
-                                    <span class="text-xs font-bold text-gray-500 w-4">02</span>
-                                    <div class="w-10 h-10 rounded-xl bg-gray-800 bg-cover bg-center shrink-0 border border-gray-700" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop&q=60');"></div>
-                                    <div class="truncate">
-                                        <p class="text-xs font-bold text-white truncate group-hover:text-indigo-400 transition">Summer Night</p>
-                                        <p class="text-[10px] text-gray-400 truncate">HTBN Studio</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-400 shrink-0">89.000đ</span>
-                            </div>
-                            <!-- Item Top 3 -->
-                            <div class="flex items-center justify-between gap-2 group cursor-pointer">
-                                <div class="flex items-center space-x-3 truncate">
-                                    <span class="text-xs font-bold text-gray-500 w-4">03</span>
-                                    <div class="w-10 h-10 rounded-xl bg-gray-800 bg-cover bg-center shrink-0 border border-gray-700" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&auto=format&fit=crop&q=60');"></div>
-                                    <div class="truncate">
-                                        <p class="text-xs font-bold text-white truncate group-hover:text-indigo-400 transition">Lost In The Dark</p>
-                                        <p class="text-[10px] text-gray-400 truncate">DJ Phoenix</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-400 shrink-0">99.000đ</span>
-                            </div>
-                            <!-- Item Top 4 -->
-                            <div class="flex items-center justify-between gap-2 group cursor-pointer">
-                                <div class="flex items-center space-x-3 truncate">
-                                    <span class="text-xs font-bold text-gray-500 w-4">04</span>
-                                    <div class="w-10 h-10 rounded-xl bg-gray-800 bg-cover bg-center shrink-0 border border-gray-700" style="background-image: url('https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=100&auto=format&fit=crop&q=60');"></div>
-                                    <div class="truncate">
-                                        <p class="text-xs font-bold text-white truncate group-hover:text-indigo-400 transition">Euphoria</p>
-                                        <p class="text-[10px] text-gray-400 truncate">Kevin Q</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-400 shrink-0">99.000đ</span>
-                            </div>
-                            <!-- Item Top 5 -->
-                            <div class="flex items-center justify-between gap-2 group cursor-pointer">
-                                <div class="flex items-center space-x-3 truncate">
-                                    <span class="text-xs font-bold text-gray-500 w-4">05</span>
-                                    <div class="w-10 h-10 rounded-xl bg-gray-800 bg-cover bg-center shrink-0 border border-gray-700" style="background-image: url('https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=100&auto=format&fit=crop&q=60');"></div>
-                                    <div class="truncate">
-                                        <p class="text-xs font-bold text-white truncate group-hover:text-indigo-400 transition">Paradise</p>
-                                        <p class="text-[10px] text-gray-400 truncate">M-Tee</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-400 shrink-0">89.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- THỂ LOẠI HOT -->
-                    <div class="bg-[#0a0f1d] border border-gray-800 p-5 rounded-3xl space-y-4 shadow-xl">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-black text-sm text-white">THỂ LOẠI HOT</h4>
-                            <a href="#" class="text-xs text-indigo-400 hover:underline">Xem tất cả &gt;</a>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-gradient-to-br from-indigo-950/80 to-blue-950/80 border border-indigo-500/30 p-3.5 rounded-2xl relative overflow-hidden group cursor-pointer">
-                                <span class="absolute top-2 right-2 bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">HOT</span>
-                                <p class="font-black text-xs text-white">EDM</p>
-                                <p class="text-[10px] text-gray-400 mt-1">2.231 Tracks</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-purple-950/80 to-indigo-950/80 border border-purple-500/30 p-3.5 rounded-2xl relative overflow-hidden group cursor-pointer">
-                                <span class="absolute top-2 right-2 bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">HOT</span>
-                                <p class="font-black text-xs text-white">DEEP HOUSE</p>
-                                <p class="text-[10px] text-gray-400 mt-1">1.543 Tracks</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-blue-950/80 to-teal-950/80 border border-blue-500/30 p-3.5 rounded-2xl relative overflow-hidden group cursor-pointer">
-                                <p class="font-black text-xs text-white">HIP HOP</p>
-                                <p class="text-[10px] text-gray-400 mt-1">1.287 Tracks</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-pink-950/80 to-purple-950/80 border border-pink-500/30 p-3.5 rounded-2xl relative overflow-hidden group cursor-pointer">
-                                <span class="absolute top-2 right-2 bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">HOT</span>
-                                <p class="font-black text-xs text-white">REMIX</p>
-                                <p class="text-[10px] text-gray-400 mt-1">2.113 Tracks</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-indigo-950/80 to-cyan-950/80 border border-cyan-500/30 p-3.5 rounded-2xl relative overflow-hidden group cursor-pointer">
-                                <p class="font-black text-xs text-white">TRANCE</p>
-                                <p class="text-[10px] text-gray-400 mt-1">560 Tracks</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-purple-950/80 to-pink-950/80 border border-purple-500/30 p-3.5 rounded-2xl relative overflow-hidden group cursor-pointer">
-                                <p class="font-black text-xs text-white">POP</p>
-                                <p class="text-[10px] text-gray-400 mt-1">1.023 Tracks</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HOẠT ĐỘNG GẦN ĐÂY -->
-                    <div class="bg-[#0a0f1d] border border-gray-800 p-5 rounded-3xl space-y-4 shadow-xl">
-                        <h4 class="font-black text-sm text-white">HOẠT ĐỘNG GẦN ĐÂY</h4>
-                        <div class="space-y-3 text-xs">
-                            <div class="flex items-center justify-between text-gray-300">
-                                <div class="flex items-center space-x-2.5 truncate">
-                                    <div class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-[10px] shrink-0">H</div>
-                                    <p class="truncate"><b class="text-indigo-400">Hải DJ</b> vừa mua track <span class="text-white">Rise Again</span></p>
-                                </div>
-                                <span class="text-[10px] text-gray-500 shrink-0">2 phút</span>
-                            </div>
-                            <div class="flex items-center justify-between text-gray-300">
-                                <div class="flex items-center space-x-2.5 truncate">
-                                    <div class="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center font-bold text-[10px] shrink-0">M</div>
-                                    <p class="truncate"><b class="text-purple-400">Minh Producer</b> vừa tải track <span class="text-white">Infinity</span></p>
-                                </div>
-                                <span class="text-[10px] text-gray-500 shrink-0">5 phút</span>
-                            </div>
-                            <div class="flex items-center justify-between text-gray-300">
-                                <div class="flex items-center space-x-2.5 truncate">
-                                    <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center font-bold text-[10px] shrink-0">Q</div>
-                                    <p class="truncate"><b class="text-blue-400">Quang Beat</b> vừa mua track <span class="text-white">Starlight</span></p>
-                                </div>
-                                <span class="text-[10px] text-gray-500 shrink-0">7 phút</span>
-                            </div>
-                            <div class="flex items-center justify-between text-gray-300">
-                                <div class="flex items-center space-x-2.5 truncate">
-                                    <div class="w-7 h-7 rounded-full bg-pink-600 flex items-center justify-center font-bold text-[10px] shrink-0">A</div>
-                                    <p class="truncate"><b class="text-pink-400">Anna Singer</b> vừa mua track <span class="text-white">With You</span></p>
-                                </div>
-                                <span class="text-[10px] text-gray-500 shrink-0">10 phút</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </main>
-        </div>
+        <!-- Các hạt sáng lấp lánh bay ngẫu nhiên -->
+        <div class="particle" style="width: 6px; height: 6px; left: 10%; bottom: -10px; animation-duration: 9s; animation-delay: 0s;"></div>
+        <div class="particle" style="width: 4px; height: 4px; left: 30%; bottom: -10px; animation-duration: 12s; animation-delay: 2s;"></div>
+        <div class="particle" style="width: 8px; height: 8px; left: 55%; bottom: -10px; animation-duration: 7s; animation-delay: 1s;"></div>
+        <div class="particle" style="width: 5px; height: 5px; left: 75%; bottom: -10px; animation-duration: 10s; animation-delay: 4s;"></div>
+        <div class="particle" style="width: 7px; height: 7px; left: 90%; bottom: -10px; animation-duration: 8s; animation-delay: 3s;"></div>
     </div>
 
-    <!-- THANH MUSIC PLAYER CỐ ĐỊNH DƯỚI ĐÁY (Giống hệt chân trang mẫu) -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-[#070b14]/95 backdrop-blur-md border-t border-gray-800 px-4 py-3 z-50">
-        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <!-- Thông tin track đang phát -->
-            <div class="flex items-center space-x-3 w-1/4 truncate">
-                <div class="w-12 h-12 rounded-xl bg-indigo-600 bg-cover bg-center shrink-0 border border-indigo-500/40 shadow" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop&q=60');"></div>
+    <!-- Header -->
+    <header class="flex justify-between items-center p-4 border-b border-gray-800/80 bg-[#111827]/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <!-- Logo Thương Hiệu Từ Ảnh 2 Chuẩn Tuyệt Đối -->
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/60 brand-logo">
+            <div>
+                <h1 class="font-bold text-lg leading-tight flex items-center gap-1.5">
+                    HTBN <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">PRO</span>
+                </h1>
+                <p class="text-[10px] text-gray-400 tracking-wider">HỆ THỐNG BÁN NHẠC</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2" id="auth-header-action"></div>
+    </header>
+
+    <main class="max-w-2xl mx-auto p-4 space-y-6 relative z-10">
+        
+        <!-- Sảnh Chào Mừng Động + Chú Gấu Nhảy Cute -->
+        <section class="bg-gradient-to-r from-[#161f31]/90 to-[#1f293d]/90 backdrop-blur border border-amber-500/20 p-4 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 text-center sm:text-left">
+                <div class="text-3xl flag-anim bg-red-600/20 p-2 rounded-2xl border border-red-500/30">🇻🇳</div>
+                <div>
+                    <h2 class="text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-1">
+                        Sảnh Âm Nhạc <span class="text-red-500 font-extrabold">Việt Nam</span>
+                        <span class="text-lg dancing-bear ml-1">🧸</span>
+                        <span class="text-lg dancing-bear-delay">🐼</span>
+                    </h2>
+                    <p class="text-[11px] text-gray-400">Không gian mua bán & bản quyền track độc quyền</p>
+                </div>
+            </div>
+            <div class="bg-[#0b0f19]/90 border border-gray-800 px-4 py-2 rounded-xl text-center shrink-0 shadow-inner">
+                <p class="text-[10px] text-gray-400 uppercase tracking-wider">Giờ Việt Nam (GMT+7)</p>
+                <p id="live-clock" class="text-sm font-mono font-bold text-amber-400">00:00:00</p>
+            </div>
+        </section>
+
+        <!-- Form Quản Trị Đăng Tải -->
+        <section id="admin-section" class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl shadow-2xl space-y-4 hidden">
+            <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
+                ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới <span class="dancing-bear text-sm">🐻</span>
+            </h2>
+            
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Tên Bài Hát</label>
+                <input type="text" id="song-title" placeholder="Nhập tên track..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Nghệ Sĩ / Producer</label>
+                <input type="text" id="song-artist" placeholder="Nhập tên nghệ sĩ..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Giá Tiền (VNĐ hoặc Miễn phí)</label>
+                <input type="text" id="song-price" placeholder="Ví dụ: 600.000 hoặc Miễn phí" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh (.mp3)</label>
+                <input type="file" id="song-file" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700">
+            </div>
+
+            <button onclick="uploadSong()" id="upload-btn" class="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-amber-600/20 text-sm">
+                📤 Tải Lên Hệ Thống
+            </button>
+            <p id="upload-status" class="text-xs text-center font-medium"></p>
+        </section>
+
+        <!-- Kho Nhạc -->
+        <section class="space-y-3">
+            <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
+                🎵 Kho Nhạc Độc Quyền & Mới Nhất <span class="dancing-bear-delay text-sm">🐨</span>
+            </h2>
+            <div id="songs-list" class="space-y-3">
+                <p class="text-xs text-gray-500 italic">Đang tải danh sách bài hát...</p>
+            </div>
+        </section>
+
+        <!-- Mục Liên Hệ Hỗ Trợ -->
+        <section class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl space-y-3 shadow-xl">
+            <h2 class="text-amber-400 font-bold text-sm flex items-center gap-2">
+                💬 Hỗ Trợ & Liên Hệ Admin <span class="dancing-bear text-sm">🐼</span>
+            </h2>
+            <p class="text-xs text-gray-300 leading-relaxed">
+                Quý khách cần mua bản quyền beat/track hoặc hỗ trợ thanh toán, vui lòng liên hệ trực tiếp với Admin:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex items-center gap-2">
+                    <span class="text-amber-400 font-bold">📱 Zalo/Phone:</span>
+                    <span class="text-gray-200 font-medium">0xxxxxxxxx (Võ Văn Đức)</span>
+                </div>
+                <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex items-center gap-2">
+                    <span class="text-amber-400 font-bold">🌐 Facebook:</span>
+                    <a href="#" class="text-amber-400 underline truncate">fb.com/vovanduc</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Thanh Player Cố Định Dưới Đáy -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#111827]/95 backdrop-blur-md border-t border-gray-800 p-3 z-50">
+        <div class="max-w-2xl mx-auto flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 overflow-hidden">
+                <div class="w-10 h-10 bg-amber-500/20 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 shrink-0 dancing-bear">🧸</div>
                 <div class="truncate">
-                    <p id="player-title" class="text-xs font-bold text-white truncate">Tận Cùng Nỗi Đau Vol.1</p>
-                    <p id="player-artist" class="text-[10px] text-gray-400 truncate">Hoàng Rew Mix</p>
+                    <p id="player-title" class="text-xs font-bold truncate text-gray-200">Chưa chọn bài hát</p>
+                    <p id="player-artist" class="text-[10px] text-gray-400 truncate">HTBN Music Player</p>
                 </div>
             </div>
 
-            <!-- Điều khiển phát nhạc & Sóng âm (Waveform) -->
-            <div class="flex flex-col items-center flex-1 max-w-xl space-y-1">
-                <div class="flex items-center space-x-5">
-                    <button class="text-gray-400 hover:text-white transition text-sm">🔀</button>
-                    <button class="text-gray-400 hover:text-white transition text-sm">⏮</button>
-                    <button onclick="togglePlay()" id="play-pause-btn" class="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full flex items-center justify-center font-bold hover:scale-105 transition shadow-lg shadow-indigo-600/40">▶</button>
-                    <button class="text-gray-400 hover:text-white transition text-sm">⏭</button>
-                    <button class="text-gray-400 hover:text-white transition text-sm">🔁</button>
+            <div class="flex flex-col items-center flex-1 max-w-xs">
+                <div class="flex items-center space-x-4 mb-1">
+                    <button onclick="togglePlay()" id="play-pause-btn" class="w-9 h-9 bg-white text-black rounded-full flex items-center justify-center font-bold hover:scale-105 transition shadow-md">▶</button>
                 </div>
-                <!-- Sóng âm thanh giả lập + Thanh tiến trình -->
-                <div class="w-full flex items-center space-x-3 text-[10px] text-gray-400">
-                    <span id="current-time">01:24</span>
-                    <div class="flex-1 flex flex-col justify-center space-y-1">
-                        <!-- Sóng âm thanh thiết kế bằng div giả lập -->
-                        <div class="flex items-center justify-between h-4 px-1 gap-0.5">
-                            <span class="w-1 bg-indigo-500 h-2 rounded-full"></span>
-                            <span class="w-1 bg-indigo-500 h-4 rounded-full"></span>
-                            <span class="w-1 bg-indigo-400 h-3 rounded-full"></span>
-                            <span class="w-1 bg-purple-500 h-5 rounded-full"></span>
-                            <span class="w-1 bg-indigo-500 h-2 rounded-full"></span>
-                            <span class="w-1 bg-indigo-600 h-6 rounded-full"></span>
-                            <span class="w-1 bg-pink-500 h-4 rounded-full"></span>
-                            <span class="w-1 bg-indigo-500 h-3 rounded-full"></span>
-                            <span class="w-1 bg-indigo-400 h-5 rounded-full"></span>
-                            <span class="w-1 bg-indigo-600 h-2 rounded-full"></span>
-                            <span class="w-1 bg-purple-500 h-4 rounded-full"></span>
-                            <span class="w-1 bg-indigo-500 h-3 rounded-full"></span>
-                            <span class="w-1 bg-pink-500 h-6 rounded-full"></span>
-                            <span class="w-1 bg-indigo-500 h-2 rounded-full"></span>
-                            <span class="w-1 bg-indigo-400 h-5 rounded-full"></span>
-                            <span class="w-1 bg-indigo-500 h-3 rounded-full"></span>
-                        </div>
-                        <input type="range" id="progress-bar" value="35" max="100" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
-                    </div>
-                    <span id="total-time">03:45</span>
+                <div class="w-full flex items-center space-x-2 text-[10px] text-gray-400">
+                    <span id="current-time">00:00</span>
+                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-500" disabled>
+                    <span id="total-time">00:00</span>
                 </div>
-            </div>
-
-            <!-- Tiện ích phải Player (Volume & Playlist button) -->
-            <div class="flex items-center space-x-3 w-1/4 justify-end">
-                <span class="text-xs">🔊</span>
-                <input type="range" value="80" max="100" class="w-20 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500 hidden sm:block">
-                <button class="text-gray-400 hover:text-white transition text-base">📋</button>
             </div>
         </div>
     </footer>
 
-    <!-- MODAL ĐĂNG NHẬP / ĐĂNG KÝ -->
+    <!-- Modal Đăng Nhập / Đăng Ký -->
     <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-[#0a0f1d] border border-gray-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-            <div class="flex border-b border-gray-800 text-xs font-semibold">
-                <button onclick="switchAuthTab('login')" id="tab-login-btn" class="w-1/2 py-2.5 text-indigo-400 border-b-2 border-indigo-500">ĐĂNG NHẬP</button>
-                <button onclick="switchAuthTab('register')" id="tab-register-btn" class="w-1/2 py-2.5 text-gray-400">ĐĂNG KÝ</button>
+        <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
+            <div class="flex border-b border-gray-700 text-xs font-semibold">
+                <button onclick="switchAuthTab('login')" id="tab-login-btn" class="w-1/2 py-2 text-amber-400 border-b-2 border-amber-500">Đăng Nhập</button>
+                <button onclick="switchAuthTab('register')" id="tab-register-btn" class="w-1/2 py-2 text-gray-400">Đăng Ký</button>
             </div>
 
             <!-- Form Đăng Nhập -->
@@ -514,14 +228,14 @@
                 <h3 class="font-bold text-sm text-white text-center">Đăng Nhập Tài Khoản</h3>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Email</label>
-                    <input type="email" id="login-email" placeholder="Nhập email..." class="w-full bg-[#04060b] border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <input type="email" id="login-email" placeholder="Nhập email..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Mật khẩu</label>
-                    <input type="password" id="login-pass" placeholder="Nhập mật khẩu..." class="w-full bg-[#04060b] border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <input type="password" id="login-pass" placeholder="Nhập mật khẩu..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                 </div>
                 <p id="login-error" class="text-[11px] text-red-400 text-center hidden"></p>
-                <button onclick="handleUserLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">Đăng Nhập</button>
+                <button onclick="handleUserLogin()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-lg shadow-amber-600/20">Đăng Nhập</button>
             </div>
 
             <!-- Form Đăng Ký -->
@@ -529,63 +243,86 @@
                 <h3 class="font-bold text-sm text-white text-center">Đăng Ký Tài Khoản Mới</h3>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Email</label>
-                    <input type="email" id="reg-email" placeholder="Nhập email..." class="w-full bg-[#04060b] border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <input type="email" id="reg-email" placeholder="Nhập email..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Mật khẩu</label>
-                    <input type="password" id="reg-pass" placeholder="Ít nhất 6 ký tự..." class="w-full bg-[#04060b] border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <input type="password" id="reg-pass" placeholder="Ít nhất 6 ký tự..." class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                 </div>
                 <p id="reg-error" class="text-[11px] text-red-400 text-center hidden"></p>
                 <button onclick="handleUserRegister()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đăng Ký Tài Khoản</button>
             </div>
 
-            <button onclick="closeAuthModal()" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 rounded-xl text-xs transition">Đóng lại</button>
+            <button onclick="closeAuthModal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded-xl text-xs transition">Đóng lại</button>
         </div>
     </div>
 
-    <!-- MODAL THANH TOÁN QR NGÂN HÀNG -->
+    <!-- Modal Thanh Toán QR Ngân Hàng -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-[#0a0f1d] border border-gray-800 rounded-3xl p-6 max-w-sm w-full space-y-4 text-center shadow-2xl">
+        <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4 text-center shadow-2xl">
             <h3 class="font-bold text-base text-white">Quét Mã QR Thanh Toán</h3>
             <p id="modal-song-info" class="text-xs text-gray-400"></p>
             
-            <div class="bg-white p-3 rounded-2xl inline-block mx-auto">
+            <div class="bg-white p-3 rounded-xl inline-block mx-auto">
                 <img id="qr-code-img" src="" alt="QR Code" class="w-48 h-48 mx-auto object-contain">
             </div>
 
-            <div class="text-xs text-gray-300 bg-[#04060b] p-3 rounded-xl text-left space-y-1 border border-gray-800">
-                <p>🏦 Ngân hàng: <b class="text-indigo-400">Techcombank</b></p>
-                <p>👤 Chủ tài khoản: <b class="text-indigo-400">VO VAN DUC</b></p>
+            <div class="text-xs text-gray-300 bg-[#0b0f19] p-3 rounded-xl text-left space-y-1">
+                <p>🏦 Ngân hàng: <b class="text-amber-400">Techcombank</b></p>
+                <p>👤 Chủ tài khoản: <b class="text-amber-400">VO VAN DUC</b></p>
                 <p>📝 Nội dung: <b id="qr-note" class="text-yellow-400">HTBN MUA</b></p>
             </div>
 
-            <button onclick="closeCheckoutModal()" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đóng lại</button>
+            <button onclick="closeCheckoutModal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đóng lại</button>
         </div>
     </div>
 
-    <!-- SCRIPT XỬ LÝ DỮ LIỆU & SUPABASE -->
+    <!-- Script Xử Lý Chính -->
     <script>
+        // Cố định ảnh Logo thương hiệu từ Ảnh 2
+        const BRAND_LOGO_BASE64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
+        document.getElementById('brand-logo-img').src = BRAND_LOGO_BASE64;
+
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
+        
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const BANK_ID = "TCB";
         const ACCOUNT_NO = "1903xxxxxxxxx";
         const ACCOUNT_NAME = "VO VAN DUC";
-        const ADMIN_EMAIL = "vovanduc@admin.com";
+        const ADMIN_EMAIL = "vovanduc@admin.com"; 
 
-        let currentUser = null;
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+
         let audioCtx = null;
         let audioBuffer = null;
         let sourceNode = null;
+        let startTime = 0;
+        let pauseOffset = 0;
         let isPlaying = false;
+        let timerInterval = null;
+        let currentUser = null;
 
         document.addEventListener("DOMContentLoaded", async () => {
+            setInterval(updateClock, 1000);
+            updateClock();
+
             const { data } = await supabaseClient.auth.getUser();
             currentUser = data.user;
             updateAuthUI();
             fetchSongs();
         });
+
+        function updateClock() {
+            const now = new Date();
+            const options = { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const timeString = new Intl.DateTimeFormat('vi-VN', options).format(now);
+            document.getElementById('live-clock').textContent = timeString;
+        }
 
         function updateAuthUI() {
             const authHeaderAction = document.getElementById('auth-header-action');
@@ -595,21 +332,21 @@
                 const isAdmin = (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
                 if (isAdmin) {
                     authHeaderAction.innerHTML = `
-                        <span class="text-[11px] text-indigo-400 font-semibold hidden sm:inline">👑 Admin</span>
-                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3.5 py-2 rounded-2xl text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                        <span class="text-[11px] text-amber-400 font-semibold hidden sm:inline">👑 Quản Trị Viên</span>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
                     `;
                     adminSection.classList.remove('hidden');
                 } else {
                     authHeaderAction.innerHTML = `
-                        <span class="text-[11px] text-gray-300 font-semibold hidden sm:inline truncate max-w-[100px]">${currentUser.email}</span>
-                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3.5 py-2 rounded-2xl text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                        <span class="text-[11px] text-gray-300 font-semibold hidden sm:inline truncate max-w-[120px]">${currentUser.email}</span>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
                     `;
                     adminSection.classList.add('hidden');
                 }
             } else {
                 authHeaderAction.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="px-4 py-2.5 rounded-2xl bg-[#111827] border border-gray-800 text-xs font-semibold hover:border-indigo-500 transition">ĐĂNG NHẬP</button>
-                    <button onclick="openAuthModal('register')" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-xs font-bold text-white shadow-lg shadow-indigo-600/30 hover:opacity-90 transition">ĐĂNG KÝ</button>
+                    <button onclick="openAuthModal('login')" class="bg-amber-600/20 text-amber-400 border border-amber-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-amber-600/30 transition">Đăng Nhập</button>
+                    <button onclick="openAuthModal('register')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-700 transition">Đăng Ký</button>
                 `;
                 adminSection.classList.add('hidden');
             }
@@ -631,13 +368,13 @@
             const regForm = document.getElementById('form-register');
 
             if (tab === 'login') {
-                loginBtn.className = "w-1/2 py-2.5 text-indigo-400 border-b-2 border-indigo-500";
-                regBtn.className = "w-1/2 py-2.5 text-gray-400";
+                loginBtn.className = "w-1/2 py-2 text-amber-400 border-b-2 border-amber-500";
+                regBtn.className = "w-1/2 py-2 text-gray-400";
                 loginForm.classList.remove('hidden');
                 regForm.classList.add('hidden');
             } else {
-                regBtn.className = "w-1/2 py-2.5 text-emerald-400 border-b-2 border-emerald-500";
-                loginBtn.className = "w-1/2 py-2.5 text-gray-400";
+                regBtn.className = "w-1/2 py-2 text-emerald-400 border-b-2 border-emerald-500";
+                loginBtn.className = "w-1/2 py-2 text-gray-400";
                 regForm.classList.remove('hidden');
                 loginForm.classList.add('hidden');
             }
@@ -654,7 +391,7 @@
                 return;
             }
 
-            const { error } = await supabaseClient.auth.signUp({ email, password });
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
             if (error) {
                 errEl.textContent = error.message;
                 errEl.classList.remove('hidden');
@@ -690,8 +427,13 @@
         async function handleLogout() {
             await supabaseClient.auth.signOut();
             currentUser = null;
+            stopCurrentAudio();
             updateAuthUI();
             fetchSongs();
+            document.getElementById('player-title').textContent = "Chưa chọn bài hát";
+            document.getElementById('player-artist').textContent = "HTBN Music Player";
+            totalTimeEl.textContent = "00:00";
+            currentTimeEl.textContent = "00:00";
             alert("Đã đăng xuất thành công!");
         }
 
@@ -702,71 +444,46 @@
                 .select('*')
                 .order('id', { ascending: false });
 
-            if (error || !data || data.length === 0) {
-                // Hiển thị danh sách mẫu chuẩn trực quan giống y hệt ảnh nếu chưa có bài hát trong DB
-                listContainer.innerHTML = `
-                    <div class="bg-[#0a0f1d] border border-gray-800 p-4 rounded-2xl flex flex-col justify-between space-y-3 relative group">
-                        <span class="absolute top-3 right-3 bg-indigo-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-10">NEW</span>
-                        <div class="w-full h-36 rounded-xl bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=60');">
-                            <button class="absolute bottom-2 right-2 w-9 h-9 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg opacity-0 group-hover:opacity-100 transition">▶</button>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-sm text-white truncate">Tận Cùng Nỗi Đau Vol.1</h4>
-                            <p class="text-xs text-gray-400 truncate">Hoàng Rew Mix</p>
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-800">
-                            <span class="font-bold text-indigo-400 text-xs">99.000đ</span>
-                            <button onclick="openCheckout('1', 'Tận Cùng Nỗi Đau Vol.1', '99.000đ')" class="px-3 py-1.5 bg-indigo-600/20 text-indigo-400 border border-indigo-600/30 rounded-xl text-xs font-semibold hover:bg-indigo-600 hover:text-white transition">Mua ngay</button>
-                        </div>
-                    </div>
-                    <div class="bg-[#0a0f1d] border border-gray-800 p-4 rounded-2xl flex flex-col justify-between space-y-3 relative group">
-                        <span class="absolute top-3 right-3 bg-indigo-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-10">NEW</span>
-                        <div class="w-full h-36 rounded-xl bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop&q=60');">
-                            <button class="absolute bottom-2 right-2 w-9 h-9 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg opacity-0 group-hover:opacity-100 transition">▶</button>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-sm text-white truncate">Summer Night</h4>
-                            <p class="text-xs text-gray-400 truncate">HTBN Studio • Deep House</p>
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-800">
-                            <span class="font-bold text-indigo-400 text-xs">89.000đ</span>
-                            <button onclick="openCheckout('2', 'Summer Night', '89.000đ')" class="px-3 py-1.5 bg-indigo-600/20 text-indigo-400 border border-indigo-600/30 rounded-xl text-xs font-semibold hover:bg-indigo-600 hover:text-white transition">Mua ngay</button>
-                        </div>
-                    </div>
-                    <div class="bg-[#0a0f1d] border border-gray-800 p-4 rounded-2xl flex flex-col justify-between space-y-3 relative group">
-                        <span class="absolute top-3 right-3 bg-indigo-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-10">NEW</span>
-                        <div class="w-full h-36 rounded-xl bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&auto=format&fit=crop&q=60');">
-                            <button class="absolute bottom-2 right-2 w-9 h-9 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg opacity-0 group-hover:opacity-100 transition">▶</button>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-sm text-white truncate">Lost In The Dark</h4>
-                            <p class="text-xs text-gray-400 truncate">DJ Phoenix • Melodic House</p>
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-800">
-                            <span class="font-bold text-indigo-400 text-xs">99.000đ</span>
-                            <button onclick="openCheckout('3', 'Lost In The Dark', '99.000đ')" class="px-3 py-1.5 bg-indigo-600/20 text-indigo-400 border border-indigo-600/30 rounded-xl text-xs font-semibold hover:bg-indigo-600 hover:text-white transition">Mua ngay</button>
-                        </div>
-                    </div>
-                `;
+            if (error) {
+                listContainer.innerHTML = `<p class="text-xs text-red-400">Lỗi tải danh sách: ${error.message}</p>`;
                 return;
             }
 
+            if (!data || data.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Chưa có bài hát nào trên hệ thống.</p>`;
+                return;
+            }
+
+            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+
             listContainer.innerHTML = data.map(song => `
-                <div class="bg-[#0a0f1d] border border-gray-800 p-4 rounded-2xl flex flex-col justify-between space-y-3 relative group">
-                    <span class="absolute top-3 right-3 bg-indigo-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-10">NEW</span>
-                    <div class="w-full h-36 rounded-xl bg-cover bg-center relative bg-gray-800" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=60');">
-                        <button onclick="playSong('${song.file_url}', '${song.title}', '${song.artist}')" class="absolute bottom-2 right-2 w-9 h-9 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg opacity-0 group-hover:opacity-100 transition">▶</button>
+                <div class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-3 shadow-lg">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <button onclick="handlePlayClick('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-amber-600 hover:bg-amber-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
+                        <div class="truncate">
+                            <h3 class="text-sm font-bold text-gray-100 truncate">${song.title}</h3>
+                            <p class="text-xs text-gray-400 truncate">${song.artist} ${!isAdmin ? '<span class="text-amber-500/80 text-[10px] ml-1">(Chỉ hiển thị thời gian)</span>' : ''}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-sm text-white truncate">${song.title}</h4>
-                        <p class="text-xs text-gray-400 truncate">${song.artist}</p>
-                    </div>
-                    <div class="flex items-center justify-between pt-2 border-t border-gray-800">
-                        <span class="font-bold text-indigo-400 text-xs">${song.price}</span>
-                        <button onclick="openCheckout('${song.id}', '${song.title}', '${song.price}')" class="px-3 py-1.5 bg-indigo-600/20 text-indigo-400 border border-indigo-600/30 rounded-xl text-xs font-semibold hover:bg-indigo-600 hover:text-white transition">Mua ngay</button>
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <span class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">${song.price}</span>
+                        <button onclick="openCheckout('${song.id}', '${song.title}', '${song.price}')" class="bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 border border-amber-600/30 px-3 py-1.5 rounded-xl text-xs font-semibold transition">Mua ngay</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function handlePlayClick(url, title, artist) {
+            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            if (!isAdmin) {
+                alert("Tính năng phát nhạc chỉ dành riêng cho Admin! Khách hàng vui lòng liên hệ Admin để mua bản quyền.");
+                document.getElementById('player-title').textContent = title;
+                document.getElementById('player-artist').textContent = artist + " (Khách: Không có quyền nghe)";
+                totalTimeEl.textContent = "--:--";
+                currentTimeEl.textContent = "00:00";
+                return;
+            }
+            playSong(url, title, artist);
         }
 
         async function uploadSong() {
@@ -789,13 +506,22 @@
             statusEl.textContent = "Đang tải file lên Supabase Storage...";
 
             try {
-                const { error: uploadError } = await supabaseClient.storage.from('songs').upload(fileName, file, { upsert: true });
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('songs')
+                    .upload(fileName, file, { upsert: true });
+
                 if (uploadError) throw new Error("Lỗi Storage: " + uploadError.message);
 
-                const { data: publicURLData } = supabaseClient.storage.from('songs').getPublicUrl(fileName);
+                const { data: publicURLData } = supabaseClient.storage
+                    .from('songs')
+                    .getPublicUrl(fileName);
+
                 const fileUrl = publicURLData.publicUrl;
 
-                const { error: insertError } = await supabaseClient.from('songs').insert([{ title, artist, price, file_url: fileUrl }]);
+                const { error: insertError } = await supabaseClient
+                    .from('songs')
+                    .insert([{ title, artist, price, file_url: fileUrl }]);
+
                 if (insertError) throw new Error("Lỗi Database: " + insertError.message);
 
                 statusEl.className = "text-xs text-center font-medium text-emerald-400";
@@ -806,10 +532,138 @@
                 document.getElementById('song-price').value = '';
                 fileInput.value = '';
                 fetchSongs();
+
             } catch (err) {
                 statusEl.className = "text-xs text-center font-medium text-red-400";
                 statusEl.textContent = err.message;
             }
+        }
+
+        async function playSong(url, title, artist) {
+            document.getElementById('player-title').textContent = title;
+            document.getElementById('player-artist').textContent = artist;
+            totalTimeEl.textContent = "Đang tải...";
+            currentTimeEl.textContent = "00:00";
+            progressBar.value = 0;
+            progressBar.disabled = true;
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            stopCurrentAudio();
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Không thể tải file từ Storage");
+                
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+                totalTimeEl.textContent = formatTime(audioBuffer.duration);
+                progressBar.disabled = false;
+                
+                startPlayback(0);
+            } catch (err) {
+                console.error("Lỗi phát nhạc:", err);
+                totalTimeEl.textContent = "Lỗi tải file";
+            }
+        }
+
+        function startPlayback(offset) {
+            if (!audioBuffer) return;
+            stopSourceOnly();
+
+            sourceNode = audioCtx.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            sourceNode.connect(audioCtx.destination);
+
+            sourceNode.onended = () => {
+                if (isPlaying && (audioCtx.currentTime - startTime >= audioBuffer.duration)) {
+                    stopCurrentAudio();
+                    playPauseBtn.textContent = "▶";
+                    progressBar.value = 0;
+                    currentTimeEl.textContent = "00:00";
+                }
+            };
+
+            sourceNode.start(0, offset);
+            startTime = audioCtx.currentTime - offset;
+            isPlaying = true;
+            playPauseBtn.textContent = "⏸";
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!isPlaying) return;
+                let currentPos = audioCtx.currentTime - startTime;
+                if (currentPos >= audioBuffer.duration) {
+                    currentPos = audioBuffer.duration;
+                }
+                currentTimeEl.textContent = formatTime(currentPos);
+                progressBar.value = (currentPos / audioBuffer.duration) * 100;
+            }, 200);
+        }
+
+        function stopSourceOnly() {
+            if (sourceNode) {
+                try { sourceNode.stop(); } catch(e) {}
+                try { sourceNode.disconnect(); } catch(e) {}
+                sourceNode = null;
+            }
+        }
+
+        function stopCurrentAudio() {
+            stopSourceOnly();
+            isPlaying = false;
+            pauseOffset = 0;
+            clearInterval(timerInterval);
+        }
+
+        function togglePlay() {
+            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            if (!isAdmin) {
+                alert("Chỉ Admin mới có quyền phát nhạc hệ thống!");
+                return;
+            }
+            if (!audioBuffer) return;
+
+            if (isPlaying) {
+                pauseOffset = audioCtx.currentTime - startTime;
+                stopSourceOnly();
+                isPlaying = false;
+                playPauseBtn.textContent = "▶";
+                clearInterval(timerInterval);
+            } else {
+                if (pauseOffset >= audioBuffer.duration) {
+                    pauseOffset = 0;
+                }
+                startPlayback(pauseOffset);
+            }
+        }
+
+        progressBar.addEventListener('input', () => {
+            if (!audioBuffer) return;
+            const seekTime = (progressBar.value / 100) * audioBuffer.duration;
+            currentTimeEl.textContent = formatTime(seekTime);
+        });
+
+        progressBar.addEventListener('change', () => {
+            if (!audioBuffer) return;
+            const seekTime = (progressBar.value / 100) * audioBuffer.duration;
+            pauseOffset = seekTime;
+            if (isPlaying) {
+                startPlayback(pauseOffset);
+            }
+        });
+
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds === Infinity) return "00:00";
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
         function openCheckout(id, title, price) {
@@ -820,23 +674,16 @@
             document.getElementById('qr-note').textContent = addInfo;
 
             const qrImg = document.getElementById('qr-code-img');
-            qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${cleanPrice}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
+            if (cleanPrice) {
+                qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${cleanPrice}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
+            } else {
+                qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
+            }
             modal.classList.remove('hidden');
         }
 
         function closeCheckoutModal() {
             document.getElementById('checkout-modal').classList.add('hidden');
-        }
-
-        function togglePlay() {
-            const btn = document.getElementById('play-pause-btn');
-            isPlaying = !isPlaying;
-            btn.textContent = isPlaying ? "⏸" : "▶";
-        }
-
-        function resetFilters() {
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-            document.getElementById('filter-search-input').value = '';
         }
     </script>
 </body>

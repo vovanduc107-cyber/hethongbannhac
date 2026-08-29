@@ -51,8 +51,8 @@
             </div>
 
             <div>
-                <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh</label>
-                <input type="file" id="song-file" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                <label class="block text-xs text-gray-400 mb-1">Chọn File Âm Thanh (Khuyên dùng file < 15MB)</label>
+                <input type="file" id="song-file" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
             </div>
 
             <button onclick="uploadSong()" id="upload-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/20 text-sm">
@@ -144,7 +144,7 @@
             const listContainer = document.getElementById('songs-list');
             const { data, error } = await supabaseClient
                 .from('songs')
-                .select('*')
+                .select('id, title, artist, price, file_url')
                 .order('id', { ascending: false });
 
             if (error) {
@@ -160,7 +160,7 @@
             listContainer.innerHTML = data.map(song => `
                 <div class="bg-[#161f31] border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-3">
                     <div class="flex items-center space-x-3 overflow-hidden">
-                        <button onclick="playSong('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
+                        <button onclick="playSong('${song.id}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
                         <div class="truncate">
                             <h3 class="text-sm font-bold text-gray-100 truncate">${song.title}</h3>
                             <p class="text-xs text-gray-400 truncate">${song.artist}</p>
@@ -188,27 +188,21 @@
             }
 
             const file = fileInput.files[0];
-            const fileName = `song_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-
             statusEl.className = "text-xs text-center font-medium text-yellow-400";
-            statusEl.textContent = "Đang tải file lên hệ thống...";
+            statusEl.textContent = "Đang xử lý và mã hóa file...";
 
             try {
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from('songs')
-                    .upload(fileName, file, { upsert: true });
-
-                if (uploadError) throw new Error("Lỗi Storage: " + uploadError.message);
-
-                const { data: publicURLData } = supabaseClient.storage
-                    .from('songs')
-                    .getPublicUrl(fileName);
-
-                const fileUrl = publicURLData.publicUrl;
+                // Đọc file âm thanh trực tiếp dưới dạng Base64 Data URL để lưu thẳng vào Database
+                const base64Data = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                    reader.readAsDataURL(file);
+                });
 
                 const { error: insertError } = await supabaseClient
                     .from('songs')
-                    .insert([{ title, artist, price, file_url: fileUrl }]);
+                    .insert([{ title, artist, price, file_url: base64Data }]);
 
                 if (insertError) throw new Error("Lỗi Database: " + insertError.message);
 
@@ -227,14 +221,26 @@
             }
         }
 
-        function playSong(url, title, artist) {
+        async function playSong(songId, title, artist) {
             document.getElementById('player-title').textContent = title;
             document.getElementById('player-artist').textContent = artist;
             totalTimeEl.textContent = "Đang tải...";
             currentTimeEl.textContent = "00:00";
             progressBar.value = 0;
 
-            audioElement.src = url;
+            // Lấy dữ liệu file dạng Base64 từ Database
+            const { data, error } = await supabaseClient
+                .from('songs')
+                .select('file_url')
+                .eq('id', songId)
+                .single();
+
+            if (error || !data || !data.file_url) {
+                totalTimeEl.textContent = "Lỗi tải file";
+                return;
+            }
+
+            audioElement.src = data.file_url;
             audioElement.load();
             
             audioElement.play().then(() => {
@@ -256,19 +262,18 @@
             }
         }
 
-        // Cập nhật thời lượng chuẩn xác khi Safari đọc được metadata
-        function checkAudioDuration() {
+        function updateDuration() {
             if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration !== Infinity) {
                 totalTimeEl.textContent = formatTime(audioElement.duration);
             }
         }
 
-        audioElement.addEventListener('loadedmetadata', checkAudioDuration);
-        audioElement.addEventListener('durationchange', checkAudioDuration);
-        audioElement.addEventListener('canplaythrough', checkAudioDuration);
+        audioElement.addEventListener('loadedmetadata', updateDuration);
+        audioElement.addEventListener('durationchange', updateDuration);
+        audioElement.addEventListener('canplaythrough', updateDuration);
 
         audioElement.addEventListener('timeupdate', () => {
-            checkAudioDuration();
+            updateDuration();
             if (!isUserSeeking && audioElement.duration && !isNaN(audioElement.duration)) {
                 const percent = (audioElement.currentTime / audioElement.duration) * 100;
                 progressBar.value = percent;

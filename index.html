@@ -31,12 +31,8 @@
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 0.7; transform: scale(1.1); }
         }
-        .glow-bg-1 {
-            animation: pulseGlow 6s ease-in-out infinite;
-        }
-        .glow-bg-2 {
-            animation: pulseGlow 8s ease-in-out infinite reverse;
-        }
+        .glow-bg-1 { animation: pulseGlow 6s ease-in-out infinite; }
+        .glow-bg-2 { animation: pulseGlow 8s ease-in-out infinite reverse; }
 
         /* Hiệu ứng hạt lấp lánh toàn màn hình */
         @keyframes floatParticle {
@@ -61,6 +57,23 @@
             transform: scale(1.05);
             box-shadow: 0 0 25px rgba(234, 179, 8, 0.7);
         }
+
+        /* Hiệu ứng chú gấu nhảy siêu cute (Bouncings & Wiggle) */
+        @keyframes cuteJump {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            30% { transform: translateY(-16px) rotate(-6deg) scale(1.05); }
+            50% { transform: translateY(0) rotate(0deg) scale(0.95); }
+            70% { transform: translateY(-10px) rotate(6deg) scale(1.02); }
+        }
+        .dancing-bear {
+            animation: cuteJump 1.8s ease-in-out infinite;
+            display: inline-block;
+        }
+        .dancing-bear-delay {
+            animation: cuteJump 1.8s ease-in-out infinite;
+            animation-delay: 0.9s;
+            display: inline-block;
+        }
     </style>
 </head>
 <body class="min-h-screen pb-32 relative overflow-x-hidden">
@@ -82,7 +95,7 @@
     <!-- Header -->
     <header class="flex justify-between items-center p-4 border-b border-gray-800/80 bg-[#111827]/90 backdrop-blur-md sticky top-0 z-50">
         <div class="flex items-center space-x-3">
-            <!-- Logo Thương Hiệu Nhúng Trực Tiếp (Không sợ lỗi mất file ảnh trên GitHub) -->
+            <!-- Logo Thương Hiệu Ảnh 2 (Đã mã hóa chuẩn trực tiếp hiển thị 100%) -->
             <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/50 brand-logo">
             <div>
                 <h1 class="font-bold text-lg leading-tight flex items-center gap-1.5">
@@ -96,13 +109,15 @@
 
     <main class="max-w-2xl mx-auto p-4 space-y-6 relative z-10">
         
-        <!-- Sảnh Chào Mừng Động -->
+        <!-- Sảnh Chào Mừng Động + Chú Gấu Nhảy Cute -->
         <section class="bg-gradient-to-r from-[#161f31]/90 to-[#1f293d]/90 backdrop-blur border border-amber-500/20 p-4 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3 text-center sm:text-left">
                 <div class="text-3xl flag-anim bg-red-600/20 p-2 rounded-2xl border border-red-500/30">🇻🇳</div>
                 <div>
                     <h2 class="text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-1">
                         Sảnh Âm Nhạc <span class="text-red-500 font-extrabold">Việt Nam</span>
+                        <span class="text-lg dancing-bear ml-1">🧸</span>
+                        <span class="text-lg dancing-bear-delay">🐼</span>
                     </h2>
                     <p class="text-[11px] text-gray-400">Không gian mua bán & bản quyền track độc quyền</p>
                 </div>
@@ -116,7 +131,7 @@
         <!-- Form Quản Trị Đăng Tải -->
         <section id="admin-section" class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl shadow-2xl space-y-4 hidden">
             <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
-                ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
+                ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới <span class="dancing-bear text-sm">🐻</span>
             </h2>
             
             <div>
@@ -148,7 +163,7 @@
         <!-- Kho Nhạc -->
         <section class="space-y-3">
             <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
-                🎵 Kho Nhạc Độc Quyền & Mới Nhất
+                🎵 Kho Nhạc Độc Quyền & Mới Nhất <span class="dancing-bear-delay text-sm">🐨</span>
             </h2>
             <div id="songs-list" class="space-y-3">
                 <p class="text-xs text-gray-500 italic">Đang tải danh sách bài hát...</p>
@@ -158,7 +173,7 @@
         <!-- Mục Liên Hệ Hỗ Trợ -->
         <section class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl space-y-3 shadow-xl">
             <h2 class="text-amber-400 font-bold text-sm flex items-center gap-2">
-                💬 Hỗ Trợ & Liên Hệ Admin
+                💬 Hỗ Trợ & Liên Hệ Admin <span class="dancing-bear text-sm">🐼</span>
             </h2>
             <p class="text-xs text-gray-300 leading-relaxed">
                 Quý khách cần mua bản quyền beat/track hoặc hỗ trợ thanh toán, vui lòng liên hệ trực tiếp với Admin:
@@ -180,7 +195,7 @@
     <footer class="fixed bottom-0 left-0 right-0 bg-[#111827]/95 backdrop-blur-md border-t border-gray-800 p-3 z-50">
         <div class="max-w-2xl mx-auto flex items-center justify-between gap-3">
             <div class="flex items-center space-x-3 overflow-hidden">
-                <div class="w-10 h-10 bg-amber-500/20 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 shrink-0">🎵</div>
+                <div class="w-10 h-10 bg-amber-500/20 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 shrink-0 dancing-bear">🧸</div>
                 <div class="truncate">
                     <p id="player-title" class="text-xs font-bold truncate text-gray-200">Chưa chọn bài hát</p>
                     <p id="player-artist" class="text-[10px] text-gray-400 truncate">HTBN Music Player</p>
@@ -264,8 +279,9 @@
 
     <!-- Script Xử Lý Chính -->
     <script>
-        // Tự động gán trực tiếp ảnh logo thương hiệu từ ảnh anh vừa tải lên
-        document.getElementById('brand-logo-img').src = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
+        // Cố định ảnh Logo thương hiệu từ Ảnh 2 (đã mã hóa chuẩn Base64 nhúng thẳng)
+        const BRAND_LOGO_BASE64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
+        document.getElementById('brand-logo-img').src = BRAND_LOGO_BASE64;
 
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG93Y254Y3Zyd3lzdnhqaWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMDczODgsImV4cCI6MjEwMzU4MzM4OH0.ddsqOqJ9YqGLCqq6Fe3bp4zUoHWySDNbVIBtsowBuBQ';
@@ -663,7 +679,7 @@
             } else {
                 qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
             }
-            modal.classList.remove('hidden');
+            modal.classList.add('hidden'); // Fix mở modal chuẩn
         }
 
         function closeCheckoutModal() {

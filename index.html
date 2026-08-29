@@ -95,8 +95,7 @@
     <!-- Header -->
     <header class="flex justify-between items-center p-4 border-b border-gray-800/80 bg-[#111827]/90 backdrop-blur-md sticky top-0 z-50">
         <div class="flex items-center space-x-3">
-            <!-- Logo Thương Hiệu Từ Ảnh 2 Chuẩn Tuyệt Đối -->
-            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/60 brand-logo">
+            <img src="" alt="HTBN Logo" id="brand-logo-img" class="w-11 h-11 rounded-xl object-cover border border-amber-500/60 brand-logo">
             <div>
                 <h1 class="font-bold text-lg leading-tight flex items-center gap-1.5">
                     HTBN <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">PRO</span>
@@ -104,7 +103,17 @@
                 <p class="text-[10px] text-gray-400 tracking-wider">HỆ THỐNG BÁN NHẠC</p>
             </div>
         </div>
-        <div class="flex items-center space-x-2" id="auth-header-action"></div>
+
+        <!-- Khu vực hiển thị Số dư Ví & Nút Xác Thực -->
+        <div class="flex items-center space-x-2">
+            <!-- Ví tiền ảo của User -->
+            <div id="user-wallet" class="hidden items-center space-x-2 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl">
+                <span class="text-xs text-gray-300 hidden sm:inline">Số dư:</span>
+                <span id="wallet-balance" class="text-xs font-bold text-amber-400">0 VNĐ</span>
+                <button onclick="openDepositModal()" class="bg-amber-600 hover:bg-amber-700 text-white text-[10px] px-2 py-1 rounded-lg font-semibold transition shadow">+ Nạp</button>
+            </div>
+            <div id="auth-header-action" class="flex items-center space-x-2"></div>
+        </div>
     </header>
 
     <main class="max-w-2xl mx-auto p-4 space-y-6 relative z-10">
@@ -128,7 +137,7 @@
             </div>
         </section>
 
-        <!-- Form Quản Trị Đăng Tải -->
+        <!-- Form Quản Trị Đăng Tải Nhạc (Chỉ Admin thấy) -->
         <section id="admin-section" class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl shadow-2xl space-y-4 hidden">
             <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
                 ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới <span class="dancing-bear text-sm">🐻</span>
@@ -146,7 +155,7 @@
 
             <div>
                 <label class="block text-xs text-gray-400 mb-1">Giá Tiền (VNĐ hoặc Miễn phí)</label>
-                <input type="text" id="song-price" placeholder="Ví dụ: 600.000 hoặc Miễn phí" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                <input type="text" id="song-price" placeholder="Ví dụ: 500.000 hoặc Miễn phí" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
             </div>
 
             <div>
@@ -154,10 +163,20 @@
                 <input type="file" id="song-file" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700">
             </div>
 
-            <button onclick="uploadSong()" id="upload-btn" class="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-amber-600/20 text-sm">
+            <button onclick="uploadSong()" class="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-amber-600/20 text-sm">
                 📤 Tải Lên Hệ Thống
             </button>
             <p id="upload-status" class="text-xs text-center font-medium"></p>
+        </section>
+
+        <!-- Khu Vực Quản Trị Duyệt Nạp Tiền (Chỉ Admin thấy) -->
+        <section id="admin-deposits-section" class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl shadow-2xl space-y-4 hidden">
+            <h2 class="text-amber-400 font-bold text-base flex items-center gap-2">
+                📥 Duyệt Phiếu Nạp Tiền Của Khách <span class="text-xs text-gray-400 font-normal">(Yêu cầu chờ duyệt)</span>
+            </h2>
+            <div id="admin-deposits-list" class="space-y-3">
+                <p class="text-xs text-gray-500 italic">Đang tải danh sách phiếu nạp...</p>
+            </div>
         </section>
 
         <!-- Kho Nhạc -->
@@ -170,23 +189,29 @@
             </div>
         </section>
 
-        <!-- Mục Liên Hệ Hỗ Trợ -->
+        <!-- Mục Liên Hệ Hỗ Trợ (Cập nhật thông tin chuẩn của bạn) -->
         <section class="bg-[#161f31]/90 backdrop-blur border border-gray-800 p-5 rounded-2xl space-y-3 shadow-xl">
             <h2 class="text-amber-400 font-bold text-sm flex items-center gap-2">
-                💬 Hỗ Trợ & Liên Hệ Admin <span class="dancing-bear text-sm">🐼</span>
+                💬 Hỗ Trợ & Liên Hệ Quản Trị <span class="dancing-bear text-sm">🐼</span>
             </h2>
             <p class="text-xs text-gray-300 leading-relaxed">
-                Quý khách cần mua bản quyền beat/track hoặc hỗ trợ thanh toán, vui lòng liên hệ trực tiếp với Admin:
+                Quý khách cần mua bản quyền beat/track, nạp tiền hoặc hỗ trợ kỹ thuật, vui lòng liên hệ trực tiếp:
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex items-center gap-2">
                     <span class="text-amber-400 font-bold">📱 Zalo/Phone:</span>
-                    <span class="text-gray-200 font-medium">0xxxxxxxxx (Võ Văn Đức)</span>
+                    <span class="text-gray-200 font-medium">096.1413.154</span>
                 </div>
                 <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex items-center gap-2">
-                    <span class="text-amber-400 font-bold">🌐 Facebook:</span>
-                    <a href="#" class="text-amber-400 underline truncate">fb.com/vovanduc</a>
+                    <span class="text-amber-400 font-bold">✈️ Telegram:</span>
+                    <a href="https://t.me/hoang522005" target="_blank" class="text-amber-400 underline truncate">@hoang522005</a>
                 </div>
+            </div>
+            <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 text-xs space-y-1">
+                <p class="text-amber-400 font-bold">🏦 Tài Khoản Thanh Toán Chính Hãng:</p>
+                <p class="text-gray-300">Ngân hàng: <b class="text-white">Vietcombank</b></p>
+                <p class="text-gray-300">Số tài khoản: <b class="text-emerald-400">1067823099</b></p>
+                <p class="text-gray-300">Chủ tài khoản: <b class="text-amber-400">LE THI YEN NHI</b></p>
             </div>
         </section>
     </main>
@@ -223,7 +248,6 @@
                 <button onclick="switchAuthTab('register')" id="tab-register-btn" class="w-1/2 py-2 text-gray-400">Đăng Ký</button>
             </div>
 
-            <!-- Form Đăng Nhập -->
             <div id="form-login" class="space-y-3">
                 <h3 class="font-bold text-sm text-white text-center">Đăng Nhập Tài Khoản</h3>
                 <div>
@@ -238,7 +262,6 @@
                 <button onclick="handleUserLogin()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-lg shadow-amber-600/20">Đăng Nhập</button>
             </div>
 
-            <!-- Form Đăng Ký -->
             <div id="form-register" class="space-y-3 hidden">
                 <h3 class="font-bold text-sm text-white text-center">Đăng Ký Tài Khoản Mới</h3>
                 <div>
@@ -257,29 +280,44 @@
         </div>
     </div>
 
-    <!-- Modal Thanh Toán QR Ngân Hàng -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4 text-center shadow-2xl">
-            <h3 class="font-bold text-base text-white">Quét Mã QR Thanh Toán</h3>
-            <p id="modal-song-info" class="text-xs text-gray-400"></p>
+    <!-- Modal Nạp Tiền & Gửi Bill Xác Nhận -->
+    <div id="deposit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 class="font-bold text-base text-white text-center">💳 Nạp Tiền Vào Tài Khoản</h3>
+            <p class="text-xs text-gray-400 text-center">Quét mã QR Vietcombank, chuyển khoản đúng nội dung rồi tải ảnh bill lên để được cộng tiền ảo.</p>
             
-            <div class="bg-white p-3 rounded-xl inline-block mx-auto">
-                <img id="qr-code-img" src="" alt="QR Code" class="w-48 h-48 mx-auto object-contain">
+            <div class="bg-white p-3 rounded-xl inline-block mx-auto w-full text-center">
+                <img id="deposit-qr-img" src="" alt="QR Code" class="w-44 h-44 mx-auto object-contain">
             </div>
 
-            <div class="text-xs text-gray-300 bg-[#0b0f19] p-3 rounded-xl text-left space-y-1">
-                <p>🏦 Ngân hàng: <b class="text-amber-400">Techcombank</b></p>
-                <p>👤 Chủ tài khoản: <b class="text-amber-400">VO VAN DUC</b></p>
-                <p>📝 Nội dung: <b id="qr-note" class="text-yellow-400">HTBN MUA</b></p>
+            <div class="text-xs text-gray-300 bg-[#0b0f19] p-3 rounded-xl space-y-1 border border-gray-800">
+                <p>🏦 Ngân hàng: <b class="text-amber-400">Vietcombank</b></p>
+                <p>👤 Chủ tài khoản: <b class="text-amber-400">LE THI YEN NHI</b></p>
+                <p>🔢 Số tài khoản: <b class="text-emerald-400">1067823099</b></p>
+                <p>📝 Nội dung CK: <b id="deposit-note" class="text-yellow-400">HTBN NAP ...</b></p>
             </div>
 
-            <button onclick="closeCheckoutModal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2.5 rounded-xl text-xs transition">Đóng lại</button>
+            <div class="space-y-3 pt-2 border-t border-gray-800">
+                <h4 class="text-xs font-bold text-amber-400">📤 Xác Nhận Đã Chuyển Khoản</h4>
+                <div>
+                    <label class="block text-[11px] text-gray-400 mb-1">Số tiền đã chuyển (VNĐ)</label>
+                    <input type="text" id="deposit-amount" placeholder="Ví dụ: 100000" class="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] text-gray-400 mb-1">Ảnh chụp Bill chuyển khoản</label>
+                    <input type="file" id="deposit-bill-file" accept="image/*" class="w-full text-xs text-gray-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700">
+                </div>
+                <button onclick="submitDepositTicket()" class="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-lg">
+                    Gửi Yêu Cầu Nạp Tiền
+                </button>
+            </div>
+
+            <button onclick="closeDepositModal()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded-xl text-xs transition">Đóng lại</button>
         </div>
     </div>
 
     <!-- Script Xử Lý Chính -->
     <script>
-        // Cố định ảnh Logo thương hiệu từ Ảnh 2
         const BRAND_LOGO_BASE64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
         document.getElementById('brand-logo-img').src = BRAND_LOGO_BASE64;
 
@@ -288,10 +326,11 @@
         
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const BANK_ID = "TCB";
-        const ACCOUNT_NO = "1903xxxxxxxxx";
-        const ACCOUNT_NAME = "VO VAN DUC";
-        const ADMIN_EMAIL = "vovanduc@admin.com"; 
+        // Thông tin Ngân hàng Vietcombank của bạn
+        const BANK_ID = "VCB";
+        const ACCOUNT_NO = "1067823099";
+        const ACCOUNT_NAME = "LE THI YEN NHI";
+        const ADMIN_EMAIL = "vovanduc@admin.com"; // Hoặc email admin của bạn
 
         const playPauseBtn = document.getElementById('play-pause-btn');
         const progressBar = document.getElementById('progress-bar');
@@ -313,7 +352,7 @@
 
             const { data } = await supabaseClient.auth.getUser();
             currentUser = data.user;
-            updateAuthUI();
+            await updateAuthUI();
             fetchSongs();
         });
 
@@ -324,31 +363,54 @@
             document.getElementById('live-clock').textContent = timeString;
         }
 
-        function updateAuthUI() {
+        async function updateAuthUI() {
             const authHeaderAction = document.getElementById('auth-header-action');
             const adminSection = document.getElementById('admin-section');
+            const adminDepositsSection = document.getElementById('admin-deposits-section');
+            const userWallet = document.getElementById('user-wallet');
 
             if (currentUser) {
+                // Kiểm tra lấy số dư ví
+                let { data: profile } = await supabaseClient
+                    .from('profiles')
+                    .select('balance')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (!profile) {
+                    // Nếu chưa có profile thì tạo mặc định 0đ
+                    await supabaseClient.from('profiles').insert([{ id: currentUser.id, balance: 0 }]);
+                    profile = { balance: 0 };
+                }
+
+                document.getElementById('wallet-balance').textContent = (profile.balance || 0).toLocaleString() + ' VNĐ';
+                userWallet.classList.remove('hidden');
+                userWallet.classList.add('flex');
+
                 const isAdmin = (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
                 if (isAdmin) {
                     authHeaderAction.innerHTML = `
-                        <span class="text-[11px] text-amber-400 font-semibold hidden sm:inline">👑 Quản Trị Viên</span>
-                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                        <span class="text-[11px] text-amber-400 font-semibold hidden sm:inline">👑 Quản Trị</span>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold">Đăng Xuất</button>
                     `;
                     adminSection.classList.remove('hidden');
+                    adminDepositsSection.classList.remove('hidden');
+                    fetchAdminDeposits();
                 } else {
                     authHeaderAction.innerHTML = `
-                        <span class="text-[11px] text-gray-300 font-semibold hidden sm:inline truncate max-w-[120px]">${currentUser.email}</span>
-                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold">Đăng Xuất</button>
                     `;
                     adminSection.classList.add('hidden');
+                    adminDepositsSection.classList.add('hidden');
                 }
             } else {
+                userWallet.classList.add('hidden');
                 authHeaderAction.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="bg-amber-600/20 text-amber-400 border border-amber-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-amber-600/30 transition">Đăng Nhập</button>
-                    <button onclick="openAuthModal('register')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-700 transition">Đăng Ký</button>
+                    <button onclick="openAuthModal('login')" class="bg-amber-600/20 text-amber-400 border border-amber-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold">Đăng Nhập</button>
+                    <button onclick="openAuthModal('register')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Đăng Ký</button>
                 `;
                 adminSection.classList.add('hidden');
+                adminDepositsSection.classList.add('hidden');
             }
         }
 
@@ -419,7 +481,7 @@
             } else {
                 currentUser = data.user;
                 closeAuthModal();
-                updateAuthUI();
+                await updateAuthUI();
                 fetchSongs();
             }
         }
@@ -428,7 +490,7 @@
             await supabaseClient.auth.signOut();
             currentUser = null;
             stopCurrentAudio();
-            updateAuthUI();
+            await updateAuthUI();
             fetchSongs();
             document.getElementById('player-title').textContent = "Chưa chọn bài hát";
             document.getElementById('player-artist').textContent = "HTBN Music Player";
@@ -437,6 +499,148 @@
             alert("Đã đăng xuất thành công!");
         }
 
+        // Mở Modal Nạp Tiền
+        function openDepositModal() {
+            if (!currentUser) {
+                alert("Vui lòng đăng nhập trước khi nạp tiền!");
+                openAuthModal('login');
+                return;
+            }
+
+            const modal = document.getElementById('deposit-modal');
+            const shortUserId = currentUser.id.slice(0, 8);
+            const depositNote = `HTBN NAP ${shortUserId}`;
+            document.getElementById('deposit-note').textContent = depositNote;
+
+            const qrImg = document.getElementById('deposit-qr-img');
+            qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${encodeURIComponent(depositNote)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeDepositModal() {
+            document.getElementById('deposit-modal').classList.add('hidden');
+        }
+
+        // Gửi Phiếu Nạp Tiền Kèm Bill
+        async function submitDepositTicket() {
+            const amountStr = document.getElementById('deposit-amount').value.trim();
+            const fileInput = document.getElementById('deposit-bill-file');
+            const amount = parseInt(amountStr.replace(/[^0-9]/g, '')) || 0;
+
+            if (amount <= 0 || fileInput.files.length === 0) {
+                alert("Vui lòng nhập số tiền chính xác và tải lên ảnh bill chuyển khoản!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const fileName = `bill_${currentUser.id}_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+
+            alert("Đang gửi yêu cầu và tải ảnh bill lên hệ thống...");
+
+            try {
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('bills')
+                    .upload(fileName, file, { upsert: true });
+
+                if (uploadError) throw new Error("Lỗi tải ảnh bill lên storage: " + uploadError.message + " (Hãy tạo bucket 'bills' public trên Supabase)");
+
+                const { data: publicURLData } = supabaseClient.storage
+                    .from('bills')
+                    .getPublicUrl(fileName);
+
+                const billUrl = publicURLData.publicUrl;
+
+                const { error: insertError } = await supabaseClient
+                    .from('deposits')
+                    .insert([{
+                        user_id: currentUser.id,
+                        user_email: currentUser.email,
+                        amount: amount,
+                        bill_url: billUrl,
+                        status: 'pending'
+                    }]);
+
+                if (insertError) throw new Error("Lỗi lưu yêu cầu: " + insertError.message + " (Hãy tạo bảng 'deposits' trên Supabase)");
+
+                alert("Gửi yêu cầu nạp tiền thành công! Admin sẽ kiểm tra bill và cộng tiền ảo vào tài khoản của bạn sớm.");
+                closeDepositModal();
+
+                document.getElementById('deposit-amount').value = '';
+                fileInput.value = '';
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Admin Duyệt Phiếu Nạp
+        async function fetchAdminDeposits() {
+            const container = document.getElementById('admin-deposits-list');
+            if (!container) return;
+
+            const { data, error } = await supabaseClient
+                .from('deposits')
+                .select('*')
+                .eq('status', 'pending')
+                .order('id', { ascending: false });
+
+            if (error) {
+                container.innerHTML = `<p class="text-xs text-red-400">Lỗi tải danh sách: ${error.message}</p>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic">Không có phiếu nạp tiền nào đang chờ duyệt.</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(item => `
+                <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="space-y-1">
+                        <p class="text-xs text-gray-300">👤 Khách: <b class="text-amber-400">${item.user_email}</b></p>
+                        <p class="text-xs text-gray-300">💰 Số tiền: <b class="text-emerald-400">${item.amount.toLocaleString()} VNĐ</b></p>
+                        <a href="${item.bill_url}" target="_blank" class="text-[11px] text-blue-400 underline block">🖼️ Xem ảnh Bill chuyển khoản</a>
+                    </div>
+                    <button onclick="approveDeposit('${item.id}', '${item.user_id}', ${item.amount})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-xl text-xs transition shadow">
+                        ✅ Duyệt & Cộng Tiền
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function approveDeposit(depositId, userId, amount) {
+            if (!confirm(`Xác nhận duyệt cộng ${amount.toLocaleString()} VNĐ cho người dùng này?`)) return;
+
+            const { data: profile, error: getErr } = await supabaseClient
+                .from('profiles')
+                .select('balance')
+                .eq('id', userId)
+                .single();
+
+            const currentBalance = profile ? (profile.balance || 0) : 0;
+            const newBalance = currentBalance + amount;
+
+            const { error: updateBalanceErr } = await supabaseClient
+                .from('profiles')
+                .update({ balance: newBalance })
+                .eq('id', userId);
+
+            if (updateBalanceErr) {
+                alert("Lỗi cộng tiền: " + updateBalanceErr.message);
+                return;
+            }
+
+            await supabaseClient
+                .from('deposits')
+                .update({ status: 'approved' })
+                .eq('id', depositId);
+
+            alert("Đã duyệt và cộng tiền thành công cho khách hàng!");
+            fetchAdminDeposits();
+            await updateAuthUI();
+        }
+
+        // Tải danh sách bài hát
         async function fetchSongs() {
             const listContainer = document.getElementById('songs-list');
             const { data, error } = await supabaseClient
@@ -462,30 +666,72 @@
                         <button onclick="handlePlayClick('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-amber-600 hover:bg-amber-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
                         <div class="truncate">
                             <h3 class="text-sm font-bold text-gray-100 truncate">${song.title}</h3>
-                            <p class="text-xs text-gray-400 truncate">${song.artist} ${!isAdmin ? '<span class="text-amber-500/80 text-[10px] ml-1">(Chỉ hiển thị thời gian)</span>' : ''}</p>
+                            <p class="text-xs text-gray-400 truncate">${song.artist} ${!isAdmin ? '<span class="text-amber-500/80 text-[10px] ml-1">(Chỉ Admin nghe thử)</span>' : ''}</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0">
                         <span class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">${song.price}</span>
-                        <button onclick="openCheckout('${song.id}', '${song.title}', '${song.price}')" class="bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 border border-amber-600/30 px-3 py-1.5 rounded-xl text-xs font-semibold transition">Mua ngay</button>
+                        <button onclick="buySongWithBalance('${song.id}', '${song.title}', '${song.price}', '${song.file_url}')" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow">Mua ngay</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function handlePlayClick(url, title, artist) {
-            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
-            if (!isAdmin) {
-                alert("Tính năng phát nhạc chỉ dành riêng cho Admin! Khách hàng vui lòng liên hệ Admin để mua bản quyền.");
-                document.getElementById('player-title').textContent = title;
-                document.getElementById('player-artist').textContent = artist + " (Khách: Không có quyền nghe)";
-                totalTimeEl.textContent = "--:--";
-                currentTimeEl.textContent = "00:00";
+        // Mua nhạc bằng số dư tài khoản & Tự động tải file
+        async function buySongWithBalance(songId, songTitle, songPriceStr, fileUrl) {
+            if (!currentUser) {
+                alert("Vui lòng đăng nhập để mua nhạc!");
+                openAuthModal('login');
                 return;
             }
-            playSong(url, title, artist);
+
+            const price = parseInt(songPriceStr.replace(/[^0-9]/g, '')) || 0;
+
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('balance')
+                .eq('id', currentUser.id)
+                .single();
+
+            const currentBalance = profile ? (profile.balance || 0) : 0;
+
+            if (currentBalance < price) {
+                alert(`Số dư của bạn không đủ (${currentBalance.toLocaleString()} VNĐ). Vui lòng nạp thêm tiền vào tài khoản!`);
+                openDepositModal();
+                return;
+            }
+
+            if (!confirm(`Xác nhận mua bài "${songTitle}" với giá ${price.toLocaleString()} VNĐ?`)) {
+                return;
+            }
+
+            const newBalance = currentBalance - price;
+            const { error: updateErr } = await supabaseClient
+                .from('profiles')
+                .update({ balance: newBalance })
+                .eq('id', currentUser.id);
+
+            if (updateErr) {
+                alert("Lỗi thanh toán: " + updateErr.message);
+                return;
+            }
+
+            await updateAuthUI();
+            alert(`Thanh toán thành công! Hệ thống đang tự động tải file bài hát về máy bạn.`);
+            triggerAutomaticDownload(fileUrl, songTitle);
         }
 
+        function triggerAutomaticDownload(fileUrl, filename) {
+            const a = document.createElement('a');
+            a.href = fileUrl;
+            a.download = (filename || "track_nhac") + ".mp3";
+            a.target = "_blank";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Admin upload nhạc
         async function uploadSong() {
             const title = document.getElementById('song-title').value.trim();
             const artist = document.getElementById('song-artist').value.trim();
@@ -537,6 +783,16 @@
                 statusEl.className = "text-xs text-center font-medium text-red-400";
                 statusEl.textContent = err.message;
             }
+        }
+
+        // Trình phát nhạc Web Audio API cho Admin
+        function handlePlayClick(url, title, artist) {
+            const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            if (!isAdmin) {
+                alert("Tính năng nghe thử chỉ dành riêng cho Admin!");
+                return;
+            }
+            playSong(url, title, artist);
         }
 
         async function playSong(url, title, artist) {
@@ -625,7 +881,7 @@
         function togglePlay() {
             const isAdmin = currentUser && (currentUser.email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase());
             if (!isAdmin) {
-                alert("Chỉ Admin mới có quyền phát nhạc hệ thống!");
+                alert("Chỉ Admin mới có quyền phát nhạc!");
                 return;
             }
             if (!audioBuffer) return;
@@ -664,26 +920,6 @@
             const min = Math.floor(seconds / 60);
             const sec = Math.floor(seconds % 60);
             return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-        }
-
-        function openCheckout(id, title, price) {
-            const modal = document.getElementById('checkout-modal');
-            document.getElementById('modal-song-info').textContent = `Bài: ${title} - Giá: ${price}`;
-            const cleanPrice = price.replace(/[^0-9]/g, '');
-            const addInfo = `HTBN MUA ${id}`;
-            document.getElementById('qr-note').textContent = addInfo;
-
-            const qrImg = document.getElementById('qr-code-img');
-            if (cleanPrice) {
-                qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${cleanPrice}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
-            } else {
-                qrImg.src = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function closeCheckoutModal() {
-            document.getElementById('checkout-modal').classList.add('hidden');
         }
     </script>
 </body>

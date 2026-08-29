@@ -49,16 +49,43 @@
     </header>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <main class="lg:col-span-3 space-y-6">
-            <div class="relative rounded-3xl bg-gradient-to-r from-blue-900/60 via-purple-900/50 to-indigo-950 border border-blue-500/30 p-6 sm:p-8 overflow-hidden shadow-2xl">
-                <div class="relative z-10 space-y-4 max-w-lg">
-                    <span class="text-xs font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30">HTBN – Hệ Thống Bán Nhạc</span>
-                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-wide leading-tight">MUA TRACK NHẠC CHẤT LƯỢNG CAO</h2>
-                    <p class="text-gray-300 text-sm">Kho nhạc độc quyền dành cho DJ, producer, ca sĩ và những người yêu âm nhạc.</p>
+    <div class="max-w-7xl mx-auto px-4 mt-6 space-y-8">
+        <!-- Banner -->
+        <div class="relative rounded-3xl bg-gradient-to-r from-blue-900/60 via-purple-900/50 to-indigo-950 border border-blue-500/30 p-6 sm:p-8 overflow-hidden shadow-2xl">
+            <div class="relative z-10 space-y-4 max-w-lg">
+                <span class="text-xs font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30">HTBN – Hệ Thống Bán Nhạc</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-wide leading-tight">MUA TRACK NHẠC CHẤT LƯỢNG CAO</h2>
+                <p class="text-gray-300 text-sm">Kho nhạc độc quyền dành cho DJ, producer, ca sĩ và những người yêu âm nhạc.</p>
+            </div>
+        </div>
+
+        <!-- Danh sách bài hát -->
+        <div>
+            <h3 class="text-xl font-extrabold text-white mb-4 flex items-center space-x-2">
+                <i class="fa-solid fa-music text-blue-500"></i>
+                <span>Kho Nhạc Độc Quyền</span>
+            </h3>
+            <div id="songs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dữ liệu bài hát sẽ được load tự động vào đây -->
+                <p class="text-gray-400 text-sm">Đang tải danh sách nhạc...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Player Bar (Cố định ở dưới màn hình) -->
+    <div id="player-bar" class="fixed bottom-0 left-0 right-0 bg-cardBg/95 backdrop-blur-md border-t border-gray-800 p-4 hidden z-40">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                    <i class="fa-solid fa-compact-disc fa-spin text-xl"></i>
+                </div>
+                <div>
+                    <h4 id="player-title" class="text-sm font-bold text-white">Tên bài hát</h4>
+                    <p id="player-artist" class="text-xs text-gray-400">Ca sĩ</p>
                 </div>
             </div>
-        </main>
+            <audio id="audio-element" controls class="h-10 outline-none"></audio>
+        </div>
     </div>
 
     <!-- Modal Đăng Ký / Đăng Nhập -->
@@ -82,10 +109,10 @@
         </div>
     </div>
 
-    <!-- Script kết nối Supabase -->
+    <!-- Script kết nối Supabase và xử lý dữ liệu -->
     <script>
         const SUPABASE_URL = 'https://qhtowcnxcvrwysvxjifr.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable__7Et13j4E-G_NXYwpRwxTw_cibLQfW2'; 
+        const SUPABASE_ANON_KEY = 'sb_publishable__7Et13j4E-G_NXYwpRwXTw_cibLQfW2'; 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentMode = 'register';
@@ -147,7 +174,65 @@
             location.reload();
         }
 
+        // Tải danh sách bài hát từ Supabase
+        async function loadSongs() {
+            const container = document.getElementById('songs-container');
+            const { data: songs, error } = await supabaseClient.from('songs').select('*');
+
+            if (error) {
+                container.innerHTML = `<p class="text-red-400 text-sm">Lỗi tải dữ liệu nhạc: ${error.message}</p>`;
+                return;
+            }
+
+            if (!songs || songs.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-sm">Chưa có bài nhạc nào được đăng tải.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            songs.forEach(song => {
+                container.innerHTML += `
+                    <div class="bg-cardBg border border-gray-800 rounded-3xl p-5 space-y-4 shadow-xl hover:border-blue-500/50 transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-extrabold text-white text-base">${song.title}</h4>
+                                <p class="text-xs text-gray-400">${song.artist}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-800/80">
+                            <span class="text-sm font-bold text-cyan-400">${Number(song.price).toLocaleString()} VNĐ</span>
+                            <div class="space-x-2">
+                                <button onclick="playSong('${song.title}', '${song.artist}', '${song.file_url}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/30 transition">
+                                    <i class="fa-solid fa-play mr-1"></i> Nghe thử
+                                </button>
+                                <button onclick="buySong('${song.title}', ${song.price})" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-90 transition">
+                                    Mua ngay
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function playSong(title, artist, url) {
+            document.getElementById('player-bar').classList.remove('hidden');
+            document.getElementById('player-title').innerText = title;
+            document.getElementById('player-artist').innerText = artist;
+            const audio = document.getElementById('audio-element');
+            audio.src = url;
+            audio.play();
+        }
+
+        function buySong(title, price) {
+            alert(`Bạn đã chọn mua bài: "${title}" với giá ${price.toLocaleString()} VNĐ. Tính năng thanh toán sẽ được tích hợp tiếp theo!`);
+        }
+
         checkUser();
+        loadSongs();
     </script>
 </body>
 </html>

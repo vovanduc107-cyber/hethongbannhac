@@ -29,7 +29,7 @@
     </header>
 
     <main class="max-w-2xl mx-auto p-4 space-y-6">
-        <!-- Form Quản Trị Đăng Tải (Chỉ Admin thấy) -->
+        <!-- Form Quản Trị Đăng Tải (Hiện khi đã đăng nhập) -->
         <section id="admin-section" class="bg-[#161f31] border border-gray-800 p-5 rounded-2xl shadow-xl space-y-4 hidden">
             <h2 class="text-blue-400 font-bold text-base flex items-center gap-2">
                 ☁️ Trang Quản Trị - Đăng Tải Track Nhạc Mới
@@ -116,7 +116,7 @@
         </div>
     </footer>
 
-    <!-- Modal Đăng Nhập / Đăng Ký Khách & Admin -->
+    <!-- Modal Đăng Nhập / Đăng Ký -->
     <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-[#161f31] border border-gray-800 rounded-2xl p-5 max-w-sm w-full space-y-4">
             <div class="flex border-b border-gray-700 text-xs font-semibold">
@@ -188,7 +188,6 @@
         const BANK_ID = "TCB";
         const ACCOUNT_NO = "1903xxxxxxxxx";
         const ACCOUNT_NAME = "VO VAN DUC";
-        const ADMIN_EMAIL = "vovanduc@admin.com"; // Email quy định là Admin của anh
 
         const playPauseBtn = document.getElementById('play-pause-btn');
         const progressBar = document.getElementById('progress-bar');
@@ -216,20 +215,12 @@
             const adminSection = document.getElementById('admin-section');
 
             if (currentUser) {
-                const isAdmin = (currentUser.email === ADMIN_EMAIL);
-                if (isAdmin) {
-                    authHeaderAction.innerHTML = `
-                        <span class="text-[11px] text-blue-400 font-semibold hidden sm:inline">👑 Admin</span>
-                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
-                    `;
-                    adminSection.classList.remove('hidden');
-                } else {
-                    authHeaderAction.innerHTML = `
-                        <span class="text-[11px] text-gray-300 font-semibold hidden sm:inline truncate max-w-[120px]">${currentUser.email}</span>
-                        <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
-                    `;
-                    adminSection.classList.add('hidden');
-                }
+                // Đã đăng nhập -> Mặc định là Admin quản lý trang web này
+                authHeaderAction.innerHTML = `
+                    <span class="text-[11px] text-blue-400 font-semibold hidden sm:inline">👑 Quản Trị Viên</span>
+                    <button onclick="handleLogout()" class="bg-red-600/20 text-red-400 border border-red-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600/30 transition">Đăng Xuất</button>
+                `;
+                adminSection.classList.remove('hidden');
             } else {
                 authHeaderAction.innerHTML = `
                     <button onclick="openAuthModal('login')" class="bg-blue-600/20 text-blue-400 border border-blue-600/30 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-600/30 transition">Đăng Nhập</button>
@@ -341,15 +332,13 @@
                 return;
             }
 
-            const isAdmin = currentUser && (currentUser.email === ADMIN_EMAIL);
-
             listContainer.innerHTML = data.map(song => `
                 <div class="bg-[#161f31] border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-3">
                     <div class="flex items-center space-x-3 overflow-hidden">
-                        <button onclick="handlePlayClick('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
+                        <button onclick="playSong('${song.file_url}', '${song.title}', '${song.artist}')" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow transition">▶</button>
                         <div class="truncate">
                             <h3 class="text-sm font-bold text-gray-100 truncate">${song.title}</h3>
-                            <p class="text-xs text-gray-400 truncate">${song.artist} ${!isAdmin ? '<span class="text-yellow-500/80 text-[10px] ml-1">(Chỉ hiển thị thời gian)</span>' : ''}</p>
+                            <p class="text-xs text-gray-400 truncate">${song.artist}</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0">
@@ -358,19 +347,6 @@
                     </div>
                 </div>
             `).join('');
-        }
-
-        function handlePlayClick(url, title, artist) {
-            const isAdmin = currentUser && (currentUser.email === ADMIN_EMAIL);
-            if (!isAdmin) {
-                alert("Tính năng phát nhạc chỉ dành riêng cho Admin! Khách hàng vui lòng liên hệ Admin để mua bản quyền.");
-                document.getElementById('player-title').textContent = title;
-                document.getElementById('player-artist').textContent = artist + " (Khách: Chỉ xem thời gian)";
-                totalTimeEl.textContent = "--:--";
-                currentTimeEl.textContent = "00:00";
-                return;
-            }
-            playSong(url, title, artist);
         }
 
         async function uploadSong() {
@@ -510,11 +486,6 @@
         }
 
         function togglePlay() {
-            const isAdmin = currentUser && (currentUser.email === ADMIN_EMAIL);
-            if (!isAdmin) {
-                alert("Chỉ Admin mới có quyền phát nhạc hệ thống!");
-                return;
-            }
             if (!audioBuffer) return;
 
             if (isPlaying) {
@@ -538,7 +509,7 @@
         });
 
         progressBar.addEventListener('change', () => {
-            if (!audioBuffer, audioBuffer) return;
+            if (!audioBuffer) return;
             const seekTime = (progressBar.value / 100) * audioBuffer.duration;
             pauseOffset = seekTime;
             if (isPlaying) {

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BearMelody - Thế Giới Âm Nhạc Gấu Hồng Đỏ</title>
+    <title>BearMelody - Kho Nhạc Độc Quyền Gấu Hồng</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
-            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.92);
             --primary: #e11d48;
             --primary-gradient: linear-gradient(135deg, #fb7185, #e11d48, #9f1239);
             --text-main: #4c0519;
@@ -31,10 +31,10 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            padding-bottom: 50px;
+            padding-bottom: 60px;
         }
 
-        /* Hiệu ứng lấp lánh nền */
+        /* Hiệu ứng nền lấp lánh */
         .sparkle {
             position: fixed;
             background: radial-gradient(circle, #fff 0%, rgba(255,182,193,0.5) 70%, transparent 100%);
@@ -43,7 +43,6 @@
             z-index: 0;
         }
 
-        /* Gấu cute nhảy nhót */
         .dancing-bears {
             position: fixed;
             bottom: 10px;
@@ -517,7 +516,7 @@
         <div id="adminViewSection" class="view-section">
             <header>
                 <h1>Khu Vực Quản Trị 🛡️</h1>
-                <p>Thêm bài hát bằng URL trực tuyến công khai để mọi người cùng nghe được</p>
+                <p>Chọn trực tiếp file nhạc MP3 và ảnh bìa từ thiết bị của bạn</p>
             </header>
 
             <div style="margin-bottom: 15px;">
@@ -526,7 +525,7 @@
 
             <div class="admin-layout">
                 <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Thêm Bài Hát Mới (Link Online)</div>
+                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Đăng Bài Hát Mới Từ Máy</div>
                     <form id="adminUploadForm" onsubmit="handleAdminUpload(event)">
                         <div class="form-group">
                             <label class="form-label">Tên bài hát</label>
@@ -541,14 +540,21 @@
                             <input type="number" class="form-input" id="adminSongPrice" placeholder="VD: 15000" required min="0">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Link Ảnh Bìa (URL ảnh trực tuyến)</label>
-                            <input type="url" class="form-input" id="adminCoverUrl" placeholder="https://example.com/cover.jpg" required>
+                            <label class="form-label">Chọn Ảnh Bìa (Từ máy/điện thoại)</label>
+                            <div class="file-upload-wrapper">
+                                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);" id="coverFileText"><i class="fa-solid fa-image" style="color:var(--primary);"></i> Bấm vào đây chọn ảnh bìa</div>
+                                <input type="file" id="adminCoverFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('coverFileText').innerText = 'Đã chọn ảnh: ' + this.files[0].name;">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Link File Nhạc MP3 (URL trực tiếp tệp .mp3)</label>
-                            <input type="url" class="form-input" id="adminAudioUrl" placeholder="https://example.com/music.mp3" required>
+                            <label class="form-label">Chọn File Nhạc MP3 (Từ máy/điện thoại)</label>
+                            <div class="file-upload-wrapper" style="border-color: #3b82f6; background: rgba(239, 246, 255, 0.6);">
+                                <div style="font-size:0.8rem; font-weight:700; color: #1d4ed8;" id="audioFileText"><i class="fa-solid fa-music" style="color: #3b82f6;"></i> Bấm vào đây chọn file .mp3</div>
+                                <input type="file" id="adminAudioFile" accept="audio/mp3,audio/*" required onchange="if(this.files[0]) document.getElementById('audioFileText').innerText = 'Đã chọn nhạc: ' + this.files[0].name;">
+                            </div>
+                            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block; margin-top:4px;">💡 Hỗ trợ chuyển đổi file trực tiếp để mọi khách hàng đều có thể nghe được ngay lập tức.</small>
                         </div>
-                        <button type="submit" class="btn-main">Thêm Bài Hát Lên Web</button>
+                        <button type="submit" class="btn-main" id="uploadSubmitBtn">Đăng Bài Hát Lên Web</button>
                     </form>
                 </div>
 
@@ -584,7 +590,7 @@
     </div>
 
     <script>
-        // Tạo hiệu ứng lấp lánh an toàn
+        // Hiệu ứng lấp lánh nền
         try {
             const sparkleContainer = document.getElementById('sparkleContainer');
             for (let i = 0; i < 15; i++) {
@@ -617,7 +623,8 @@
                 artist: 'DJ Teddy',
                 price: 15000,
                 coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150',
-                audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+                audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+                unlockedBy: []
             }
         ];
         
@@ -630,7 +637,6 @@
 
         let pendingBills = 1;
 
-        // Khởi chạy khi DOM sẵn sàng
         document.addEventListener("DOMContentLoaded", function() {
             updateAuthUI();
             renderMusicList();
@@ -681,7 +687,7 @@
             usersData[currentUser] = 10000;
 
             saveStateToStorage();
-            showToast("Đăng ký thành công! Nhận 10.000 Xu.");
+            showToast("Đăng ký thành công! Tặng 10.000 Xu.");
             updateAuthUI();
             closeModal();
         }
@@ -826,30 +832,61 @@
             showToast("Đã từ chối phiếu nạp xu này.", false);
         }
 
+        // Xử lý upload file ảnh bìa & file nhạc bằng FileReader chuyển đổi Base64
         function handleAdminUpload(e) {
             e.preventDefault();
-            const title = document.getElementById('adminSongTitle').value;
-            const artist = document.getElementById('adminSongArtist').value;
-            const price = document.getElementById('adminSongPrice').value;
-            const coverUrl = document.getElementById('adminCoverUrl').value;
-            const audioUrl = document.getElementById('adminAudioUrl').value;
+            const title = document.getElementById('adminSongTitle').value.trim();
+            const artist = document.getElementById('adminSongArtist').value.trim();
+            const price = Number(document.getElementById('adminSongPrice').value);
+            
+            const coverFileInput = document.getElementById('adminCoverFile');
+            const audioFileInput = document.getElementById('adminAudioFile');
 
-            const newSong = {
-                id: 'song_' + Date.now(),
-                title: title,
-                artist: artist,
-                price: Number(price),
-                coverUrl: coverUrl,
-                audioUrl: audioUrl
+            if (!coverFileInput.files[0] || !audioFileInput.files[0]) {
+                showToast("Vui lòng chọn đầy đủ Ảnh Bìa và File Nhạc MP3!", false);
+                return;
+            }
+
+            const submitBtn = document.getElementById('uploadSubmitBtn');
+            submitBtn.innerText = "Đang xử lý tải file lên...";
+            submitBtn.disabled = true;
+
+            const coverFile = coverFileInput.files[0];
+            const audioFile = audioFileInput.files[0];
+
+            const readerCover = new FileReader();
+            readerCover.onload = function(coverEvent) {
+                const coverBase64 = coverEvent.target.result;
+
+                const readerAudio = new FileReader();
+                readerAudio.onload = function(audioEvent) {
+                    const audioBase64 = audioEvent.target.result;
+
+                    const newSong = {
+                        id: 'song_' + Date.now(),
+                        title: title,
+                        artist: artist,
+                        price: price,
+                        coverUrl: coverBase64,
+                        audioUrl: audioBase64,
+                        unlockedBy: []
+                    };
+
+                    musicList.unshift(newSong);
+                    saveStateToStorage();
+                    renderMusicList();
+
+                    showToast("Thêm bài hát thành công! Khách hàng đã có thể nghe và mua.");
+                    document.getElementById('adminUploadForm').reset();
+                    document.getElementById('coverFileText').innerHTML = '<i class="fa-solid fa-image" style="color:var(--primary);"></i> Bấm vào đây chọn ảnh bìa';
+                    document.getElementById('audioFileText').innerHTML = '<i class="fa-solid fa-music" style="color: #3b82f6;"></i> Bấm vào đây chọn file .mp3';
+                    submitBtn.innerText = "Đăng Bài Hát Lên Web";
+                    submitBtn.disabled = false;
+                    switchView('user');
+                };
+                readerAudio.readAsDataURL(audioFile);
             };
-
-            musicList.unshift(newSong);
-            saveStateToStorage();
-            renderMusicList();
-
-            showToast("Thêm bài hát thành công!");
-            document.getElementById('adminUploadForm').reset();
-            switchView('user');
+            readerCover.readAsDataURL(coverFile);
         }
 
         function renderMusicList() {
@@ -860,6 +897,17 @@
             musicList.forEach(song => {
                 const card = document.createElement('div');
                 card.className = 'music-card';
+
+                // Kiểm tra xem user hiện tại đã mua bài này chưa
+                const isUnlocked = currentUser && song.unlockedBy && song.unlockedBy.includes(currentUser);
+                const buyBtnText = isUnlocked ? '<span style="color:var(--success); font-weight:800;"><i class="fa-solid fa-check"></i> Đã mua</span>' : `<button class="btn-buy" onclick="buySong('${song.id}', ${song.price})">Mua</button>`;
+                
+                // Khách chỉ nghe được khi đã mua hoặc bài mặc định (hoặc nếu là admin)
+                const canListen = isAdmin || isUnlocked || song.id === 'default_1';
+                const listenBtn = canListen 
+                    ? `<button class="btn-listen" onclick="playCustomAudio('${song.audioUrl}', '${song.title}')"><i class="fa-solid fa-play"></i> Nghe</button>`
+                    : `<button class="btn-listen" style="opacity:0.5;" onclick="showToast('Bạn cần mua bản quyền bài hát này để nghe!', false)"><i class="fa-solid fa-lock"></i> Khóa</button>`;
+
                 card.innerHTML = `
                     <img src="${song.coverUrl}" class="music-thumb" alt="Thumb" onerror="this.src='https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150'">
                     <div class="music-info">
@@ -867,8 +915,8 @@
                         <p>${song.artist} • ${song.price.toLocaleString()} Xu</p>
                     </div>
                     <div class="btn-audio-action">
-                        <button class="btn-listen" onclick="playCustomAudio('${song.audioUrl}', '${song.title}')"><i class="fa-solid fa-play"></i> Nghe</button>
-                        <button class="btn-buy" onclick="buySong('${song.title}', ${song.price})">Mua</button>
+                        ${listenBtn}
+                        ${buyBtnText}
                     </div>
                 `;
                 listContainer.appendChild(card);
@@ -885,14 +933,22 @@
             player.play().then(() => {
                 showToast(`Đang phát: "${title}"`);
             }).catch(err => {
-                showToast("Không thể phát nhạc. Kiểm tra lại URL file MP3!", false);
+                showToast("Không thể phát nhạc. Định dạng file có thể không được hỗ trợ!", false);
             });
         }
 
-        function buySong(songName, price) {
+        function buySong(songId, price) {
             if (!currentUser) {
                 showToast("Vui lòng đăng nhập để mua nhạc!", false);
                 openModal('login');
+                return;
+            }
+
+            const song = musicList.find(s => s.id === songId);
+            if (!song) return;
+
+            if (song.unlockedBy && song.unlockedBy.includes(currentUser)) {
+                showToast("Bạn đã sở hữu bài hát này rồi!");
                 return;
             }
 
@@ -903,9 +959,13 @@
             }
 
             usersData[currentUser] -= price;
+            if (!song.unlockedBy) song.unlockedBy = [];
+            song.unlockedBy.push(currentUser);
+
             saveStateToStorage();
+            renderMusicList();
             document.getElementById('userBalanceDisplay').innerText = usersData[currentUser].toLocaleString() + " Xu";
-            showToast(`Mua bản quyền thành công: "${songName}"!`);
+            showToast(`Mua bản quyền thành công bài hát: "${song.title}"! Bạn đã có thể nghe nhạc.`);
         }
     </script>
 </body>

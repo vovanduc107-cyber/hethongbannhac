@@ -193,7 +193,7 @@
 
         .user-grid {
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 380px 1fr;
             gap: 25px;
             margin-top: 20px;
         }
@@ -302,14 +302,42 @@
             font-size: 0.85rem;
             margin-top: 15px;
         }
-        .info-box p { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 700; }
+        .info-box p { display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 700; }
         .info-box span.val { color: var(--primary); }
+
+        /* Khung Thông Tin Liên Hệ mới */
+        .contact-box {
+            background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+            border: 2px solid #fda4af;
+            border-radius: 14px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .contact-title {
+            font-family: 'Outfit';
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .contact-item {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
         .music-list {
             display: flex;
             flex-direction: column;
             gap: 14px;
-            max-height: 600px;
+            max-height: 620px;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -335,19 +363,38 @@
         .music-thumb { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 2px solid #fda4af; }
         .music-info { flex: 1; }
         .music-info h4 { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 3px; }
-        .music-info p { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; }
+        .music-info p { font-size: 0.82rem; color: var(--text-muted); font-weight: 700; }
 
-        .btn-buy {
+        .btn-audio-action {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-listen {
             background: #fdf2f8;
             border: 2px solid #f472b6;
             color: #db2777;
-            padding: 8px 18px;
+            padding: 8px 12px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: 700;
             transition: 0.3s;
         }
-        .btn-buy:hover { background: #db2777; color: white; }
+        .btn-listen:hover { background: #db2777; color: white; }
+
+        .btn-buy {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.2);
+            transition: 0.3s;
+        }
+        .btn-buy:hover { transform: scale(1.05); }
 
         .admin-layout {
             display: grid;
@@ -478,7 +525,7 @@
             </header>
 
             <div class="user-grid">
-                <!-- Ví cá nhân & Nạp tiền -->
+                <!-- Ví cá nhân & Thông tin liên hệ -->
                 <div class="panel">
                     <div class="panel-title"><i class="fa-solid fa-wallet"></i> Ví Xu Của Bạn</div>
                     <div class="wallet-box">
@@ -507,9 +554,17 @@
                         <p>Vietcombank: <span class="val">1067823099</span></p>
                         <p>Chủ TK: <span class="val">LE THI YEN NHI</span></p>
                     </div>
+
+                    <!-- Mục Thông Tin Liên Hệ mới thêm -->
+                    <div class="contact-box">
+                        <div class="contact-title"><i class="fa-solid fa-address-book"></i> Thông Tin Liên Hệ & Hỗ Trợ</div>
+                        <div class="contact-item"><i class="fa-solid fa-phone" style="color:var(--primary);"></i> Hotline/Zalo: 0988.xxx.xxx</div>
+                        <div class="contact-item"><i class="fa-solid fa-envelope" style="color:var(--primary);"></i> Email: support@bearmelody.vn</div>
+                        <div class="contact-item"><i class="fa-solid fa-headset" style="color:var(--primary);"></i> Trợ giúp 24/7 qua Admin tài khoản</div>
+                    </div>
                 </div>
 
-                <!-- Danh sách nhạc mua bản quyền -->
+                <!-- Kho Nhạc -->
                 <div class="panel">
                     <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Kho Nhạc Độc Quyền 🧸</div>
                     <div class="music-list" id="userMusicListContainer">
@@ -519,7 +574,10 @@
                                 <h4>Sweet Bear Melody</h4>
                                 <p>DJ Teddy • 15,000 Xu</p>
                             </div>
-                            <button class="btn-buy" onclick="buySong('Sweet Bear Melody', 15000)">Mua Ngay</button>
+                            <div class="btn-audio-action">
+                                <button class="btn-listen" onclick="playAudioDemo('Demo Sweet Bear Melody')"><i class="fa-solid fa-play"></i> Nghe</button>
+                                <button class="btn-buy" onclick="buySong('Sweet Bear Melody', 15000)">Mua</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -530,7 +588,7 @@
         <div id="adminViewSection" class="view-section">
             <header>
                 <h1>Khu Vực Quản Trị Viên 🛡️</h1>
-                <p>Kiểm soát kho nhạc và duyệt lệnh nạp xu thành viên</p>
+                <p>Kiểm soát kho nhạc, upload tệp MP3/WAV và duyệt lệnh nạp xu</p>
             </header>
 
             <div style="margin-bottom: 20px;">
@@ -538,9 +596,9 @@
             </div>
 
             <div class="admin-layout">
-                <!-- Thêm nhạc mới -->
+                <!-- Thêm nhạc mới kèm Upload File MP3/WAV -->
                 <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Đăng Tải Bài Hát Mới</div>
+                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Đăng Bài Hát & Upload File Nhạc</div>
                     <form id="adminUploadForm" onsubmit="handleAdminUpload(event)">
                         <div class="form-group">
                             <label class="form-label">Tên bài hát</label>
@@ -554,11 +612,21 @@
                             <label class="form-label">Giá mở khóa (Xu)</label>
                             <input type="number" class="form-input" id="adminSongPrice" placeholder="VD: 20000" required min="0">
                         </div>
-                        <div class="file-upload-wrapper" style="margin-bottom: 15px; padding:10px;">
-                            <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);" id="adminCoverText"><i class="fa-solid fa-image"></i> Chọn ảnh bìa bài hát</span>
-                            <input type="file" id="adminCoverFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('adminCoverText').innerText=this.files[0].name;">
+                        <div class="form-group">
+                            <label class="form-label">Upload File Âm Thanh (Hỗ trợ MP3, WAV)</label>
+                            <div class="file-upload-wrapper" style="margin-bottom: 5px; padding:12px;">
+                                <span style="font-size:0.82rem; font-weight:700; color:var(--text-muted);" id="adminAudioText"><i class="fa-solid fa-file-audio" style="color:var(--primary);"></i> Chọn file .mp3 hoặc .wav</span>
+                                <input type="file" id="adminAudioFile" accept=".mp3, .wav, audio/*" required onchange="if(this.files[0]) document.getElementById('adminAudioText').innerText=this.files[0].name;">
+                            </div>
                         </div>
-                        <button type="submit" class="btn-main">Đăng Bài Hát Lên Web</button>
+                        <div class="form-group">
+                            <label class="form-label">Ảnh bìa bài hát</label>
+                            <div class="file-upload-wrapper" style="margin-bottom: 15px; padding:10px;">
+                                <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);" id="adminCoverText"><i class="fa-solid fa-image"></i> Chọn ảnh bìa</span>
+                                <input type="file" id="adminCoverFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('adminCoverText').innerText=this.files[0].name;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-main">Đăng Bài Hát & File Lên Web</button>
                     </form>
                 </div>
 
@@ -586,6 +654,9 @@
 
     </div>
 
+    <!-- Audio Player ẩn để phát nhạc test -->
+    <audio id="globalAudioPlayer"></audio>
+
     <div class="toast" id="luxToast">
         <i class="fa-solid fa-circle-check" id="toastIcon" style="color:var(--success); font-size:1.2rem;"></i>
         <div id="toastMessage">Thành công!</div>
@@ -607,13 +678,11 @@
             sparkleContainer.appendChild(s);
         }
 
-        // Khởi tạo lưu trữ dữ liệu tài khoản và session qua localStorage để chống lỗi F5 bị mất trạng thái
         let currentUser = localStorage.getItem('bear_current_user') || null;
         let isAdmin = localStorage.getItem('bear_is_admin') === 'true';
         let usersData = JSON.parse(localStorage.getItem('bear_users_data')) || {};
         let pendingBills = 1;
 
-        // Đồng bộ hiển thị ngay khi tải trang
         updateAuthUI();
 
         function openModal(tab) {
@@ -658,8 +727,6 @@
 
             currentUser = username;
             isAdmin = (username.toLowerCase() === 'admin');
-            
-            // Đăng ký mới nhận chính xác 10.000 Xu
             usersData[currentUser] = 10000;
 
             saveStateToStorage();
@@ -695,7 +762,6 @@
                 document.getElementById('currentUsernameDisplay').innerText = currentUser;
                 document.getElementById('accNameText').innerText = currentUser;
 
-                // Lấy số dư hiện tại của tài khoản
                 const currentBal = usersData[currentUser] !== undefined ? usersData[currentUser] : 0;
                 document.getElementById('userBalanceDisplay').innerText = currentBal.toLocaleString() + " Xu";
 
@@ -779,7 +845,6 @@
             document.getElementById('billFileText').innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây';
         }
 
-        // Chỉ Admin cộng tiền thì tài khoản đó mới có xu mua nhạc
         function approveUserBill(id, targetUser, amount) {
             const el = document.getElementById(id);
             if (el) el.remove();
@@ -813,13 +878,15 @@
             const artist = document.getElementById('adminSongArtist').value;
             const price = document.getElementById('adminSongPrice').value;
             const coverInput = document.getElementById('adminCoverFile');
+            const audioInput = document.getElementById('adminAudioFile');
 
-            if (!coverInput.files[0]) {
-                showToast("Vui lòng chọn ảnh bìa bài hát!", false);
+            if (!coverInput.files[0] || !audioInput.files[0]) {
+                showToast("Vui lòng chọn đầy đủ file ảnh bìa và file âm thanh MP3/WAV!", false);
                 return;
             }
 
             const coverUrl = URL.createObjectURL(coverInput.files[0]);
+            const audioUrl = URL.createObjectURL(audioInput.files[0]);
             const list = document.getElementById('userMusicListContainer');
             
             const card = document.createElement('div');
@@ -830,13 +897,31 @@
                     <h4>${title}</h4>
                     <p>${artist} • ${Number(price).toLocaleString()} Xu</p>
                 </div>
-                <button class="btn-buy" onclick="buySong('${title}', ${price})">Mua Ngay</button>
+                <div class="btn-audio-action">
+                    <button class="btn-listen" onclick="playCustomAudio('${audioUrl}', '${title}')"><i class="fa-solid fa-play"></i> Nghe</button>
+                    <button class="btn-buy" onclick="buySong('${title}', ${price})">Mua</button>
+                </div>
             `;
             list.prepend(card);
 
-            showToast("Quản trị viên đã đăng bài hát mới thành công!");
+            showToast("Đã upload thành công bài hát và file MP3/WAV lên hệ thống!");
             document.getElementById('adminUploadForm').reset();
-            document.getElementById('adminCoverText').innerHTML = '<i class="fa-solid fa-image"></i> Chọn ảnh bìa bài hát';
+            document.getElementById('adminCoverText').innerHTML = '<i class="fa-solid fa-image"></i> Chọn ảnh bìa';
+            document.getElementById('adminAudioText').innerHTML = '<i class="fa-solid fa-file-audio" style="color:var(--primary);"></i> Chọn file .mp3 hoặc .wav';
+        }
+
+        function playCustomAudio(url, title) {
+            const player = document.getElementById('globalAudioPlayer');
+            player.src = url;
+            player.play().then(() => {
+                showToast(`Đang phát: "${title}"`);
+            }).catch(err => {
+                showToast("Không thể phát trực tiếp tệp âm thanh này.", false);
+            });
+        }
+
+        function playAudioDemo(title) {
+            showToast(`Đang phát bản demo: "${title}"`);
         }
 
         function buySong(songName, price) {

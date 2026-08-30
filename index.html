@@ -305,7 +305,7 @@
         .info-box p { display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 700; }
         .info-box span.val { color: var(--primary); }
 
-        /* Khung Thông Tin Liên Hệ mới */
+        /* Khung Thông Tin Liên Hệ chuẩn */
         .contact-box {
             background: linear-gradient(135deg, #fff1f2, #ffe4e6);
             border: 2px solid #fda4af;
@@ -327,7 +327,7 @@
             font-size: 0.82rem;
             font-weight: 700;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -551,16 +551,16 @@
                     </form>
 
                     <div class="info-box">
-                        <p>Vietcombank: <span class="val">1067823099</span></p>
+                        <p>Ngân hàng: <span class="val">Vietcombank</span></p>
+                        <p>Số tài khoản: <span class="val">1067823099</span></p>
                         <p>Chủ TK: <span class="val">LE THI YEN NHI</span></p>
                     </div>
 
-                    <!-- Mục Thông Tin Liên Hệ mới thêm -->
+                    <!-- Mục Thông Tin Liên Hệ mới (Telegram & Zalo/Phone) -->
                     <div class="contact-box">
-                        <div class="contact-title"><i class="fa-solid fa-address-book"></i> Thông Tin Liên Hệ & Hỗ Trợ</div>
-                        <div class="contact-item"><i class="fa-solid fa-phone" style="color:var(--primary);"></i> Hotline/Zalo: 0988.xxx.xxx</div>
-                        <div class="contact-item"><i class="fa-solid fa-envelope" style="color:var(--primary);"></i> Email: support@bearmelody.vn</div>
-                        <div class="contact-item"><i class="fa-solid fa-headset" style="color:var(--primary);"></i> Trợ giúp 24/7 qua Admin tài khoản</div>
+                        <div class="contact-title"><i class="fa-solid fa-address-book"></i> Hỗ Trợ Trực Tuyến</div>
+                        <div class="contact-item"><i class="fa-brands fa-telegram" style="color:var(--primary); font-size:1rem;"></i> Telegram: <b>hr2052</b></div>
+                        <div class="contact-item"><i class="fa-solid fa-phone" style="color:var(--primary); font-size:0.9rem;"></i> Zalo / Phone: <b>096.1413.154</b></div>
                     </div>
                 </div>
 
@@ -887,6 +887,8 @@
 
             const coverUrl = URL.createObjectURL(coverInput.files[0]);
             const audioUrl = URL.createObjectURL(audioInput.files[0]);
+            
+            // Sửa lỗi: Lấy đúng container bên trang user view để hiển thị bài hát mới upload
             const list = document.getElementById('userMusicListContainer');
             
             const card = document.createElement('div');
@@ -908,6 +910,9 @@
             document.getElementById('adminUploadForm').reset();
             document.getElementById('adminCoverText').innerHTML = '<i class="fa-solid fa-image"></i> Chọn ảnh bìa';
             document.getElementById('adminAudioText').innerHTML = '<i class="fa-solid fa-file-audio" style="color:var(--primary);"></i> Chọn file .mp3 hoặc .wav';
+            
+            // Tự động chuyển hướng về trang chủ để người dùng thấy ngay bài hát vừa upload
+            switchView('user');
         }
 
         function playCustomAudio(url, title) {

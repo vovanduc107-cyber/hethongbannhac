@@ -3,63 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP LUXURY MUSIC PORTAL - PHÂN QUYỀN HỆ THỐNG</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>MelodyHub - Thế Giới Âm Nhạc Sôi Động</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #030712;
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --gold-primary: #f59e0b;
-            --gold-secondary: #fbbf24;
-            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --danger: #ef4444;
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --primary: #0284c7;
+            --primary-gradient: linear-gradient(135deg, #38bdf8, #0284c7);
+            --accent: #f43f5e;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --success: #10b981;
+            --danger: #ef4444;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat', sans-serif;
-            scrollbar-width: thin;
-            scrollbar-color: var(--gold-primary) var(--bg-color);
+            font-family: 'Quicksand', sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
+            background: var(--bg-gradient);
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
 
-        .bg-matrix {
+        /* Hiệu ứng bong bóng tươi sáng nền */
+        .bubble {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            bottom: -50px;
+            background: rgba(56, 189, 248, 0.2);
+            border-radius: 50%;
             pointer-events: none;
+            animation: rise 8s infinite ease-in;
             z-index: 0;
-            overflow: hidden;
         }
-
-        .matrix-line {
-            position: absolute;
-            top: -100px;
-            width: 1px;
-            height: 120px;
-            background: linear-gradient(to bottom, transparent, var(--gold-primary), transparent);
-            animation: fall linear infinite;
-            opacity: 0.3;
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-120px); }
-            100% { transform: translateY(calc(100vh + 120px)); }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
         }
 
         /* Top Bar */
@@ -79,46 +66,46 @@
         }
 
         .btn-auth-nav {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            color: var(--gold-secondary);
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: white;
+            border: 1px solid #bae6fd;
+            color: var(--primary);
+            padding: 8px 18px;
+            border-radius: 30px;
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
             transition: 0.3s;
         }
 
         .btn-auth-nav:hover {
-            background: var(--gold-primary);
-            color: #030712;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
         }
 
         .user-pill {
             display: none;
             align-items: center;
-            gap: 10px;
-            background: rgba(15, 23, 42, 0.85);
-            padding: 6px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            backdrop-filter: blur(10px);
+            gap: 8px;
+            background: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid #bae6fd;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
         }
 
         .admin-badge-nav {
             display: none;
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
             color: white;
             padding: 6px 14px;
-            border-radius: 20px;
+            border-radius: 30px;
             font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
-            border: 1px solid #f87171;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+            border: none;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
             transition: 0.3s;
         }
 
@@ -126,39 +113,24 @@
             transform: scale(1.05);
         }
 
-        .vn-flag-container {
+        .vn-badge {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.85);
-            padding: 8px 12px;
+            gap: 6px;
+            background: white;
+            padding: 6px 12px;
             border-radius: 30px;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            backdrop-filter: blur(10px);
-        }
-
-        .vn-flag {
-            width: 30px;
-            height: 20px;
-            background-color: #da251d;
-            position: relative;
-            border-radius: 2px;
-        }
-
-        .vn-flag::after {
-            content: "★";
-            position: absolute;
-            color: #ff0;
-            font-size: 14px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            border: 1px solid #fed7aa;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: #ea580c;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.1);
         }
 
         .wrapper {
             position: relative;
             z-index: 1;
-            max-width: 1400px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -169,84 +141,73 @@
         }
 
         header h1 {
-            font-family: 'Cinzel', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 2.8rem;
-            font-weight: 900;
-            background: var(--gold-gradient);
+            font-weight: 800;
+            background: linear-gradient(135deg, #0284c7, #2563eb, #db2777);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         header p {
             color: var(--text-muted);
             font-size: 1rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            font-weight: 600;
         }
 
-        /* Giao diện Động */
-        .view-section {
-            display: none;
-        }
-        .view-section.active {
-            display: block;
-        }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
 
-        /* Layout User */
+        /* Giao diện User */
         .user-grid {
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 360px 1fr;
             gap: 25px;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
-        @media(max-width: 1024px) {
-            .user-grid {
-                grid-template-columns: 1fr;
-            }
+        @media(max-width: 992px) {
+            .user-grid { grid-template-columns: 1fr; }
         }
 
         .panel {
             background: var(--card-bg);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.12);
+            backdrop-filter: blur(10px);
         }
 
         .panel-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
             font-weight: 700;
-            color: var(--gold-secondary);
-            margin-bottom: 20px;
+            color: var(--primary);
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
             gap: 10px;
-            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
-            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 10px;
         }
 
         .wallet-box {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(3, 7, 18, 0.8));
-            border: 1px solid var(--gold-primary);
-            border-radius: 15px;
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border: 2px solid #38bdf8;
+            border-radius: 18px;
             padding: 20px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .wallet-balance {
-            font-size: 1.8rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
             font-weight: 800;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 8px 0;
+            color: #0369a1;
+            margin: 6px 0;
         }
 
         .form-group {
@@ -256,351 +217,274 @@
         .form-label {
             display: block;
             font-size: 0.85rem;
+            font-weight: 700;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .form-input {
             width: 100%;
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 10px;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
             padding: 12px 15px;
-            color: white;
+            color: var(--text-main);
             font-size: 0.95rem;
             transition: 0.3s;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: var(--gold-primary);
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
         .file-upload-wrapper {
             position: relative;
-            border: 2px dashed rgba(245, 158, 11, 0.4);
+            border: 2px dashed #38bdf8;
             border-radius: 12px;
-            padding: 18px;
+            padding: 15px;
             text-align: center;
+            background: rgba(240, 249, 255, 0.6);
             cursor: pointer;
-            background: rgba(3, 7, 18, 0.4);
         }
 
         .file-upload-wrapper input[type="file"] {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; cursor: pointer;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
         }
 
-        .btn-luxury {
+        .btn-main {
             width: 100%;
-            background: var(--gold-gradient);
-            color: #030712;
+            background: var(--primary-gradient);
+            color: white;
             font-weight: 700;
             border: none;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.95rem;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1rem;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
             transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-            margin-top: 5px;
         }
 
-        .btn-luxury:hover {
+        .btn-main:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
         }
 
         .info-box {
-            background: rgba(3, 7, 18, 0.5);
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            background: rgba(241, 245, 249, 0.7);
             border-radius: 12px;
-            padding: 15px;
+            padding: 12px 15px;
             font-size: 0.85rem;
-            line-height: 1.6;
             margin-top: 15px;
         }
 
         .info-box p {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
+            display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 600;
         }
-
-        .info-box span.val {
-            color: var(--gold-secondary);
-            font-weight: 600;
-        }
+        .info-box span.val { color: var(--primary); }
 
         /* Danh sách nhạc */
         .music-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            max-height: 650px;
+            gap: 14px;
+            max-height: 600px;
             overflow-y: auto;
             padding-right: 5px;
         }
 
         .music-card {
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 14px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
             padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             transition: 0.3s;
         }
 
         .music-card:hover {
-            border-color: var(--gold-primary);
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+            border-color: #38bdf8;
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.1);
+            transform: translateY(-2px);
         }
 
         .music-thumb {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 1px solid var(--gold-primary);
+            width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 2px solid #e0f2fe;
         }
 
-        .music-info {
-            flex: 1;
-        }
-
-        .music-info h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 3px;
-        }
-
-        .music-info p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+        .music-info { flex: 1; }
+        .music-info h4 { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 3px; }
+        .music-info p { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
 
         .btn-buy {
-            background: transparent;
-            border: 1px solid var(--gold-primary);
-            color: var(--gold-secondary);
-            padding: 8px 16px;
-            border-radius: 8px;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #16a34a;
+            padding: 8px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             transition: 0.3s;
         }
 
         .btn-buy:hover {
-            background: var(--gold-primary);
-            color: #030712;
+            background: #16a34a; color: white;
         }
 
-        /* Giao diện Quản Trị Admin */
-        .admin-dashboard-container {
+        /* Giao diện Admin */
+        .admin-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 25px;
         }
 
         @media(max-width: 900px) {
-            .admin-dashboard-container {
-                grid-template-columns: 1fr;
-            }
+            .admin-layout { grid-template-columns: 1fr; }
         }
 
-        .bill-queue-admin {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 500px;
-            overflow-y: auto;
+        .bill-queue {
+            display: flex; flex-direction: column; gap: 14px; max-height: 500px; overflow-y: auto;
         }
 
         .bill-card-item {
-            background: rgba(3, 7, 18, 0.7);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 12px;
-            padding: 15px;
+            background: white; border: 1px solid #fecdd3; border-radius: 14px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
 
-        .admin-controls-flex {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        .admin-actions {
+            display: flex; gap: 10px; margin-top: 10px;
         }
 
         .btn-approve {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            flex: 1;
+            background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1;
         }
 
         .btn-reject {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            flex: 1;
+            background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1;
         }
 
         /* Modal */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0; pointer-events: none;
-            transition: 0.3s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(5px);
+            z-index: 2000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
         }
-
-        .modal-overlay.active {
-            opacity: 1; pointer-events: auto;
-        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-box {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--gold-primary);
-            border-radius: 20px;
-            width: 100%; max-width: 400px;
-            padding: 30px;
-            position: relative;
+            background: white; border-radius: 24px; width: 100%; max-width: 400px; padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); position: relative;
         }
 
         .modal-close {
-            position: absolute;
-            top: 15px; right: 15px;
-            background: transparent; border: none;
-            color: var(--text-muted); font-size: 1.2rem;
-            cursor: pointer;
+            position: absolute; top: 18px; right: 18px; background: #f1f5f9; border: none;
+            width: 32px; height: 32px; border-radius: 50%; color: var(--text-muted); cursor: pointer; font-weight: 700;
         }
 
+        /* Toast Popup */
         .toast {
-            position: fixed; bottom: 30px; right: 30px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--gold-primary);
-            color: white; padding: 14px 22px;
-            border-radius: 12px; z-index: 9999;
-            display: flex; align-items: center; gap: 10px;
-            transform: translateY(100px); opacity: 0;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: fixed; bottom: 30px; right: 30px; background: white; border: 1px solid #38bdf8;
+            color: var(--text-main); padding: 14px 22px; border-radius: 14px; z-index: 9999;
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15); display: flex; align-items: center; gap: 12px;
+            transform: translateY(100px); opacity: 0; transition: 0.4s; font-weight: 700;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="bg-matrix" id="matrixContainer"></div>
+    <div id="bubbleContainer"></div>
 
-    <!-- THANH MENU ĐIỀU HƯỚNG GÓC PHẢI -->
+    <!-- Thanh Điều Hướng Góc Phải -->
     <div class="top-nav-bar">
-        <div class="vn-flag-container">
-            <div class="vn-flag"></div>
-            <span style="font-family:'Cinzel'; font-size:10px; font-weight:700; color:var(--gold-secondary);">VN</span>
-        </div>
-
-        <!-- Nút Đăng nhập/Đăng ký -->
+        <div class="vn-badge"><i class="fa-solid fa-heart" style="color:#f43f5e;"></i> VIỆT NAM</div>
+        
         <div class="auth-btns" id="authButtonsContainer">
             <button class="btn-auth-nav" onclick="openModal('login')">Đăng Nhập</button>
-            <button class="btn-auth-nav" onclick="openModal('register')" style="background:var(--gold-gradient); color:#030712; border:none;">Đăng Ký</button>
+            <button class="btn-auth-nav" onclick="openModal('register')" style="background: var(--primary-gradient); color:white; border:none;">Đăng Ký</button>
         </div>
 
-        <!-- Thông tin User -->
         <div class="user-pill" id="userPillContainer">
-            <i class="fa-solid fa-user-circle" style="color:var(--gold-primary);"></i>
-            <span id="currentUsernameDisplay" style="font-size:0.85rem; font-weight:600;">Member</span>
+            <i class="fa-solid fa-user-circle" style="color:var(--primary); font-size: 1.1rem;"></i>
+            <span id="currentUsernameDisplay" style="font-weight:700; font-size:0.9rem;">Member</span>
             <button onclick="handleLogout()" style="background:transparent; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i></button>
         </div>
 
-        <!-- Nút chuyển sang Trang Admin (Chỉ hiện nếu tài khoản là admin) -->
         <button class="admin-badge-nav" id="adminNavBadge" onclick="switchView('admin')">
             <i class="fa-solid fa-shield-halved"></i> Quản Trị Viên
         </button>
     </div>
 
-    <!-- MODAL ĐĂNG NHẬP / ĐĂNG KÝ -->
+    <!-- Modal Đăng Nhập / Đăng Ký -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             
             <div id="loginFormSection">
-                <div style="font-family:'Cinzel'; font-size:1.3rem; color:var(--gold-secondary); margin-bottom:20px; text-align:center;">Đăng Nhập Hệ Thống</div>
+                <div style="font-family:'Outfit'; font-size:1.4rem; font-weight:700; color:var(--primary); margin-bottom:18px; text-align:center;">Chào Mừng Trở Lại!</div>
                 <form onsubmit="processLogin(event)">
                     <div class="form-group">
-                        <label class="form-label">Tài khoản (Nhập admin để test quyền Admin)</label>
-                        <input type="text" class="form-input" id="loginUser" placeholder="username..." required>
+                        <label class="form-label">Tài khoản (Nhập admin để test quyền Quản Trị)</label>
+                        <input type="text" class="form-input" id="loginUser" placeholder="Nhập username..." required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Mật khẩu</label>
-                        <input type="password" class="form-input" id="loginPass" placeholder="password..." required>
+                        <input type="password" class="form-input" id="loginPass" placeholder="Nhập mật khẩu..." required>
                     </div>
-                    <button type="submit" class="btn-luxury">Đăng Nhập Ngay</button>
+                    <button type="submit" class="btn-main">Đăng Nhập Ngay</button>
                 </form>
-                <div style="text-align:center; margin-top:12px; font-size:0.8rem; color:var(--text-muted);">
-                    Chưa có tài khoản? <span style="color:var(--gold-secondary); cursor:pointer; font-weight:600;" onclick="switchModalTab('register')">Đăng ký</span>
+                <div style="text-align:center; margin-top:14px; font-size:0.85rem; font-weight:600; color:var(--text-muted);">
+                    Chưa có tài khoản? <span style="color:var(--primary); cursor:pointer;" onclick="switchModalTab('register')">Đăng ký ngay</span>
                 </div>
             </div>
 
             <div id="registerFormSection" style="display:none;">
-                <div style="font-family:'Cinzel'; font-size:1.3rem; color:var(--gold-secondary); margin-bottom:20px; text-align:center;">Đăng Ký Thành Viên</div>
+                <div style="font-family:'Outfit'; font-size:1.4rem; font-weight:700; color:var(--primary); margin-bottom:18px; text-align:center;">Tạo Tài Khoản Mới</div>
                 <form onsubmit="processRegister(event)">
                     <div class="form-group">
-                        <label class="form-label">Tài khoản mới</label>
-                        <input type="text" class="form-input" id="regUser" placeholder="username..." required>
+                        <label class="form-label">Tên tài khoản</label>
+                        <input type="text" class="form-input" id="regUser" placeholder="Chọn username..." required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Mật khẩu</label>
-                        <input type="password" class="form-input" id="regPass" placeholder="mật khẩu..." required>
+                        <input type="password" class="form-input" id="regPass" placeholder="Tạo mật khẩu..." required>
                     </div>
-                    <button type="submit" class="btn-luxury">Đăng Ký Nhận 100k Xu</button>
+                    <button type="submit" class="btn-main">Đăng Ký (Nhận 10.000 Xu)</button>
                 </form>
-                <div style="text-align:center; margin-top:12px; font-size:0.8rem; color:var(--text-muted);">
-                    Đã có tài khoản? <span style="color:var(--gold-secondary); cursor:pointer; font-weight:600;" onclick="switchModalTab('login')">Đăng nhập</span>
+                <div style="text-align:center; margin-top:14px; font-size:0.85rem; font-weight:600; color:var(--text-muted);">
+                    Đã có tài khoản? <span style="color:var(--primary); cursor:pointer;" onclick="switchModalTab('login')">Đăng nhập</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- KHUNG NỘI DUNG CHÍNH -->
+    <!-- Nội Dung Web -->
     <div class="wrapper">
         
-        <!-- 1. GIAO DIỆN NGƯỜI DÙNG (USER VIEW) -->
+        <!-- 1. Giao Diện Người Dùng (User View) -->
         <div id="userViewSection" class="view-section active">
             <header>
-                <h1>VIP Luxury Music Portal</h1>
-                <p>Thế giới âm thanh thượng lưu dành riêng cho bạn</p>
+                <h1>MelodyHub Music</h1>
+                <p>Khám phá và tận hưởng kho tàng âm nhạc sống động</p>
             </header>
 
             <div class="user-grid">
-                <!-- Cột trái: Ví và nạp tiền -->
+                <!-- Ví cá nhân & Nạp tiền -->
                 <div class="panel">
                     <div class="panel-title"><i class="fa-solid fa-wallet"></i> Ví Xu Của Bạn</div>
                     <div class="wallet-box">
-                        <div style="font-size:0.85rem; color:var(--text-muted);">Số Dư Khả Dụng</div>
-                        <div class="wallet-balance" id="userBalanceDisplay">500,000 Xu</div>
-                        <div style="font-size:0.8rem; color:var(--text-muted);">Tài khoản: <span id="accNameText" style="color:white; font-weight:600;">Guest</span></div>
+                        <div style="font-size:0.85rem; font-weight:700; color:#0369a1;">Số Dư Khả Dụng</div>
+                        <div class="wallet-balance" id="userBalanceDisplay">0 Xu</div>
+                        <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Tài khoản: <span id="accNameText" style="color:var(--text-main);">Khách</span></div>
                     </div>
 
-                    <div class="panel-title" style="font-size:1.1rem;"><i class="fa-solid fa-receipt"></i> Nạp Xu (Gửi Bill)</div>
+                    <div class="panel-title" style="font-size:1.05rem;"><i class="fa-solid fa-receipt"></i> Nạp Xu (Gửi Bill)</div>
                     <form id="depositForm" onsubmit="handleDeposit(event)">
                         <div class="form-group">
                             <label class="form-label">Số tiền (VNĐ)</label>
@@ -609,51 +493,51 @@
                         <div class="form-group">
                             <label class="form-label">Ảnh Bill Chuyển Khoản</label>
                             <div class="file-upload-wrapper">
-                                <div style="font-size:0.85rem; color:var(--text-muted);" id="billFileNameDisplay"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--gold-primary);"></i> Chọn ảnh bill...</div>
-                                <input type="file" id="billFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('billFileNameDisplay').innerText = 'Đã chọn: ' + this.files[0].name;">
+                                <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted);" id="billFileText"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây</div>
+                                <input type="file" id="billFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('billFileText').innerText = 'Đã chọn: ' + this.files[0].name;">
                             </div>
                         </div>
-                        <button type="submit" class="btn-luxury">Gửi Bill Chờ Duyệt</button>
+                        <button type="submit" class="btn-main">Gửi Bill Chờ Admin Duyệt</button>
                     </form>
 
-                    <div class="info-box" style="margin-top:20px;">
+                    <div class="info-box">
                         <p>Vietcombank: <span class="val">1067823099</span></p>
                         <p>Chủ TK: <span class="val">LE THI YEN NHI</span></p>
                     </div>
                 </div>
 
-                <!-- Cột phải: Kho nhạc để nghe & mua -->
+                <!-- Danh sách nhạc mua bản quyền -->
                 <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-music"></i> Kho Nhạc VIP Độc Quyền</div>
+                    <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Kho Nhạc Bản Quyền</div>
                     <div class="music-list" id="userMusicListContainer">
                         <div class="music-card">
-                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150" class="music-thumb" alt="Thumb">
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150" class="music-thumb" alt="Thumb">
                             <div class="music-info">
-                                <h4>Luxury Trap Symphony</h4>
-                                <p>Producer: DJ Gold Star • 50,000 Xu</p>
+                                <h4>Summer Electronic Vibes</h4>
+                                <p>DJ Producer • 20,000 Xu</p>
                             </div>
-                            <button class="btn-buy" onclick="buySong('Luxury Trap Symphony', 50000)">Mua Ngay</button>
+                            <button class="btn-buy" onclick="buySong('Summer Electronic Vibes', 20000)">Mua Ngay</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. GIAO DIỆN QUẢN TRỊ ADMIN (ADMIN VIEW - CHỈ ADMIN MỚI VÀO ĐƯỢC) -->
+        <!-- 2. Giao Diện Quản Trị Admin (Admin View) -->
         <div id="adminViewSection" class="view-section">
             <header>
-                <h1>Bảng Quản Trị Hệ Thống</h1>
-                <p>Khu vực kiểm soát độc quyền dành riêng cho Admin</p>
+                <h1>Khu Vực Quản Trị Viên</h1>
+                <p>Kiểm soát kho nhạc và duyệt lệnh nạp xu thành viên</p>
             </header>
 
             <div style="margin-bottom: 20px;">
-                <button class="btn-auth-nav" onclick="switchView('user')" style="background: rgba(15,23,42,0.9); border-color:var(--gold-primary);"><i class="fa-solid fa-arrow-left"></i> Quay lại Giao Diện Người Dùng</button>
+                <button class="btn-auth-nav" onclick="switchView('user')" style="width:auto;"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</button>
             </div>
 
-            <div class="admin-dashboard-container">
-                <!-- Up nhạc độc quyền -->
+            <div class="admin-layout">
+                <!-- Thêm nhạc mới -->
                 <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc Mới Lên Web</div>
+                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Đăng Tải Bài Hát Mới</div>
                     <form id="adminUploadForm" onsubmit="handleAdminUpload(event)">
                         <div class="form-group">
                             <label class="form-label">Tên bài hát</label>
@@ -665,36 +549,30 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Giá mở khóa (Xu)</label>
-                            <input type="number" class="form-input" id="adminSongPrice" placeholder="VD: 50000" required min="0">
+                            <input type="number" class="form-input" id="adminSongPrice" placeholder="VD: 20000" required min="0">
                         </div>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
-                            <div class="file-upload-wrapper" style="padding:10px; text-align:center;">
-                                <span style="font-size:0.75rem; color:var(--text-muted);" id="adminCoverText">Ảnh Bìa</span>
-                                <input type="file" id="adminCoverFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('adminCoverText').innerText=this.files[0].name;">
-                            </div>
-                            <div class="file-upload-wrapper" style="padding:10px; text-align:center;">
-                                <span style="font-size:0.75rem; color:var(--text-muted);" id="adminAudioText">File Nhạc</span>
-                                <input type="file" id="adminAudioFile" accept="audio/*" required onchange="if(this.files[0]) document.getElementById('adminAudioText').innerText=this.files[0].name;">
-                            </div>
+                        <div class="file-upload-wrapper" style="margin-bottom: 15px; padding:10px;">
+                            <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);" id="adminCoverText"><i class="fa-solid fa-image"></i> Chọn ảnh bìa bài hát</span>
+                            <input type="file" id="adminCoverFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('adminCoverText').innerText=this.files[0].name;">
                         </div>
-                        <button type="submit" class="btn-luxury">Đăng Bài Hát Lên Web</button>
+                        <button type="submit" class="btn-main">Đăng Bài Hát Lên Web</button>
                     </form>
                 </div>
 
-                <!-- Duyệt bill chuyển khoản từ user -->
+                <!-- Duyệt Bill Nạp Xu -->
                 <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-list-check"></i> Duyệt Bill Chuyển Khoản (<span id="pendingBadgeCount">1</span>)</div>
-                    <div class="bill-queue-admin" id="adminBillQueue">
+                    <div class="panel-title"><i class="fa-solid fa-list-check"></i> Hàng Đợi Bill Chờ Duyệt (<span id="pendingBadgeCount">1</span>)</div>
+                    <div class="bill-queue" id="adminBillQueue">
                         <div class="bill-card-item" id="sampleBillBox">
-                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--gold-secondary); margin-bottom:6px;">
-                                <span>User: VipMember_99</span>
-                                <span>Nạp: 100,000 VNĐ</span>
+                            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.85rem; color:var(--primary); margin-bottom:6px;">
+                                <span>User: thanhson_99</span>
+                                <span>Nạp: 50,000 VNĐ</span>
                             </div>
-                            <div style="background:rgba(3,7,18,0.5); padding:10px; border-radius:8px; font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
-                                <i class="fa-solid fa-file-invoice" style="color:var(--gold-primary);"></i> Bill_ChuyenKhoan_VCB.png
+                            <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:10px;">
+                                <i class="fa-solid fa-file-invoice-dollar"></i> Bill_ChuyenKhoan.png
                             </div>
-                            <div class="admin-controls-flex">
-                                <button class="btn-approve" onclick="approveUserBill('sampleBillBox', 'VipMember_99', 100000)">Duyệt (+100k)</button>
+                            <div class="admin-actions">
+                                <button class="btn-approve" onclick="approveUserBill('sampleBillBox', 'thanhson_99', 50000)">Cộng Xu</button>
                                 <button class="btn-reject" onclick="rejectUserBill('sampleBillBox')">Từ chối</button>
                             </div>
                         </div>
@@ -706,25 +584,29 @@
     </div>
 
     <div class="toast" id="luxToast">
-        <i class="fa-solid fa-circle-check" id="toastIcon" style="color:var(--gold-primary);"></i>
+        <i class="fa-solid fa-circle-check" id="toastIcon" style="color:var(--success); font-size:1.2rem;"></i>
         <div id="toastMessage">Thành công!</div>
     </div>
 
     <script>
-        // Matrix Effect
-        const matrixContainer = document.getElementById('matrixContainer');
-        for (let i = 0; i < 30; i++) {
-            const line = document.createElement('div');
-            line.className = 'matrix-line';
-            line.style.left = `${Math.random() * 100}%`;
-            line.style.animationDuration = `${3 + Math.random() * 4}s`;
-            line.style.animationDelay = `${Math.random() * 5}s`;
-            matrixContainer.appendChild(line);
+        // Tạo các hiệu ứng bong bóng vui mắt
+        const bubbleContainer = document.getElementById('bubbleContainer');
+        for (let i = 0; i < 18; i++) {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            const size = Math.random() * 35 + 10;
+            b.style.width = `${size}px`;
+            b.style.height = `${size}px`;
+            b.style.left = `${Math.random() * 100}%`;
+            b.style.animationDuration = `${5 + Math.random() * 6}s`;
+            b.style.animationDelay = `${Math.random() * 5}s`;
+            bubbleContainer.appendChild(b);
         }
 
+        // Quản lý dữ liệu người dùng mô phỏng thực tế
         let currentUser = null;
         let isAdmin = false;
-        let userBalance = 500000;
+        let usersData = {}; // Lưu số dư riêng cho từng tài khoản: { username: balance }
         let pendingBills = 1;
 
         function openModal(tab) {
@@ -745,53 +627,62 @@
             e.preventDefault();
             const username = document.getElementById('loginUser').value.trim();
             currentUser = username;
-            
-            // Phân quyền: Nếu username gõ là "admin" thì nhận quyền quản trị tối cao
+
             if (username.toLowerCase() === 'admin') {
                 isAdmin = true;
-                showToast("Đăng nhập quyền Quản Trị Viên thành công!");
+                showToast("Đăng nhập tài khoản Quản Trị Viên thành công!");
             } else {
                 isAdmin = false;
-                showToast(`Đăng nhập thành công tài khoản: ${username}`);
+                // Nếu user chưa tồn tại trong bộ nhớ, khởi tạo ví = 0 (trừ khi admin cộng tiền)
+                if (usersData[currentUser] === undefined) {
+                    usersData[currentUser] = 0;
+                }
+                showToast(`Đăng nhập thành công: ${username}`);
             }
 
-            updateUIAfterAuth();
+            updateAuthUI();
             closeModal();
         }
 
         function processRegister(e) {
             e.preventDefault();
             const username = document.getElementById('regUser').value.trim();
+            if (!username) return;
+
             currentUser = username;
             isAdmin = (username.toLowerCase() === 'admin');
-            userBalance = 100000; // Tặng 100k xu
-            document.getElementById('userBalanceDisplay').innerText = userBalance.toLocaleString() + " Xu";
             
-            showToast("Đăng ký thành công! Tặng ngay 100,000 Xu.");
-            updateUIAfterAuth();
+            // Đăng ký mới nhận chính xác 10.000 Xu
+            usersData[currentUser] = 10000;
+
+            showToast("Đăng ký thành công! Nhận ngay 10.000 Xu vào tài khoản.");
+            updateAuthUI();
             closeModal();
         }
 
         function handleLogout() {
             currentUser = null;
             isAdmin = false;
-            updateUIAfterAuth();
+            updateAuthUI();
             switchView('user');
             showToast("Đã đăng xuất tài khoản.", false);
         }
 
-        function updateUIAfterAuth() {
+        function updateAuthUI() {
             const authBtns = document.getElementById('authButtonsContainer');
             const userPill = document.getElementById('userPillContainer');
             const adminBadge = document.getElementById('adminNavBadge');
-            
+
             if (currentUser) {
                 authBtns.style.display = 'none';
                 userPill.style.display = 'flex';
                 document.getElementById('currentUsernameDisplay').innerText = currentUser;
                 document.getElementById('accNameText').innerText = currentUser;
 
-                // Nếu là admin thì hiện nút truy cập bảng quản trị
+                // Cập nhật hiển thị số dư thực tế của user hiện tại
+                const currentBal = usersData[currentUser] !== undefined ? usersData[currentUser] : 0;
+                document.getElementById('userBalanceDisplay').innerText = currentBal.toLocaleString() + " Xu";
+
                 if (isAdmin) {
                     adminBadge.style.display = 'block';
                 } else {
@@ -801,7 +692,8 @@
                 authBtns.style.display = 'flex';
                 userPill.style.display = 'none';
                 adminBadge.style.display = 'none';
-                document.getElementById('accNameText').innerText = "Guest";
+                document.getElementById('accNameText').innerText = "Khách";
+                document.getElementById('userBalanceDisplay').innerText = "0 Xu";
             }
         }
 
@@ -824,6 +716,7 @@
             const toast = document.getElementById('luxToast');
             document.getElementById('toastMessage').innerText = msg;
             document.getElementById('toastIcon').className = isSuccess ? "fa-solid fa-circle-check" : "fa-solid fa-circle-exclamation";
+            document.getElementById('toastIcon').style.color = isSuccess ? "var(--success)" : "var(--danger)";
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
@@ -831,62 +724,69 @@
         function handleDeposit(e) {
             e.preventDefault();
             if (!currentUser) {
-                showToast("Vui lòng đăng nhập trước khi nạp tiền!", false);
+                showToast("Vui lòng đăng nhập trước khi gửi bill nạp xu!", false);
                 openModal('login');
                 return;
             }
             const amount = document.getElementById('depositAmount').value;
             const fileInput = document.getElementById('billFile');
-            if(!fileInput.files[0]) {
-                showToast("Chưa chọn ảnh bill!", false);
+            if (!fileInput.files[0]) {
+                showToast("Vui lòng chọn ảnh bill chuyển khoản!", false);
                 return;
             }
 
             pendingBills++;
             document.getElementById('pendingBadgeCount').innerText = pendingBills;
 
-            // Đẩy vào hàng đợi admin ảo
             const queue = document.getElementById('adminBillQueue');
             const id = 'bill_' + Date.now();
             const div = document.createElement('div');
             div.className = 'bill-card-item';
             div.id = id;
             div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--gold-secondary); margin-bottom:6px;">
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.85rem; color:var(--primary); margin-bottom:6px;">
                     <span>User: ${currentUser}</span>
                     <span>Nạp: ${Number(amount).toLocaleString()} VNĐ</span>
                 </div>
-                <div style="background:rgba(3,7,18,0.5); padding:10px; border-radius:8px; font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
-                    <i class="fa-solid fa-file-invoice" style="color:var(--gold-primary);"></i> ${fileInput.files[0].name}
+                <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:10px;">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> ${fileInput.files[0].name}
                 </div>
-                <div class="admin-controls-flex">
-                    <button class="btn-approve" onclick="approveUserBill('${id}', '${currentUser}', ${amount})">Duyệt (+${Number(amount).toLocaleString()})</button>
+                <div class="admin-actions">
+                    <button class="btn-approve" onclick="approveUserBill('${id}', '${currentUser}', ${amount})">Cộng Xu</button>
                     <button class="btn-reject" onclick="rejectUserBill('${id}')">Từ chối</button>
                 </div>
             `;
             queue.prepend(div);
 
-            showToast("Gửi bill thành công! Vui lòng chờ Admin xét duyệt.");
+            showToast("Đã gửi bill thành công! Chờ Quản Trị Viên duyệt để cộng xu.");
             document.getElementById('depositForm').reset();
-            document.getElementById('billFileNameDisplay').innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color:var(--gold-primary);"></i> Chọn ảnh bill...';
+            document.getElementById('billFileText').innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây';
         }
 
+        // Logic quan trọng: Chỉ khi Admin bấm duyệt cộng tiền thì tài khoản đó mới thực sự nhận được xu
         function approveUserBill(id, targetUser, amount) {
             const el = document.getElementById(id);
-            if(el) el.remove();
+            if (el) el.remove();
             pendingBills = Math.max(0, pendingBills - 1);
             document.getElementById('pendingBadgeCount').innerText = pendingBills;
 
-            if(targetUser === currentUser) {
-                userBalance += Number(amount);
-                document.getElementById('userBalanceDisplay').innerText = userBalance.toLocaleString() + " Xu";
+            // Cộng tiền vào tài khoản tương ứng
+            if (usersData[targetUser] === undefined) {
+                usersData[targetUser] = 0;
             }
-            showToast(`Đã duyệt nạp ${amount.toLocaleString()} VNĐ cho tài khoản ${targetUser}!`);
+            usersData[targetUser] += Number(amount);
+
+            // Nếu user đó đang đăng nhập thì cập nhật ngay lập tức giao diện ví
+            if (currentUser === targetUser) {
+                document.getElementById('userBalanceDisplay').innerText = usersData[currentUser].toLocaleString() + " Xu";
+            }
+
+            showToast(`Đã duyệt cộng thành công ${Number(amount).toLocaleString()} Xu cho tài khoản: ${targetUser}!`);
         }
 
         function rejectUserBill(id) {
             const el = document.getElementById(id);
-            if(el) el.remove();
+            if (el) el.remove();
             pendingBills = Math.max(0, pendingBills - 1);
             document.getElementById('pendingBadgeCount').innerText = pendingBills;
             showToast("Đã từ chối phiếu nạp xu này.", false);
@@ -899,7 +799,7 @@
             const price = document.getElementById('adminSongPrice').value;
             const coverInput = document.getElementById('adminCoverFile');
 
-            if(!coverInput.files[0]) {
+            if (!coverInput.files[0]) {
                 showToast("Vui lòng chọn ảnh bìa bài hát!", false);
                 return;
             }
@@ -913,16 +813,15 @@
                 <img src="${coverUrl}" class="music-thumb" alt="Thumb">
                 <div class="music-info">
                     <h4>${title}</h4>
-                    <p>Producer: ${artist} • ${Number(price).toLocaleString()} Xu</p>
+                    <p>${artist} • ${Number(price).toLocaleString()} Xu</p>
                 </div>
                 <button class="btn-buy" onclick="buySong('${title}', ${price})">Mua Ngay</button>
             `;
             list.prepend(card);
 
-            showToast("Admin đã đăng bài hát mới lên kho thành công!");
+            showToast("Quản trị viên đã đăng bài hát mới thành công!");
             document.getElementById('adminUploadForm').reset();
-            document.getElementById('adminCoverText').innerText = "Ảnh Bìa";
-            document.getElementById('adminAudioText').innerText = "File Nhạc";
+            document.getElementById('adminCoverText').innerHTML = '<i class="fa-solid fa-image"></i> Chọn ảnh bìa bài hát';
         }
 
         function buySong(songName, price) {
@@ -931,12 +830,15 @@
                 openModal('login');
                 return;
             }
-            if (userBalance < price) {
-                showToast("Số dư ví của bạn không đủ để mua bài hát này!", false);
+
+            const currentBal = usersData[currentUser] !== undefined ? usersData[currentUser] : 0;
+            if (currentBal < price) {
+                showToast("Số dư ví không đủ! Vui lòng nạp thêm xu hoặc chờ Admin duyệt bill.", false);
                 return;
             }
-            userBalance -= price;
-            document.getElementById('userBalanceDisplay').innerText = userBalance.toLocaleString() + " Xu";
+
+            usersData[currentUser] -= price;
+            document.getElementById('userBalanceDisplay').innerText = usersData[currentUser].toLocaleString() + " Xu";
             showToast(`Mua bản quyền thành công bài hát: "${songName}"!`);
         }
     </script>

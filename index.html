@@ -556,7 +556,7 @@
                         <p>Chủ TK: <span class="val">LE THI YEN NHI</span></p>
                     </div>
 
-                    <!-- Mục Thông Tin Liên Hệ mới (Telegram & Zalo/Phone) -->
+                    <!-- Mục Thông Tin Liên Hệ chuẩn chỉnh -->
                     <div class="contact-box">
                         <div class="contact-title"><i class="fa-solid fa-address-book"></i> Hỗ Trợ Trực Tuyến</div>
                         <div class="contact-item"><i class="fa-brands fa-telegram" style="color:var(--primary); font-size:1rem;"></i> Telegram: <b>hr2052</b></div>
@@ -568,17 +568,7 @@
                 <div class="panel">
                     <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Kho Nhạc Độc Quyền 🧸</div>
                     <div class="music-list" id="userMusicListContainer">
-                        <div class="music-card">
-                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150" class="music-thumb" alt="Thumb">
-                            <div class="music-info">
-                                <h4>Sweet Bear Melody</h4>
-                                <p>DJ Teddy • 15,000 Xu</p>
-                            </div>
-                            <div class="btn-audio-action">
-                                <button class="btn-listen" onclick="playAudioDemo('Demo Sweet Bear Melody')"><i class="fa-solid fa-play"></i> Nghe</button>
-                                <button class="btn-buy" onclick="buySong('Sweet Bear Melody', 15000)">Mua</button>
-                            </div>
-                        </div>
+                        <!-- Danh sách nhạc sẽ được render tự động từ bộ nhớ chung -->
                     </div>
                 </div>
             </div>
@@ -654,7 +644,7 @@
 
     </div>
 
-    <!-- Audio Player ẩn để phát nhạc test -->
+    <!-- Audio Player ẩn để phát nhạc -->
     <audio id="globalAudioPlayer"></audio>
 
     <div class="toast" id="luxToast">
@@ -681,9 +671,23 @@
         let currentUser = localStorage.getItem('bear_current_user') || null;
         let isAdmin = localStorage.getItem('bear_is_admin') === 'true';
         let usersData = JSON.parse(localStorage.getItem('bear_users_data')) || {};
+        
+        // Khởi tạo danh sách nhạc lưu trữ chung trong localStorage để khách và admin đều thấy
+        let musicList = JSON.parse(localStorage.getItem('bear_music_list')) || [
+            {
+                id: 'default_1',
+                title: 'Sweet Bear Melody',
+                artist: 'DJ Teddy',
+                price: 15000,
+                coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150',
+                audioUrl: '' // Demo mẫu
+            }
+        ];
+
         let pendingBills = 1;
 
         updateAuthUI();
+        renderMusicList();
 
         function openModal(tab) {
             document.getElementById('authModal').classList.add('active');
@@ -749,6 +753,7 @@
             localStorage.setItem('bear_current_user', currentUser || '');
             localStorage.setItem('bear_is_admin', isAdmin);
             localStorage.setItem('bear_users_data', JSON.stringify(usersData));
+            localStorage.setItem('bear_music_list', JSON.stringify(musicList));
         }
 
         function updateAuthUI() {
@@ -887,46 +892,64 @@
 
             const coverUrl = URL.createObjectURL(coverInput.files[0]);
             const audioUrl = URL.createObjectURL(audioInput.files[0]);
-            
-            // Sửa lỗi: Lấy đúng container bên trang user view để hiển thị bài hát mới upload
-            const list = document.getElementById('userMusicListContainer');
-            
-            const card = document.createElement('div');
-            card.className = 'music-card';
-            card.innerHTML = `
-                <img src="${coverUrl}" class="music-thumb" alt="Thumb">
-                <div class="music-info">
-                    <h4>${title}</h4>
-                    <p>${artist} • ${Number(price).toLocaleString()} Xu</p>
-                </div>
-                <div class="btn-audio-action">
-                    <button class="btn-listen" onclick="playCustomAudio('${audioUrl}', '${title}')"><i class="fa-solid fa-play"></i> Nghe</button>
-                    <button class="btn-buy" onclick="buySong('${title}', ${price})">Mua</button>
-                </div>
-            `;
-            list.prepend(card);
 
-            showToast("Đã upload thành công bài hát và file MP3/WAV lên hệ thống!");
+            // Thêm bài hát mới vào mảng dữ liệu chung
+            const newSong = {
+                id: 'song_' + Date.now(),
+                title: title,
+                artist: artist,
+                price: Number(price),
+                coverUrl: coverUrl,
+                audioUrl: audioUrl
+            };
+
+            musicList.unshift(newSong);
+            saveStateToStorage();
+            renderMusicList();
+
+            showToast("Đã upload thành công bài hát và file lên hệ thống!");
             document.getElementById('adminUploadForm').reset();
             document.getElementById('adminCoverText').innerHTML = '<i class="fa-solid fa-image"></i> Chọn ảnh bìa';
             document.getElementById('adminAudioText').innerHTML = '<i class="fa-solid fa-file-audio" style="color:var(--primary);"></i> Chọn file .mp3 hoặc .wav';
             
-            // Tự động chuyển hướng về trang chủ để người dùng thấy ngay bài hát vừa upload
+            // Tự động chuyển về trang chủ để xem kết quả
             switchView('user');
+        }
+
+        function renderMusicList() {
+            const listContainer = document.getElementById('userMusicListContainer');
+            listContainer.innerHTML = '';
+
+            musicList.forEach(song => {
+                const card = document.createElement('div');
+                card.className = 'music-card';
+                card.innerHTML = `
+                    <img src="${song.coverUrl}" class="music-thumb" alt="Thumb" onerror="this.src='https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150'">
+                    <div class="music-info">
+                        <h4>${song.title}</h4>
+                        <p>${song.artist} • ${song.price.toLocaleString()} Xu</p>
+                    </div>
+                    <div class="btn-audio-action">
+                        <button class="btn-listen" onclick="playCustomAudio('${song.audioUrl}', '${song.title}')"><i class="fa-solid fa-play"></i> Nghe</button>
+                        <button class="btn-buy" onclick="buySong('${song.title}', ${song.price})">Mua</button>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
         }
 
         function playCustomAudio(url, title) {
             const player = document.getElementById('globalAudioPlayer');
+            if (!url) {
+                showToast(`Đang phát bản demo mẫu: "${title}"`);
+                return;
+            }
             player.src = url;
             player.play().then(() => {
                 showToast(`Đang phát: "${title}"`);
             }).catch(err => {
-                showToast("Không thể phát trực tiếp tệp âm thanh này.", false);
+                showToast("Không thể phát trực tiếp tệp âm thanh này hoặc định dạng không được hỗ trợ.", false);
             });
-        }
-
-        function playAudioDemo(title) {
-            showToast(`Đang phát bản demo: "${title}"`);
         }
 
         function buySong(songName, price) {

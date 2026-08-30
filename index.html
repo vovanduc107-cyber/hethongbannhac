@@ -67,7 +67,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #c5832b; }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen flex flex-col justify-between selection:bg-gold-500 selection:text-black pb-24">
+<body class="text-gray-200 min-h-screen flex flex-col justify-between selection:bg-gold-500 selection:text-black pb-28">
 
     <!-- CONTAINER CHÍNH -->
     <div class="max-w-md mx-auto w-full p-4 space-y-4">
@@ -139,7 +139,7 @@
             <div class="space-y-2.5 text-xs">
                 <input type="text" id="song-title" placeholder="Tên bài hát..." class="w-full bg-[#161616] border border-gold-500/20 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-gold-500">
                 <input type="text" id="song-artist" placeholder="Nghệ sĩ trình bày..." class="w-full bg-[#161616] border border-gold-500/20 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-gold-500">
-                <input type="text" id="song-price" placeholder="Giá bản quyền (VD: 500.000 hoặc Miễn phí)..." class="w-full bg-[#161616] border border-gold-500/20 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-gold-500">
+                <input type="text" id="song-price" placeholder="Giá bản quyền (VD: 700.000 hoặc Miễn phí)..." class="w-full bg-[#161616] border border-gold-500/20 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-gold-500">
                 <div>
                     <label class="text-[10px] text-gray-400 block mb-1">Ảnh bìa (Cover Art):</label>
                     <input type="file" id="song-cover-file" accept="image/*" class="w-full text-[10px] text-gray-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-gold-500/10 file:text-gold-300">
@@ -168,7 +168,35 @@
             </div>
         </div>
 
-        <!-- MỤC THÔNG TIN LIÊN HỆ & HỖ TRỢ -->
+        <!-- THÔNG TIN NGÂN HÀNG & NẠP TIỀN (Hiển thị trực tiếp trang chính) -->
+        <div class="luxury-card p-4 rounded-2xl space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-gold-400 flex items-center gap-1.5">
+                <span>💳</span> Thông Tin Chuyển Khoản & Nạp Tiền
+            </h4>
+            <div class="bg-[#161616] p-3 rounded-xl text-left text-[11px] space-y-2 border border-gold-500/20">
+                <div class="flex justify-between border-b border-gray-800 pb-1.5">
+                    <span class="text-gray-400">Ngân hàng:</span>
+                    <span class="text-gold-300 font-bold">MB Bank (Quân Đội)</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-800 pb-1.5">
+                    <span class="text-gray-400">Số tài khoản:</span>
+                    <span class="text-gold-300 font-mono font-bold select-all">0123456789</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-800 pb-1.5">
+                    <span class="text-gray-400">Chủ tài khoản:</span>
+                    <span class="text-white font-bold uppercase">NGUYEN VAN A</span>
+                </div>
+                <div>
+                    <span class="text-gray-400 block mb-1">Nội dung chuyển khoản (Ví dụ):</span>
+                    <p class="text-gold-400 font-mono font-bold text-xs tracking-wider select-all bg-black/40 p-1.5 rounded border border-gold-500/30 text-center">HTBN NAP [TênTàiKhoản]</p>
+                </div>
+            </div>
+            <button onclick="openDepositModal()" class="w-full py-2 bg-[#1a1a1a] hover:bg-gold-500/20 text-gold-300 border border-gold-500/40 rounded-xl font-bold text-xs transition">
+                🪪 Xem Mã QR Chuyển Khoản Nhanh
+            </button>
+        </div>
+
+        <!-- THÔNG TIN LIÊN HỆ & HỖ TRỢ -->
         <div class="luxury-card p-4 rounded-2xl space-y-2">
             <h4 class="text-xs font-bold uppercase tracking-wider text-gold-400 flex items-center gap-1.5">
                 <span>📞</span> Thông Tin Liên Hệ & Hỗ Trợ
@@ -238,8 +266,8 @@
     <div id="deposit-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="luxury-card w-full max-w-sm p-5 rounded-2xl relative text-center">
             <button onclick="closeDepositModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-sm font-bold">✕</button>
-            <h3 class="text-sm font-bold text-white mb-1">Nạp Tiền Qua Ngân Hàng</h3>
-            <p class="text-[11px] text-gray-400 mb-3">Quét mã QR hoặc chuyển khoản thông tin bên dưới</p>
+            <h3 class="text-sm font-bold text-white mb-1">Mã QR Nạp Tiền Nhanh</h3>
+            <p class="text-[11px] text-gray-400 mb-3">Quét mã QR qua ứng dụng Ngân hàng của bạn</p>
 
             <div class="bg-white p-2.5 rounded-2xl inline-block mb-3 border border-gold-500/30 shadow-lg">
                 <img id="deposit-qr-img" src="" alt="VietQR" class="w-36 h-36 object-contain mx-auto">
@@ -248,18 +276,14 @@
             <div class="bg-[#161616] p-3 rounded-xl text-left text-[11px] space-y-1.5 mb-3 border border-gold-500/20">
                 <div class="flex justify-between border-b border-gray-800 pb-1">
                     <span class="text-gray-400">Ngân hàng:</span>
-                    <span class="text-gold-300 font-bold">MB Bank (Quân Đội)</span>
+                    <span class="text-gold-300 font-bold">MB Bank</span>
                 </div>
                 <div class="flex justify-between border-b border-gray-800 pb-1">
                     <span class="text-gray-400">Số tài khoản:</span>
                     <span class="text-gold-300 font-mono font-bold select-all">0123456789</span>
                 </div>
-                <div class="flex justify-between border-b border-gray-800 pb-1">
-                    <span class="text-gray-400">Chủ tài khoản:</span>
-                    <span class="text-white font-bold uppercase">NGUYEN VAN A</span>
-                </div>
                 <div>
-                    <span class="text-gray-400 block mb-0.5">Nội dung chuyển khoản (Bắt buộc):</span>
+                    <span class="text-gray-400 block mb-0.5">Nội dung chuyển khoản:</span>
                     <p id="deposit-note" class="text-gold-400 font-mono font-bold text-xs tracking-wider select-all bg-black/40 p-1.5 rounded border border-gold-500/30 text-center"></p>
                 </div>
             </div>
@@ -377,7 +401,7 @@
             section.classList.toggle('hidden');
         }
 
-        // HÀM UPLOAD ĐÃ ĐƯỢC XỬ LÝ LỖI AN TOÀN TRÁNH BỊ TREO
+        // HÀM UPLOAD AN TOÀN TRÁNH TREO
         async function uploadSong() {
             if (!currentUser) {
                 alert("Vui lòng đăng nhập để tải nhạc!");
@@ -459,7 +483,7 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 flex-shrink-0">
-                        <button onclick="playAudio('${song.audio_url}', '${song.title}', '${song.artist}', '${song.cover_url}')" class="w-9 h-9 rounded-xl bg-gold-500/20 hover:bg-gold-500/40 border border-gold-500/40 text-gold-300 flex items-center justify-center font-bold text-xs transition">▶</button>
+                        <button onclick="playAudio('${song.audio_url}', '${song.title}', '${song.artist}', '${song.cover_url}')" class="w-9 h-9 rounded-xl bg-gold-500/25 hover:bg-gold-500/40 border border-gold-500/40 text-gold-300 flex items-center justify-center font-bold text-xs transition">▶</button>
                         <button onclick="alert('Vui lòng nạp tiền hoặc liên hệ Admin để mua bản quyền!')" class="bg-gradient-to-r from-gold-600 to-gold-500 text-black px-3 py-1.5 rounded-xl text-[11px] font-black shadow hover:from-gold-500 hover:to-gold-400 transition">Mua ngay</button>
                     </div>
                 </div>
@@ -508,7 +532,7 @@
 
         function openDepositModal() {
             if (!currentUser) {
-                alert("Vui lòng đăng nhập để nạp tiền!");
+                alert("Vui lòng đăng nhập để lấy mã QR nạp tiền!");
                 openAuthModal('login');
                 return;
             }

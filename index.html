@@ -36,7 +36,6 @@
             position: relative;
         }
 
-        /* Hiệu ứng chạy dọc nền web */
         .bg-matrix {
             position: fixed;
             top: 0;
@@ -63,12 +62,53 @@
             100% { transform: translateY(calc(100vh + 120px)); }
         }
 
-        /* Hiệu ứng lá cờ VN bay phất phới */
-        .vn-flag-container {
+        /* Top Bar: Cờ VN & Tài khoản */
+        .top-nav-bar {
             position: fixed;
             top: 15px;
             right: 20px;
             z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .auth-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-auth-nav {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: var(--gold-secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .btn-auth-nav:hover {
+            background: var(--gold-primary);
+            color: #030712;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .user-pill {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 6px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .vn-flag-container {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -81,8 +121,8 @@
         }
 
         .vn-flag {
-            width: 45px;
-            height: 30px;
+            width: 35px;
+            height: 24px;
             background-color: #da251d;
             position: relative;
             border-radius: 3px;
@@ -95,11 +135,10 @@
             content: "★";
             position: absolute;
             color: #ff0;
-            font-size: 20px;
+            font-size: 16px;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            text-shadow: 0 0 3px rgba(0,0,0,0.5);
         }
 
         @keyframes flagWave {
@@ -111,15 +150,13 @@
 
         .flag-text {
             font-family: 'Cinzel', serif;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
         }
 
-        /* Layout chung */
         .wrapper {
             position: relative;
             z-index: 1;
@@ -153,7 +190,6 @@
             text-transform: uppercase;
         }
 
-        /* Gấu cute nhảy múa */
         .cute-bear-bar {
             display: flex;
             justify-content: center;
@@ -192,7 +228,6 @@
             font-size: 0.95rem;
         }
 
-        /* Dashboard lưới 3 cột */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 320px 1fr 350px;
@@ -350,7 +385,6 @@
             font-weight: 600;
         }
 
-        /* Danh sách nhạc VIP kèm ảnh bìa */
         .music-list {
             display: flex;
             flex-direction: column;
@@ -481,6 +515,70 @@
             flex: 1;
         }
 
+        /* Modal Popup Đăng Nhập / Đăng Ký */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--gold-primary);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            position: relative;
+            transform: translateY(20px);
+            transition: 0.3s;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--gold-primary);
+        }
+
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--gold-secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -513,13 +611,73 @@
 </head>
 <body>
 
-    <!-- Hiệu ứng chạy dọc nền -->
     <div class="bg-matrix" id="matrixContainer"></div>
 
-    <!-- Lá cờ Việt Nam bay phất phới -->
-    <div class="vn-flag-container">
-        <div class="vn-flag"></div>
-        <span class="flag-text">VIỆT NAM QUỐC KỲ</span>
+    <!-- THANH MENU ĐIỀU HƯỚNG GÓC PHẢI -->
+    <div class="top-nav-bar">
+        <!-- Cờ VN -->
+        <div class="vn-flag-container">
+            <div class="vn-flag"></div>
+            <span class="flag-text">VIỆT NAM</span>
+        </div>
+
+        <!-- Nút Đăng nhập / Đăng ký (Hiện khi chưa đăng nhập) -->
+        <div class="auth-btns" id="authButtonsContainer">
+            <button class="btn-auth-nav" onclick="openModal('login')">Đăng Nhập</button>
+            <button class="btn-auth-nav" onclick="openModal('register')" style="background: var(--gold-gradient); color:#030712; border:none;">Đăng Ký</button>
+        </div>
+
+        <!-- Thông tin User (Hiện khi đã đăng nhập) -->
+        <div class="user-pill" id="userPillContainer">
+            <i class="fa-solid fa-user-circle" style="color: var(--gold-primary); font-size: 1.2rem;"></i>
+            <span id="currentUsernameDisplay" style="font-size: 0.9rem; font-weight: 600; color: white;">Member</span>
+            <button onclick="handleLogout()" style="background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem; margin-left: 5px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </div>
+
+    <!-- MODAL ĐĂNG NHẬP / ĐĂNG KÝ -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <!-- FORM ĐĂNG NHẬP -->
+            <div id="loginFormSection">
+                <div class="modal-title">Đăng Nhập Hệ Thống</div>
+                <form onsubmit="processLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Tên tài khoản</label>
+                        <input type="text" class="form-input" id="loginUser" placeholder="Nhập username..." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-input" id="loginPass" placeholder="Nhập mật khẩu..." required>
+                    </div>
+                    <button type="submit" class="btn-luxury">Đăng Nhập Ngay</button>
+                </form>
+                <div style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">
+                    Chưa có tài khoản? <span style="color: var(--gold-secondary); cursor: pointer; font-weight: 600;" onclick="switchModalTab('register')">Đăng ký ngay</span>
+                </div>
+            </div>
+
+            <!-- FORM ĐĂNG KÝ -->
+            <div id="registerFormSection" style="display: none;">
+                <div class="modal-title">Đăng Ký Tài Khoản Mới</div>
+                <form onsubmit="processRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Tên tài khoản mới</label>
+                        <input type="text" class="form-input" id="regUser" placeholder="Chọn username..." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-input" id="regPass" placeholder="Tạo mật khẩu..." required>
+                    </div>
+                    <button type="submit" class="btn-luxury">Đăng Ký & Nhận Quà</button>
+                </form>
+                <div style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">
+                    Đã có tài khoản? <span style="color: var(--gold-secondary); cursor: pointer; font-weight: 600;" onclick="switchModalTab('login')">Đăng nhập</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="wrapper">
@@ -528,7 +686,6 @@
             <p>Hệ thống âm thanh thượng lưu & bản quyền độc quyền</p>
         </header>
 
-        <!-- Gấu cute nhảy múa -->
         <div class="cute-bear-bar">
             <span class="dancing-bear">🧸</span>
             <span class="dancing-bear">🐼</span>
@@ -538,7 +695,7 @@
 
         <div class="dashboard-grid">
             
-            <!-- CỘT 1: VÍ TIỀN & NẠP XU (GỬI BILL) -->
+            <!-- CỘT 1: VÍ TIỀN & NẠP XU -->
             <div class="panel">
                 <div class="panel-title">
                     <i class="fa-solid fa-wallet"></i> Ví Xu Của Bạn
@@ -547,7 +704,7 @@
                 <div class="wallet-box">
                     <div class="wallet-title">Số Dư Hiện Có</div>
                     <div class="wallet-balance" id="userBalance">500,000 Xu</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">Tài khoản: <span style="color:white; font-weight:600;">VipMember_99</span></div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Tài khoản: <span id="accountNameText" style="color:white; font-weight:600;">VipMember_99</span></div>
                 </div>
 
                 <div class="panel-title" style="font-size: 1.1rem; margin-top: 10px;">
@@ -572,7 +729,6 @@
                     <button type="submit" class="btn-luxury">Gửi Bill Chờ Duyệt</button>
                 </form>
 
-                <!-- THÔNG TIN THANH TOÁN -->
                 <div class="panel-title" style="font-size: 1rem; margin-top: 25px;">
                     <i class="fa-solid fa-university"></i> Thông Tin Chuyển Khoản
                 </div>
@@ -591,14 +747,14 @@
                 </div>
             </div>
 
-            <!-- CỘT 2: KHO NHẠC VIP & UP NHẠC (HỖ TRỢ MP3, WAV & ẢNH BÌA) -->
+            <!-- CỘT 2: KHO NHẠC VIP & UP NHẠC -->
             <div class="panel">
                 <div class="panel-title">
                     <i class="fa-solid fa-music"></i> Kho Nhạc VIP Sang Trọng
                 </div>
                 
                 <div style="background: rgba(3, 7, 18, 0.4); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 15px; margin-bottom: 20px;">
-                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc (Hỗ trợ MP3, WAV & Ảnh Bìa)</h4>
+                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc (MP3, WAV & Ảnh Bìa)</h4>
                     <form id="uploadMusicForm" onsubmit="handleUploadMusic(event)">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                             <input type="text" class="form-input" id="songTitle" placeholder="Tên bài hát..." required>
@@ -606,22 +762,18 @@
                         </div>
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                            <!-- Chọn Ảnh Bìa -->
                             <div>
                                 <label class="form-label" style="font-size: 0.75rem;">Ảnh Bìa Bài Hát</label>
                                 <div class="file-upload-wrapper" style="padding: 10px; text-align: center;">
                                     <span id="coverFileName" style="font-size: 0.75rem; color: var(--text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn ảnh bìa...</span>
-                                    <!-- Đổi accept sang * hoặc image/* rộng rãi để không bị chặn trên iOS/Android -->
-                                    <input type="file" id="coverFile" accept="image/*" required onchange="document.getElementById('coverFileName').innerText = this.files[0].name">
+                                    <input type="file" id="coverFile" accept="image/*" required onchange="if(this.files[0]) { document.getElementById('coverFileName').innerText = this.files[0].name; document.getElementById('coverFileName').style.color = 'var(--gold-secondary)'; }">
                                 </div>
                             </div>
-                            <!-- Chọn File Nhạc (MP3, WAV) -->
                             <div>
                                 <label class="form-label" style="font-size: 0.75rem;">File Nhạc (MP3, WAV)</label>
                                 <div class="file-upload-wrapper" style="padding: 10px; text-align: center;">
                                     <span id="audioFileName" style="font-size: 0.75rem; color: var(--text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn file MP3/WAV...</span>
-                                    <!-- Nới lỏng accept thành cho phép mọi file hoặc các định dạng audio để điện thoại không ẩn file -->
-                                    <input type="file" id="audioFile" accept=".mp3,.wav,audio/*" required onchange="document.getElementById('audioFileName').innerText = this.files[0].name">
+                                    <input type="file" id="audioFile" accept=".mp3,.wav,audio/*" required onchange="if(this.files[0]) { document.getElementById('audioFileName').innerText = this.files[0].name; document.getElementById('audioFileName').style.color = 'var(--gold-secondary)'; }">
                                 </div>
                             </div>
                         </div>
@@ -714,14 +866,12 @@
 
     </div>
 
-    <!-- Toast Thông Báo -->
     <div class="toast" id="luxToast">
         <i class="fa-solid fa-circle-check" id="toastIcon"></i>
         <div id="toastMessage">Thực hiện thành công!</div>
     </div>
 
     <script>
-        // Hiệu ứng nền matrix chạy dọc
         const matrixContainer = document.getElementById('matrixContainer');
         for (let i = 0; i < 35; i++) {
             const line = document.createElement('div');
@@ -733,8 +883,78 @@
         }
 
         let currentCoins = 500000;
+        let currentUsername = "VipMember_99";
         let pendingBillsCount = 1;
         let totalSongsCount = 1;
+
+        // Xử lý Modal Đăng nhập / Đăng ký
+        function openModal(tab) {
+            document.getElementById('authModal').classList.add('active');
+            switchModalTab(tab);
+        }
+
+        function closeModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function switchModalTab(tab) {
+            const loginSec = document.getElementById('loginFormSection');
+            const regSec = document.getElementById('registerFormSection');
+            if (tab === 'login') {
+                loginSec.style.display = 'block';
+                regSec.style.display = 'none';
+            } else {
+                loginSec.style.display = 'none';
+                regSec.style.display = 'block';
+            }
+        }
+
+        function processLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value;
+            currentUsername = user;
+            updateAuthUI();
+            closeModal();
+            showToast(`Đăng nhập thành công tài khoản: ${user}`);
+        }
+
+        function processRegister(e) {
+            e.preventDefault();
+            const user = document.getElementById('regUser').value;
+            currentUsername = user;
+            currentCoins = 100000; // Tặng ngay 100k xu khi đăng ký mới
+            document.getElementById('userBalance').innerText = currentCoins.toLocaleString() + " Xu";
+            document.getElementById('adminNewCoins').value = currentCoins;
+            updateAuthUI();
+            closeModal();
+            showToast(`Đăng ký thành công! Tặng ngay 100,000 Xu chào mừng.`);
+        }
+
+        function handleLogout() {
+            currentUsername = "Khách (Guest)";
+            updateAuthUI(true);
+            showToast("Đã đăng xuất tài khoản thành công.", false);
+        }
+
+        function updateAuthUI(isLoggedOut = false) {
+            const authBtns = document.getElementById('authButtonsContainer');
+            const userPill = document.getElementById('userPillContainer');
+            const nameDisplay = document.getElementById('currentUsernameDisplay');
+            const accountText = document.getElementById('accountNameText');
+            const adminTarget = document.getElementById('adminTargetUser');
+
+            if (isLoggedOut) {
+                authBtns.style.display = 'flex';
+                userPill.style.display = 'none';
+                accountText.innerText = "Chưa đăng nhập";
+            } else {
+                authBtns.style.display = 'none';
+                userPill.style.display = 'flex';
+                nameDisplay.innerText = currentUsername;
+                accountText.innerText = currentUsername;
+                adminTarget.value = currentUsername;
+            }
+        }
 
         function showToast(message, isSuccess = true) {
             const toast = document.getElementById('luxToast');
@@ -780,7 +1000,7 @@
             card.id = uniqueId;
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: var(--gold-secondary);">
-                    <span>User: VipMember_99</span>
+                    <span>User: ${currentUsername}</span>
                     <span>Nạp: ${Number(amount).toLocaleString()} VNĐ</span>
                 </div>
                 <div style="width: 100%; height: 140px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--gold-primary); margin-bottom: 10px;">
@@ -831,7 +1051,6 @@
             showToast("Đã từ chối bill chuyển khoản này.", false);
         }
 
-        // Xử lý upload nhạc hỗ trợ cả MP3 và WAV không bị lỗi chặn trên thiết bị di động
         function handleUploadMusic(e) {
             e.preventDefault();
             const title = document.getElementById('songTitle').value;

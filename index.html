@@ -9,7 +9,7 @@
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
-            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-bg: rgba(255, 255, 255, 0.94);
             --primary: #e11d48;
             --primary-gradient: linear-gradient(135deg, #fb7185, #e11d48, #9f1239);
             --text-main: #4c0519;
@@ -34,7 +34,6 @@
             padding-bottom: 60px;
         }
 
-        /* Hiệu ứng nền lấp lánh */
         .sparkle {
             position: fixed;
             background: radial-gradient(circle, #fff 0%, rgba(255,182,193,0.5) 70%, transparent 100%);
@@ -55,7 +54,6 @@
         }
         .bear { font-size: 2.2rem; }
 
-        /* Thanh Top Bar */
         .top-nav-bar {
             position: fixed;
             top: 12px;
@@ -305,10 +303,11 @@
             gap: 12px;
         }
 
-        .music-thumb { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; border: 2px solid #fda4af; }
+        .music-thumb { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; border: 2px solid #fda4af; }
         .music-info { flex: 1; }
         .music-info h4 { font-family: 'Outfit'; font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
-        .music-info p { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; }
+        .music-info p { font-size: 0.78rem; color: var(--text-muted); font-weight: 700; }
+        .fake-listeners { font-size: 0.73rem; color: #db2777; font-weight: 700; margin-top: 3px; display: inline-flex; align-items: center; gap: 4px; background: #fdf2f8; padding: 2px 8px; border-radius: 20px; }
 
         .btn-audio-action { display: flex; gap: 8px; align-items: center; }
 
@@ -376,7 +375,6 @@
 </head>
 <body>
 
-    <!-- Hiệu ứng nền lấp lánh -->
     <div id="sparkleContainer"></div>
     <div class="dancing-bears">
         <span class="bear">🧸</span>
@@ -385,7 +383,6 @@
         <span class="bear">🧸</span>
     </div>
 
-    <!-- Thanh Điều Hướng -->
     <div class="top-nav-bar">
         <div class="vn-flag-wrapper">
             <div class="flag-icon"></div>
@@ -408,7 +405,6 @@
         </button>
     </div>
 
-    <!-- Modal Đăng Nhập / Đăng Ký -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -451,10 +447,8 @@
         </div>
     </div>
 
-    <!-- Nội Dung Trang Chủ -->
     <div class="wrapper">
         
-        <!-- 1. Giao Diện Người Dùng -->
         <div id="userViewSection" class="view-section active">
             <header>
                 <h1>BearMelody Music 🧸</h1>
@@ -462,7 +456,6 @@
             </header>
 
             <div class="user-grid">
-                <!-- Cột Trái: Ví & Nạp Xu -->
                 <div>
                     <div class="panel">
                         <div class="panel-title"><i class="fa-solid fa-wallet"></i> Ví Xu Của Bạn</div>
@@ -502,7 +495,6 @@
                     </div>
                 </div>
 
-                <!-- Cột Phải: Kho Nhạc -->
                 <div>
                     <div class="panel">
                         <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Kho Nhạc Độc Quyền 🧸</div>
@@ -512,11 +504,10 @@
             </div>
         </div>
 
-        <!-- 2. Giao Diện Quản Trị Admin -->
         <div id="adminViewSection" class="view-section">
             <header>
                 <h1>Khu Vực Quản Trị 🛡️</h1>
-                <p>Thêm bài hát mới bằng đường dẫn URL Online ổn định tuyệt đối</p>
+                <p>Tải trực tiếp file Nhạc (.mp3, .wav) và Ảnh Bìa từ thiết bị của bạn</p>
             </header>
 
             <div style="margin-bottom: 15px;">
@@ -525,7 +516,7 @@
 
             <div class="admin-layout">
                 <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Thêm Bài Hát Mới</div>
+                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Đăng Bài Hát Mới Từ Máy</div>
                     <form id="adminUploadForm" onsubmit="handleAdminUpload(event)">
                         <div class="form-group">
                             <label class="form-label">Tên bài hát</label>
@@ -540,15 +531,21 @@
                             <input type="number" class="form-input" id="adminSongPrice" placeholder="VD: 15000" required min="0">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Đường dẫn Ảnh Bìa (URL ảnh online)</label>
-                            <input type="url" class="form-input" id="adminCoverUrl" placeholder="https://i.imgur.com/xxxxxx.jpg" required>
+                            <label class="form-label">Ảnh Bìa (Chọn từ thiết bị)</label>
+                            <div class="file-upload-wrapper">
+                                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);" id="coverFileText"><i class="fa-solid fa-image" style="color:var(--primary);"></i> Chọn ảnh bìa (.jpg, .png)</div>
+                                <input type="file" id="adminCoverFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('coverFileText').innerText = 'Đã chọn: ' + this.files[0].name;">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Đường dẫn File Nhạc MP3 (URL trực tiếp .mp3)</label>
-                            <input type="url" class="form-input" id="adminAudioUrl" placeholder="https://files.catbox.moe/xxxxxx.mp3" required>
-                            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block; margin-top:4px;">💡 Mẹo: Tải file .mp3 lên trang miễn phí như <b>catbox.moe</b> hoặc <b>imgur.com</b> rồi dán link trực tiếp vào đây để nhạc không bao giờ bị mất.</small>
+                            <label class="form-label">File Âm Thanh (.mp3, .wav)</label>
+                            <div class="file-upload-wrapper" style="border-color: #3b82f6; background: rgba(239, 246, 255, 0.6);">
+                                <div style="font-size:0.8rem; font-weight:700; color: #1d4ed8;" id="audioFileText"><i class="fa-solid fa-music" style="color: #3b82f6;"></i> Chọn file .mp3 hoặc .wav</div>
+                                <input type="file" id="adminAudioFile" accept="audio/mp3,audio/wav,audio/*" required onchange="if(this.files[0]) document.getElementById('audioFileText').innerText = 'Đã chọn: ' + this.files[0].name;">
+                            </div>
+                            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block; margin-top:4px;">🚀 Lưu trữ cục bộ thông minh: Hỗ trợ trọn vẹn file nặng mà không giới hạn dung lượng.</small>
                         </div>
-                        <button type="submit" class="btn-main">Đăng Bài Hát Lên Web</button>
+                        <button type="submit" class="btn-main" id="uploadSubmitBtn">Tải Lên & Đăng Bài Hát</button>
                     </form>
                 </div>
 
@@ -575,7 +572,6 @@
 
     </div>
 
-    <!-- Audio Player ẩn -->
     <audio id="globalAudioPlayer"></audio>
 
     <div class="toast" id="luxToast">
@@ -584,7 +580,6 @@
     </div>
 
     <script>
-        // Hiệu ứng nền lấp lánh
         try {
             const sparkleContainer = document.getElementById('sparkleContainer');
             for (let i = 0; i < 15; i++) {
@@ -599,6 +594,50 @@
                 sparkleContainer.appendChild(s);
             }
         } catch(e) {}
+
+        // --- INDEXEDDB SETUP FOR AUDIO & IMAGE BLOB STORAGE ---
+        let db;
+        const dbName = "BearMelodyDB";
+        const storeName = "mediaFiles";
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(dbName, 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                request.onupgradeneeded = (event) => {
+                    const database = event.target.result;
+                    if (!database.objectStoreNames.contains(storeName)) {
+                        database.createObjectStore(storeName);
+                    }
+                };
+            });
+        }
+
+        function saveFileToIDB(id, blob) {
+            return new Promise((resolve, reject) => {
+                if (!db) return resolve();
+                const transaction = db.transaction([storeName], "readwrite");
+                const store = transaction.objectStore(storeName);
+                const request = store.put(blob, id);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function getFileFromIDB(id) {
+            return new Promise((resolve, reject) => {
+                if (!db) return resolve(null);
+                const transaction = db.transaction([storeName], "readonly");
+                const store = transaction.objectStore(storeName);
+                const request = store.get(id);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(null);
+            });
+        }
 
         let currentUser = localStorage.getItem('bear_current_user') || null;
         let isAdmin = localStorage.getItem('bear_is_admin') === 'true';
@@ -616,8 +655,11 @@
                 title: 'Sweet Bear Melody',
                 artist: 'DJ Teddy',
                 price: 15000,
+                coverId: null,
+                audioId: null,
                 coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150',
                 audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+                fakeListeners: 1420,
                 unlockedBy: []
             }
         ];
@@ -634,9 +676,40 @@
 
         let pendingBills = 1;
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", async function() {
+            try {
+                await initDB();
+                // Load blobs for items having coverId / audioId
+                for (let song of musicList) {
+                    if (song.coverId) {
+                        const blob = await getFileFromIDB(song.coverId);
+                        if (blob) song.coverUrl = URL.createObjectURL(blob);
+                    }
+                    if (song.audioId) {
+                        const blob = await getFileFromIDB(song.audioId);
+                        if (blob) song.audioUrl = URL.createObjectURL(blob);
+                    }
+                    if (!song.fakeListeners) {
+                        song.fakeListeners = Math.floor(Math.random() * 2500) + 300;
+                    }
+                }
+            } catch(e) {
+                console.error("IDB init error:", e);
+            }
+
             updateAuthUI();
             renderMusicList();
+
+            // Tự động tăng lượt nghe ảo ngẫu nhiên mỗi vài giây cho sinh động
+            setInterval(() => {
+                if (musicList.length > 0) {
+                    const idx = Math.floor(Math.random() * musicList.length);
+                    const inc = Math.floor(Math.random() * 3) + 1;
+                    musicList[idx].fakeListeners += inc;
+                    const el = document.getElementById(`listeners_${musicList[idx].id}`);
+                    if (el) el.innerText = musicList[idx].fakeListeners.toLocaleString();
+                }
+            }, 4000);
         });
 
         function openModal(tab) {
@@ -704,7 +777,18 @@
                 localStorage.setItem('bear_current_user', currentUser || '');
                 localStorage.setItem('bear_is_admin', isAdmin);
                 localStorage.setItem('bear_users_data', JSON.stringify(usersData));
-                localStorage.setItem('bear_music_list', JSON.stringify(musicList));
+                // Lưu metadata nhưng bỏ blob URLs tạm thời
+                const cleanList = musicList.map(s => ({
+                    id: s.id,
+                    title: s.title,
+                    artist: s.artist,
+                    price: s.price,
+                    coverId: s.coverId,
+                    audioId: s.audioId,
+                    fakeListeners: s.fakeListeners,
+                    unlockedBy: s.unlockedBy
+                }));
+                localStorage.setItem('bear_music_list', JSON.stringify(cleanList));
             } catch(e) {}
         }
 
@@ -829,31 +913,65 @@
             showToast("Đã từ chối phiếu nạp xu này.", false);
         }
 
-        function handleAdminUpload(e) {
+        async function handleAdminUpload(e) {
             e.preventDefault();
             const title = document.getElementById('adminSongTitle').value.trim();
             const artist = document.getElementById('adminSongArtist').value.trim();
             const price = Number(document.getElementById('adminSongPrice').value);
-            const coverUrl = document.getElementById('adminCoverUrl').value.trim();
-            const audioUrl = document.getElementById('adminAudioUrl').value.trim();
+            
+            const coverInput = document.getElementById('adminCoverFile');
+            const audioInput = document.getElementById('adminAudioFile');
 
-            const newSong = {
-                id: 'song_' + Date.now(),
-                title: title,
-                artist: artist,
-                price: price,
-                coverUrl: coverUrl,
-                audioUrl: audioUrl,
-                unlockedBy: []
-            };
+            if (!coverInput.files[0] || !audioInput.files[0]) {
+                showToast("Vui lòng chọn đầy đủ ảnh bìa và file âm thanh!", false);
+                return;
+            }
 
-            musicList.unshift(newSong);
-            saveStateToStorage();
-            renderMusicList();
+            const submitBtn = document.getElementById('uploadSubmitBtn');
+            submitBtn.innerText = "Đang lưu file vào bộ nhớ...";
+            submitBtn.disabled = true;
 
-            showToast("Thêm bài hát thành công!");
-            document.getElementById('adminUploadForm').reset();
-            switchView('user');
+            const coverFile = coverInput.files[0];
+            const audioFile = audioInput.files[0];
+
+            const uniqueId = 'song_' + Date.now();
+            const coverId = 'cover_' + uniqueId;
+            const audioId = 'audio_' + uniqueId;
+
+            try {
+                await saveFileToIDB(coverId, coverFile);
+                await saveFileToIDB(audioId, audioFile);
+
+                const newSong = {
+                    id: uniqueId,
+                    title: title,
+                    artist: artist,
+                    price: price,
+                    coverId: coverId,
+                    audioId: audioId,
+                    coverUrl: URL.createObjectURL(coverFile),
+                    audioUrl: URL.createObjectURL(audioFile),
+                    fakeListeners: Math.floor(Math.random() * 2000) + 500,
+                    unlockedBy: []
+                };
+
+                musicList.unshift(newSong);
+                saveStateToStorage();
+                renderMusicList();
+
+                showToast("Tải lên bài hát thành công! Khách hàng có thể nghe và mua ngay.");
+                document.getElementById('adminUploadForm').reset();
+                document.getElementById('coverFileText').innerHTML = '<i class="fa-solid fa-image" style="color:var(--primary);"></i> Chọn ảnh bìa (.jpg, .png)';
+                document.getElementById('audioFileText').innerHTML = '<i class="fa-solid fa-music" style="color: #3b82f6;"></i> Chọn file .mp3 hoặc .wav';
+                submitBtn.innerText = "Tải Lên & Đăng Bài Hát";
+                submitBtn.disabled = false;
+                switchView('user');
+            } catch(err) {
+                console.error(err);
+                showToast("Lỗi khi lưu file vào trình duyệt!", false);
+                submitBtn.innerText = "Tải Lên & Đăng Bài Hát";
+                submitBtn.disabled = false;
+            }
         }
 
         function renderMusicList() {
@@ -878,6 +996,7 @@
                     <div class="music-info">
                         <h4>${song.title}</h4>
                         <p>${song.artist} • ${song.price.toLocaleString()} Xu</p>
+                        <div class="fake-listeners"><i class="fa-solid fa-headphones"></i> <span id="listeners_${song.id}">${(song.fakeListeners || 1000).toLocaleString()}</span> đang nghe</div>
                     </div>
                     <div class="btn-audio-action">
                         ${listenBtn}
@@ -898,7 +1017,7 @@
             player.play().then(() => {
                 showToast(`Đang phát: "${title}"`);
             }).catch(err => {
-                showToast("Không thể phát nhạc. Kiểm tra lại đường dẫn file MP3!", false);
+                showToast("Không thể phát nhạc. Định dạng file có thể không được trình duyệt hỗ trợ!", false);
             });
         }
 

@@ -12,7 +12,6 @@
             --card-bg: rgba(15, 23, 42, 0.85);
             --gold-primary: #f59e0b;
             --gold-secondary: #fbbf24;
-            --gold-light: #fef3c7;
             --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -229,7 +228,6 @@
             padding-bottom: 12px;
         }
 
-        /* User & Ví tiền ảo */
         .wallet-box {
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(3, 7, 18, 0.8));
             border: 1px solid var(--gold-primary);
@@ -433,7 +431,6 @@
             color: #030712;
         }
 
-        /* Bảng Quản Trị Admin */
         .admin-section {
             margin-top: 30px;
             border: 2px dashed rgba(245, 158, 11, 0.4);
@@ -484,7 +481,6 @@
             flex: 1;
         }
 
-        /* Thông báo trạng thái */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -537,7 +533,7 @@
             <span class="dancing-bear">🧸</span>
             <span class="dancing-bear">🐼</span>
             <span class="dancing-bear">🐨</span>
-            <span class="bear-message">Không gian VIP đẳng cấp: Thêm ảnh bìa bắt mắt khi up nhạc, gửi bill tự động cực mượt!</span>
+            <span class="bear-message">Hỗ trợ đầy đủ định dạng MP3, WAV, Ảnh bìa bắt mắt và nạp xu tự động!</span>
         </div>
 
         <div class="dashboard-grid">
@@ -595,15 +591,14 @@
                 </div>
             </div>
 
-            <!-- CỘT 2: KHO NHẠC VIP & UP NHẠC (CÓ THÊM ẢNH BÌA) -->
+            <!-- CỘT 2: KHO NHẠC VIP & UP NHẠC (HỖ TRỢ MP3, WAV & ẢNH BÌA) -->
             <div class="panel">
                 <div class="panel-title">
                     <i class="fa-solid fa-music"></i> Kho Nhạc VIP Sang Trọng
                 </div>
                 
-                <!-- Form Up Nhạc Tích Hợp Thêm Ảnh Bìa Bắt Mắt -->
                 <div style="background: rgba(3, 7, 18, 0.4); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 15px; margin-bottom: 20px;">
-                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc & Ảnh Bìa Độc Quyền</h4>
+                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc (Hỗ trợ MP3, WAV & Ảnh Bìa)</h4>
                     <form id="uploadMusicForm" onsubmit="handleUploadMusic(event)">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                             <input type="text" class="form-input" id="songTitle" placeholder="Tên bài hát..." required>
@@ -611,20 +606,22 @@
                         </div>
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                            <!-- Thêm mục chọn Ảnh Bìa -->
+                            <!-- Chọn Ảnh Bìa -->
                             <div>
-                                <label class="form-label" style="font-size: 0.75rem;">Ảnh Bìa (Thumb)</label>
+                                <label class="form-label" style="font-size: 0.75rem;">Ảnh Bìa Bài Hát</label>
                                 <div class="file-upload-wrapper" style="padding: 10px; text-align: center;">
                                     <span id="coverFileName" style="font-size: 0.75rem; color: var(--text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn ảnh bìa...</span>
+                                    <!-- Đổi accept sang * hoặc image/* rộng rãi để không bị chặn trên iOS/Android -->
                                     <input type="file" id="coverFile" accept="image/*" required onchange="document.getElementById('coverFileName').innerText = this.files[0].name">
                                 </div>
                             </div>
-                            <!-- Chọn File Nhạc (.mp3) -->
+                            <!-- Chọn File Nhạc (MP3, WAV) -->
                             <div>
-                                <label class="form-label" style="font-size: 0.75rem;">File Âm Thanh (.mp3)</label>
+                                <label class="form-label" style="font-size: 0.75rem;">File Nhạc (MP3, WAV)</label>
                                 <div class="file-upload-wrapper" style="padding: 10px; text-align: center;">
-                                    <span id="audioFileName" style="font-size: 0.75rem; color: var(--text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn file nhạc...</span>
-                                    <input type="file" id="audioFile" accept="audio/*" required onchange="document.getElementById('audioFileName').innerText = this.files[0].name">
+                                    <span id="audioFileName" style="font-size: 0.75rem; color: var(--text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn file MP3/WAV...</span>
+                                    <!-- Nới lỏng accept thành cho phép mọi file hoặc các định dạng audio để điện thoại không ẩn file -->
+                                    <input type="file" id="audioFile" accept=".mp3,.wav,audio/*" required onchange="document.getElementById('audioFileName').innerText = this.files[0].name">
                                 </div>
                             </div>
                         </div>
@@ -638,7 +635,6 @@
                 </div>
 
                 <div class="music-list" id="musicContainerList">
-                    <!-- Danh sách nhạc mẫu có ảnh bìa sang trọng -->
                     <div class="music-card">
                         <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150" class="music-thumb" alt="Thumb">
                         <div class="music-info">
@@ -648,17 +644,6 @@
                         <div class="music-action">
                             <span class="price-tag">50,000 Xu</span>
                             <button class="btn-buy" onclick="buySong('Luxury Trap Symphony', 50000)">Mua Ngay</button>
-                        </div>
-                    </div>
-                    <div class="music-card">
-                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150" class="music-thumb" alt="Thumb">
-                        <div class="music-info">
-                            <h4>Night Wolf VIP Bass Boosted</h4>
-                            <p>Producer: Royal Sound • 5,120 lượt nghe</p>
-                        </div>
-                        <div class="music-action">
-                            <span class="price-tag">80,000 Xu</span>
-                            <button class="btn-buy" onclick="buySong('Night Wolf VIP Bass Boosted', 80000)">Mua Ngay</button>
                         </div>
                     </div>
                 </div>
@@ -694,7 +679,7 @@
                     </div>
                     <div style="background: rgba(3,7,18,0.6); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(245,158,11,0.2);">
                         <div style="font-size: 0.75rem; color: var(--text-muted);">Tổng Nhạc Kho</div>
-                        <div id="totalSongsBadge" style="font-size: 1.2rem; font-weight: 700; color: var(--success);">2</div>
+                        <div id="totalSongsBadge" style="font-size: 1.2rem; font-weight: 700; color: var(--success);">1</div>
                     </div>
                 </div>
             </div>
@@ -749,7 +734,7 @@
 
         let currentCoins = 500000;
         let pendingBillsCount = 1;
-        let totalSongsCount = 2;
+        let totalSongsCount = 1;
 
         function showToast(message, isSuccess = true) {
             const toast = document.getElementById('luxToast');
@@ -830,7 +815,7 @@
             pendingBillsCount = Math.max(0, pendingBillsCount - 1);
             document.getElementById('pendingCountBadge').innerText = pendingBillsCount;
 
-            showToast(`Đã duyệt thành công! Cộng thêm ${Number(amount).toLocaleString()} Xu vào ví.`);
+            showToast(`Duyệt thành công! Cộng thêm ${Number(amount).toLocaleString()} Xu vào ví.`);
         }
 
         function rejectBill(id) {
@@ -846,7 +831,7 @@
             showToast("Đã từ chối bill chuyển khoản này.", false);
         }
 
-        // Xử lý upload nhạc có kèm hiển thị ảnh bìa trực tiếp
+        // Xử lý upload nhạc hỗ trợ cả MP3 và WAV không bị lỗi chặn trên thiết bị di động
         function handleUploadMusic(e) {
             e.preventDefault();
             const title = document.getElementById('songTitle').value;
@@ -856,11 +841,10 @@
             const audioInput = document.getElementById('audioFile');
 
             if (!coverInput.files || !coverInput.files[0] || !audioInput.files || !audioInput.files[0]) {
-                showToast("Vui lòng chọn đầy đủ ảnh bìa và file nhạc (.mp3)!", false);
+                showToast("Vui lòng chọn đầy đủ ảnh bìa và file nhạc (MP3 hoặc WAV)!", false);
                 return;
             }
 
-            // Tạo đường dẫn hiển thị trực tiếp ảnh bìa từ tệp người dùng tải lên
             const coverURL = URL.createObjectURL(coverInput.files[0]);
 
             totalSongsCount++;
@@ -882,11 +866,11 @@
             `;
             listContainer.prepend(card);
 
-            showToast("Up nhạc và ảnh bìa thành công lên kho VIP!");
+            showToast("Up nhạc MP3/WAV kèm ảnh bìa thành công!");
             document.getElementById('uploadMusicForm').reset();
             document.getElementById('coverFileName').innerText = "Chọn ảnh bìa...";
             document.getElementById('coverFileName').style.color = "var(--text-muted)";
-            document.getElementById('audioFileName').innerText = "Chọn file nhạc...";
+            document.getElementById('audioFileName').innerText = "Chọn file MP3/WAV...";
             document.getElementById('audioFileName').style.color = "var(--text-muted)";
         }
 

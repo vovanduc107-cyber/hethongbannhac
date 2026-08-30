@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MelodyHub - Thế Giới Âm Nhạc Sôi Động</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>BearMelody - Thế Giới Âm Nhạc Gấu Hồng Đỏ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+            --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
             --card-bg: rgba(255, 255, 255, 0.85);
-            --primary: #0284c7;
-            --primary-gradient: linear-gradient(135deg, #38bdf8, #0284c7);
-            --accent: #f43f5e;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --success: #10b981;
-            --danger: #ef4444;
+            --primary: #e11d48;
+            --primary-gradient: linear-gradient(135deg, #fb7185, #e11d48, #9f1239);
+            --text-main: #4c0519;
+            --text-muted: #881337;
+            --success: #059669;
+            --danger: #dc2626;
         }
 
         * {
@@ -34,22 +33,76 @@
             position: relative;
         }
 
-        /* Hiệu ứng bong bóng tươi sáng nền */
-        .bubble {
+        /* Hiệu ứng lấp lánh nền */
+        .sparkle {
             position: fixed;
-            bottom: -50px;
-            background: rgba(56, 189, 248, 0.2);
+            background: radial-gradient(circle, #fff 0%, rgba(255,182,193,0.5) 70%, transparent 100%);
             border-radius: 50%;
             pointer-events: none;
-            animation: rise 8s infinite ease-in;
+            animation: floatSparkle 6s infinite ease-in-out;
             z-index: 0;
         }
-        @keyframes rise {
-            0% { transform: translateY(0) scale(1); opacity: 0.8; }
-            100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+        @keyframes floatSparkle {
+            0%, 100% { transform: translateY(0) scale(0.8); opacity: 0.3; }
+            50% { transform: translateY(-40px) scale(1.2); opacity: 0.8; }
         }
 
-        /* Top Bar */
+        /* Gấu cute nhảy nhót */
+        .dancing-bears {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+        }
+        .bear {
+            font-size: 2.5rem;
+            animation: bounceBear 1.5s infinite alternate ease-in-out;
+        }
+        .bear:nth-child(2) { animation-delay: 0.3s; }
+        .bear:nth-child(3) { animation-delay: 0.6s; }
+        .bear:nth-child(4) { animation-delay: 0.9s; }
+        @keyframes bounceBear {
+            0% { transform: translateY(0) rotate(-5deg); }
+            100% { transform: translateY(-25px) rotate(5deg); }
+        }
+
+        /* Cờ Việt Nam bay phấp phới */
+        .vn-flag-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 2px solid #fda4af;
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.15);
+            animation: flagWave 3s infinite ease-in-out alternate;
+        }
+        @keyframes flagWave {
+            0% { transform: rotate(-1deg); }
+            100% { transform: rotate(1deg); }
+        }
+        .flag-icon {
+            width: 24px;
+            height: 16px;
+            background-color: #da251d;
+            position: relative;
+            border-radius: 2px;
+        }
+        .flag-icon::after {
+            content: "★";
+            position: absolute;
+            color: #ff0;
+            font-size: 11px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Thanh Top Bar */
         .top-nav-bar {
             position: fixed;
             top: 15px;
@@ -60,24 +113,20 @@
             gap: 12px;
         }
 
-        .auth-btns {
-            display: flex;
-            gap: 8px;
-        }
+        .auth-btns { display: flex; gap: 8px; }
 
         .btn-auth-nav {
             background: white;
-            border: 1px solid #bae6fd;
+            border: 2px solid #fda4af;
             color: var(--primary);
             padding: 8px 18px;
             border-radius: 30px;
             font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
             transition: 0.3s;
         }
-
         .btn-auth-nav:hover {
             background: var(--primary);
             color: white;
@@ -91,13 +140,13 @@
             background: white;
             padding: 6px 14px;
             border-radius: 30px;
-            border: 1px solid #bae6fd;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
+            border: 2px solid #fda4af;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
         }
 
         .admin-badge-nav {
             display: none;
-            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            background: linear-gradient(135deg, #7c2d12, #991b1b);
             color: white;
             padding: 6px 14px;
             border-radius: 30px;
@@ -105,27 +154,10 @@
             font-weight: 700;
             cursor: pointer;
             border: none;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+            box-shadow: 0 4px 15px rgba(153, 27, 27, 0.3);
             transition: 0.3s;
         }
-
-        .admin-badge-nav:hover {
-            transform: scale(1.05);
-        }
-
-        .vn-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: white;
-            padding: 6px 12px;
-            border-radius: 30px;
-            border: 1px solid #fed7aa;
-            font-weight: 700;
-            font-size: 0.75rem;
-            color: #ea580c;
-            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.1);
-        }
+        .admin-badge-nav:hover { transform: scale(1.05); }
 
         .wrapper {
             position: relative;
@@ -143,40 +175,36 @@
         header h1 {
             font-family: 'Outfit', sans-serif;
             font-size: 2.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #0284c7, #2563eb, #db2777);
+            font-weight: 900;
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         header p {
             color: var(--text-muted);
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* Giao diện User */
         .user-grid {
             display: grid;
             grid-template-columns: 360px 1fr;
             gap: 25px;
             margin-top: 20px;
         }
-
-        @media(max-width: 992px) {
-            .user-grid { grid-template-columns: 1fr; }
-        }
+        @media(max-width: 992px) { .user-grid { grid-template-columns: 1fr; } }
 
         .panel {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 182, 193, 0.8);
             border-radius: 24px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.12);
+            box-shadow: 0 10px 30px rgba(225, 29, 72, 0.1);
             backdrop-filter: blur(10px);
         }
 
@@ -189,13 +217,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            border-bottom: 2px solid #e0f2fe;
+            border-bottom: 2px solid #ffe4e6;
             padding-bottom: 10px;
         }
 
         .wallet-box {
-            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
-            border: 2px solid #38bdf8;
+            background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+            border: 2px solid #fb7185;
             border-radius: 18px;
             padding: 20px;
             text-align: center;
@@ -205,14 +233,12 @@
         .wallet-balance {
             font-family: 'Outfit', sans-serif;
             font-size: 2rem;
-            font-weight: 800;
-            color: #0369a1;
+            font-weight: 900;
+            color: #9f1239;
             margin: 6px 0;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .form-group { margin-bottom: 15px; }
 
         .form-label {
             display: block;
@@ -225,30 +251,28 @@
         .form-input {
             width: 100%;
             background: white;
-            border: 1px solid #cbd5e1;
+            border: 2px solid #fda4af;
             border-radius: 12px;
             padding: 12px 15px;
             color: var(--text-main);
             font-size: 0.95rem;
             transition: 0.3s;
         }
-
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
         }
 
         .file-upload-wrapper {
             position: relative;
-            border: 2px dashed #38bdf8;
+            border: 2px dashed #fb7185;
             border-radius: 12px;
             padding: 15px;
             text-align: center;
-            background: rgba(240, 249, 255, 0.6);
+            background: rgba(255, 241, 242, 0.6);
             cursor: pointer;
         }
-
         .file-upload-wrapper input[type="file"] {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
         }
@@ -263,29 +287,24 @@
             padding: 14px;
             font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
             transition: 0.3s;
         }
-
         .btn-main:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
         }
 
         .info-box {
-            background: rgba(241, 245, 249, 0.7);
+            background: rgba(255, 228, 230, 0.6);
             border-radius: 12px;
             padding: 12px 15px;
             font-size: 0.85rem;
             margin-top: 15px;
         }
-
-        .info-box p {
-            display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 600;
-        }
+        .info-box p { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 700; }
         .info-box span.val { color: var(--primary); }
 
-        /* Danh sách nhạc */
         .music-list {
             display: flex;
             flex-direction: column;
@@ -297,81 +316,56 @@
 
         .music-card {
             background: white;
-            border: 1px solid #e2e8f0;
+            border: 2px solid #ffe4e6;
             border-radius: 16px;
             padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.05);
             transition: 0.3s;
         }
-
         .music-card:hover {
-            border-color: #38bdf8;
-            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.1);
+            border-color: #fb7185;
+            box-shadow: 0 6px 18px rgba(225, 29, 72, 0.12);
             transform: translateY(-2px);
         }
 
-        .music-thumb {
-            width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 2px solid #e0f2fe;
-        }
-
+        .music-thumb { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 2px solid #fda4af; }
         .music-info { flex: 1; }
         .music-info h4 { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 3px; }
-        .music-info p { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .music-info p { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; }
 
         .btn-buy {
-            background: #f0fdf4;
-            border: 1px solid #86efac;
-            color: #16a34a;
+            background: #fdf2f8;
+            border: 2px solid #f472b6;
+            color: #db2777;
             padding: 8px 18px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: 700;
             transition: 0.3s;
         }
+        .btn-buy:hover { background: #db2777; color: white; }
 
-        .btn-buy:hover {
-            background: #16a34a; color: white;
-        }
-
-        /* Giao diện Admin */
         .admin-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 25px;
         }
+        @media(max-width: 900px) { .admin-layout { grid-template-columns: 1fr; } }
 
-        @media(max-width: 900px) {
-            .admin-layout { grid-template-columns: 1fr; }
-        }
+        .bill-queue { display: flex; flex-direction: column; gap: 14px; max-height: 500px; overflow-y: auto; }
+        .bill-card-item { background: white; border: 2px solid #fecdd3; border-radius: 14px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .admin-actions { display: flex; gap: 10px; margin-top: 10px; }
 
-        .bill-queue {
-            display: flex; flex-direction: column; gap: 14px; max-height: 500px; overflow-y: auto;
-        }
+        .btn-approve { background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1; }
+        .btn-reject { background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1; }
 
-        .bill-card-item {
-            background: white; border: 1px solid #fecdd3; border-radius: 14px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-
-        .admin-actions {
-            display: flex; gap: 10px; margin-top: 10px;
-        }
-
-        .btn-approve {
-            background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1;
-        }
-
-        .btn-reject {
-            background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1;
-        }
-
-        /* Modal */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(5px);
+            background: rgba(76, 5, 25, 0.4); backdrop-filter: blur(5px);
             z-index: 2000; display: flex; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: 0.3s;
         }
@@ -379,19 +373,18 @@
 
         .modal-box {
             background: white; border-radius: 24px; width: 100%; max-width: 400px; padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15); position: relative;
+            box-shadow: 0 20px 40px rgba(225, 29, 72, 0.2); position: relative; border: 2px solid #fda4af;
         }
 
         .modal-close {
-            position: absolute; top: 18px; right: 18px; background: #f1f5f9; border: none;
-            width: 32px; height: 32px; border-radius: 50%; color: var(--text-muted); cursor: pointer; font-weight: 700;
+            position: absolute; top: 18px; right: 18px; background: #ffe4e6; border: none;
+            width: 32px; height: 32px; border-radius: 50%; color: var(--primary); cursor: pointer; font-weight: 700;
         }
 
-        /* Toast Popup */
         .toast {
-            position: fixed; bottom: 30px; right: 30px; background: white; border: 1px solid #38bdf8;
+            position: fixed; bottom: 30px; right: 30px; background: white; border: 2px solid #fb7185;
             color: var(--text-main); padding: 14px 22px; border-radius: 14px; z-index: 9999;
-            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15); display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.2); display: flex; align-items: center; gap: 12px;
             transform: translateY(100px); opacity: 0; transition: 0.4s; font-weight: 700;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
@@ -399,11 +392,21 @@
 </head>
 <body>
 
-    <div id="bubbleContainer"></div>
+    <!-- Hiệu ứng lấp lánh & Gấu nhảy nền -->
+    <div id="sparkleContainer"></div>
+    <div class="dancing-bears">
+        <span class="bear">🧸</span>
+        <span class="bear">🐻‍❄️</span>
+        <span class="bear">🐼</span>
+        <span class="bear">🧸</span>
+    </div>
 
     <!-- Thanh Điều Hướng Góc Phải -->
     <div class="top-nav-bar">
-        <div class="vn-badge"><i class="fa-solid fa-heart" style="color:#f43f5e;"></i> VIỆT NAM</div>
+        <div class="vn-flag-wrapper">
+            <div class="flag-icon"></div>
+            <span style="font-family:'Outfit'; font-size:11px; font-weight:900; color:#e11d48;">VIỆT NAM</span>
+        </div>
         
         <div class="auth-btns" id="authButtonsContainer">
             <button class="btn-auth-nav" onclick="openModal('login')">Đăng Nhập</button>
@@ -427,10 +430,10 @@
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             
             <div id="loginFormSection">
-                <div style="font-family:'Outfit'; font-size:1.4rem; font-weight:700; color:var(--primary); margin-bottom:18px; text-align:center;">Chào Mừng Trở Lại!</div>
+                <div style="font-family:'Outfit'; font-size:1.4rem; font-weight:900; color:var(--primary); margin-bottom:18px; text-align:center;">Chào Mừng Trở Lại!</div>
                 <form onsubmit="processLogin(event)">
                     <div class="form-group">
-                        <label class="form-label">Tài khoản (Nhập admin để test quyền Quản Trị)</label>
+                        <label class="form-label">Tài khoản (Nhập 'admin' để test Quyền Quản Trị)</label>
                         <input type="text" class="form-input" id="loginUser" placeholder="Nhập username..." required>
                     </div>
                     <div class="form-group">
@@ -439,16 +442,16 @@
                     </div>
                     <button type="submit" class="btn-main">Đăng Nhập Ngay</button>
                 </form>
-                <div style="text-align:center; margin-top:14px; font-size:0.85rem; font-weight:600; color:var(--text-muted);">
+                <div style="text-align:center; margin-top:14px; font-size:0.85rem; font-weight:700; color:var(--text-muted);">
                     Chưa có tài khoản? <span style="color:var(--primary); cursor:pointer;" onclick="switchModalTab('register')">Đăng ký ngay</span>
                 </div>
             </div>
 
             <div id="registerFormSection" style="display:none;">
-                <div style="font-family:'Outfit'; font-size:1.4rem; font-weight:700; color:var(--primary); margin-bottom:18px; text-align:center;">Tạo Tài Khoản Mới</div>
+                <div style="font-family:'Outfit'; font-size:1.4rem; font-weight:900; color:var(--primary); margin-bottom:18px; text-align:center;">Tạo Tài Khoản Mới</div>
                 <form onsubmit="processRegister(event)">
                     <div class="form-group">
-                        <label class="form-label">Tên tài khoản</label>
+                        <label class="form-label">Tên tài khoản mới</label>
                         <input type="text" class="form-input" id="regUser" placeholder="Chọn username..." required>
                     </div>
                     <div class="form-group">
@@ -457,7 +460,7 @@
                     </div>
                     <button type="submit" class="btn-main">Đăng Ký (Nhận 10.000 Xu)</button>
                 </form>
-                <div style="text-align:center; margin-top:14px; font-size:0.85rem; font-weight:600; color:var(--text-muted);">
+                <div style="text-align:center; margin-top:14px; font-size:0.85rem; font-weight:700; color:var(--text-muted);">
                     Đã có tài khoản? <span style="color:var(--primary); cursor:pointer;" onclick="switchModalTab('login')">Đăng nhập</span>
                 </div>
             </div>
@@ -470,8 +473,8 @@
         <!-- 1. Giao Diện Người Dùng (User View) -->
         <div id="userViewSection" class="view-section active">
             <header>
-                <h1>MelodyHub Music</h1>
-                <p>Khám phá và tận hưởng kho tàng âm nhạc sống động</p>
+                <h1>BearMelody Music 🧸</h1>
+                <p>Thế giới âm nhạc hồng đỏ ngọt ngào cùng những chú gấu siêu dễ thương</p>
             </header>
 
             <div class="user-grid">
@@ -479,9 +482,9 @@
                 <div class="panel">
                     <div class="panel-title"><i class="fa-solid fa-wallet"></i> Ví Xu Của Bạn</div>
                     <div class="wallet-box">
-                        <div style="font-size:0.85rem; font-weight:700; color:#0369a1;">Số Dư Khả Dụng</div>
+                        <div style="font-size:0.85rem; font-weight:800; color:#881337;">Số Dư Khả Dụng</div>
                         <div class="wallet-balance" id="userBalanceDisplay">0 Xu</div>
-                        <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Tài khoản: <span id="accNameText" style="color:var(--text-main);">Khách</span></div>
+                        <div style="font-size:0.85rem; font-weight:700; color:var(--text-muted);">Tài khoản: <span id="accNameText" style="color:var(--primary);">Khách</span></div>
                     </div>
 
                     <div class="panel-title" style="font-size:1.05rem;"><i class="fa-solid fa-receipt"></i> Nạp Xu (Gửi Bill)</div>
@@ -493,7 +496,7 @@
                         <div class="form-group">
                             <label class="form-label">Ảnh Bill Chuyển Khoản</label>
                             <div class="file-upload-wrapper">
-                                <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted);" id="billFileText"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:var(--text-muted);" id="billFileText"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây</div>
                                 <input type="file" id="billFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('billFileText').innerText = 'Đã chọn: ' + this.files[0].name;">
                             </div>
                         </div>
@@ -508,15 +511,15 @@
 
                 <!-- Danh sách nhạc mua bản quyền -->
                 <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Kho Nhạc Bản Quyền</div>
+                    <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Kho Nhạc Độc Quyền 🧸</div>
                     <div class="music-list" id="userMusicListContainer">
                         <div class="music-card">
-                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150" class="music-thumb" alt="Thumb">
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150" class="music-thumb" alt="Thumb">
                             <div class="music-info">
-                                <h4>Summer Electronic Vibes</h4>
-                                <p>DJ Producer • 20,000 Xu</p>
+                                <h4>Sweet Bear Melody</h4>
+                                <p>DJ Teddy • 15,000 Xu</p>
                             </div>
-                            <button class="btn-buy" onclick="buySong('Summer Electronic Vibes', 20000)">Mua Ngay</button>
+                            <button class="btn-buy" onclick="buySong('Sweet Bear Melody', 15000)">Mua Ngay</button>
                         </div>
                     </div>
                 </div>
@@ -526,7 +529,7 @@
         <!-- 2. Giao Diện Quản Trị Admin (Admin View) -->
         <div id="adminViewSection" class="view-section">
             <header>
-                <h1>Khu Vực Quản Trị Viên</h1>
+                <h1>Khu Vực Quản Trị Viên 🛡️</h1>
                 <p>Kiểm soát kho nhạc và duyệt lệnh nạp xu thành viên</p>
             </header>
 
@@ -564,15 +567,15 @@
                     <div class="panel-title"><i class="fa-solid fa-list-check"></i> Hàng Đợi Bill Chờ Duyệt (<span id="pendingBadgeCount">1</span>)</div>
                     <div class="bill-queue" id="adminBillQueue">
                         <div class="bill-card-item" id="sampleBillBox">
-                            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.85rem; color:var(--primary); margin-bottom:6px;">
-                                <span>User: thanhson_99</span>
+                            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.85rem; color:var(--primary); margin-bottom:6px;">
+                                <span>User: teddyfan_99</span>
                                 <span>Nạp: 50,000 VNĐ</span>
                             </div>
-                            <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:10px;">
+                            <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom:10px;">
                                 <i class="fa-solid fa-file-invoice-dollar"></i> Bill_ChuyenKhoan.png
                             </div>
                             <div class="admin-actions">
-                                <button class="btn-approve" onclick="approveUserBill('sampleBillBox', 'thanhson_99', 50000)">Cộng Xu</button>
+                                <button class="btn-approve" onclick="approveUserBill('sampleBillBox', 'teddyfan_99', 50000)">Cộng Xu</button>
                                 <button class="btn-reject" onclick="rejectUserBill('sampleBillBox')">Từ chối</button>
                             </div>
                         </div>
@@ -589,25 +592,29 @@
     </div>
 
     <script>
-        // Tạo các hiệu ứng bong bóng vui mắt
-        const bubbleContainer = document.getElementById('bubbleContainer');
-        for (let i = 0; i < 18; i++) {
-            const b = document.createElement('div');
-            b.className = 'bubble';
-            const size = Math.random() * 35 + 10;
-            b.style.width = `${size}px`;
-            b.style.height = `${size}px`;
-            b.style.left = `${Math.random() * 100}%`;
-            b.style.animationDuration = `${5 + Math.random() * 6}s`;
-            b.style.animationDelay = `${Math.random() * 5}s`;
-            bubbleContainer.appendChild(b);
+        // Tạo các hạt lấp lánh nền
+        const sparkleContainer = document.getElementById('sparkleContainer');
+        for (let i = 0; i < 20; i++) {
+            const s = document.createElement('div');
+            s.className = 'sparkle';
+            const size = Math.random() * 25 + 8;
+            s.style.width = `${size}px`;
+            s.style.height = `${size}px`;
+            s.style.left = `${Math.random() * 100}%`;
+            s.style.top = `${Math.random() * 100}%`;
+            s.style.animationDuration = `${4 + Math.random() * 4}s`;
+            s.style.animationDelay = `${Math.random() * 3}s`;
+            sparkleContainer.appendChild(s);
         }
 
-        // Quản lý dữ liệu người dùng mô phỏng thực tế
-        let currentUser = null;
-        let isAdmin = false;
-        let usersData = {}; // Lưu số dư riêng cho từng tài khoản: { username: balance }
+        // Khởi tạo lưu trữ dữ liệu tài khoản và session qua localStorage để chống lỗi F5 bị mất trạng thái
+        let currentUser = localStorage.getItem('bear_current_user') || null;
+        let isAdmin = localStorage.getItem('bear_is_admin') === 'true';
+        let usersData = JSON.parse(localStorage.getItem('bear_users_data')) || {};
         let pendingBills = 1;
+
+        // Đồng bộ hiển thị ngay khi tải trang
+        updateAuthUI();
 
         function openModal(tab) {
             document.getElementById('authModal').classList.add('active');
@@ -633,13 +640,13 @@
                 showToast("Đăng nhập tài khoản Quản Trị Viên thành công!");
             } else {
                 isAdmin = false;
-                // Nếu user chưa tồn tại trong bộ nhớ, khởi tạo ví = 0 (trừ khi admin cộng tiền)
                 if (usersData[currentUser] === undefined) {
                     usersData[currentUser] = 0;
                 }
                 showToast(`Đăng nhập thành công: ${username}`);
             }
 
+            saveStateToStorage();
             updateAuthUI();
             closeModal();
         }
@@ -655,6 +662,7 @@
             // Đăng ký mới nhận chính xác 10.000 Xu
             usersData[currentUser] = 10000;
 
+            saveStateToStorage();
             showToast("Đăng ký thành công! Nhận ngay 10.000 Xu vào tài khoản.");
             updateAuthUI();
             closeModal();
@@ -663,9 +671,17 @@
         function handleLogout() {
             currentUser = null;
             isAdmin = false;
+            localStorage.removeItem('bear_current_user');
+            localStorage.removeItem('bear_is_admin');
             updateAuthUI();
             switchView('user');
             showToast("Đã đăng xuất tài khoản.", false);
+        }
+
+        function saveStateToStorage() {
+            localStorage.setItem('bear_current_user', currentUser || '');
+            localStorage.setItem('bear_is_admin', isAdmin);
+            localStorage.setItem('bear_users_data', JSON.stringify(usersData));
         }
 
         function updateAuthUI() {
@@ -679,7 +695,7 @@
                 document.getElementById('currentUsernameDisplay').innerText = currentUser;
                 document.getElementById('accNameText').innerText = currentUser;
 
-                // Cập nhật hiển thị số dư thực tế của user hiện tại
+                // Lấy số dư hiện tại của tài khoản
                 const currentBal = usersData[currentUser] !== undefined ? usersData[currentUser] : 0;
                 document.getElementById('userBalanceDisplay').innerText = currentBal.toLocaleString() + " Xu";
 
@@ -744,11 +760,11 @@
             div.className = 'bill-card-item';
             div.id = id;
             div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.85rem; color:var(--primary); margin-bottom:6px;">
+                <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.85rem; color:var(--primary); margin-bottom:6px;">
                     <span>User: ${currentUser}</span>
                     <span>Nạp: ${Number(amount).toLocaleString()} VNĐ</span>
                 </div>
-                <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:10px;">
+                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom:10px;">
                     <i class="fa-solid fa-file-invoice-dollar"></i> ${fileInput.files[0].name}
                 </div>
                 <div class="admin-actions">
@@ -763,20 +779,19 @@
             document.getElementById('billFileText').innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây';
         }
 
-        // Logic quan trọng: Chỉ khi Admin bấm duyệt cộng tiền thì tài khoản đó mới thực sự nhận được xu
+        // Chỉ Admin cộng tiền thì tài khoản đó mới có xu mua nhạc
         function approveUserBill(id, targetUser, amount) {
             const el = document.getElementById(id);
             if (el) el.remove();
             pendingBills = Math.max(0, pendingBills - 1);
             document.getElementById('pendingBadgeCount').innerText = pendingBills;
 
-            // Cộng tiền vào tài khoản tương ứng
             if (usersData[targetUser] === undefined) {
                 usersData[targetUser] = 0;
             }
             usersData[targetUser] += Number(amount);
+            saveStateToStorage();
 
-            // Nếu user đó đang đăng nhập thì cập nhật ngay lập tức giao diện ví
             if (currentUser === targetUser) {
                 document.getElementById('userBalanceDisplay').innerText = usersData[currentUser].toLocaleString() + " Xu";
             }
@@ -838,6 +853,7 @@
             }
 
             usersData[currentUser] -= price;
+            saveStateToStorage();
             document.getElementById('userBalanceDisplay').innerText = usersData[currentUser].toLocaleString() + " Xu";
             showToast(`Mua bản quyền thành công bài hát: "${songName}"!`);
         }

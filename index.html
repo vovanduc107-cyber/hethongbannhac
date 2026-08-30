@@ -9,7 +9,7 @@
     <style>
         :root {
             --bg-color: #030712;
-            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-bg: rgba(15, 23, 42, 0.85);
             --gold-primary: #f59e0b;
             --gold-secondary: #fbbf24;
             --gold-light: #fef3c7;
@@ -37,7 +37,7 @@
             position: relative;
         }
 
-        /* Hiệu ứng chạy dọc nền web (Luxury Matrix/Sparkles) */
+        /* Hiệu ứng chạy dọc nền web */
         .bg-matrix {
             position: fixed;
             top: 0;
@@ -255,7 +255,6 @@
             margin: 10px 0;
         }
 
-        /* Form Nạp Tiền & Upload Bill */
         .form-group {
             margin-bottom: 15px;
         }
@@ -332,7 +331,6 @@
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
         }
 
-        /* Thông tin chuyển khoản & Liên hệ */
         .info-box {
             background: rgba(3, 7, 18, 0.5);
             border: 1px solid rgba(245, 158, 11, 0.2);
@@ -354,7 +352,7 @@
             font-weight: 600;
         }
 
-        /* Danh sách nhạc VIP */
+        /* Danh sách nhạc VIP kèm ảnh bìa */
         .music-list {
             display: flex;
             flex-direction: column;
@@ -372,6 +370,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 15px;
             transition: 0.3s;
         }
 
@@ -379,6 +378,19 @@
             border-color: var(--gold-primary);
             box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
             transform: scale(1.01);
+        }
+
+        .music-thumb {
+            width: 55px;
+            height: 55px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--gold-primary);
+            flex-shrink: 0;
+        }
+
+        .music-info {
+            flex: 1;
         }
 
         .music-info h4 {
@@ -444,15 +456,6 @@
             padding: 15px;
         }
 
-        .bill-img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border: 1px solid var(--text-muted);
-        }
-
         .admin-controls {
             display: flex;
             gap: 10px;
@@ -479,45 +482,6 @@
             cursor: pointer;
             font-weight: 600;
             flex: 1;
-        }
-
-        /* Quản lý chỉnh sửa xu trực tiếp */
-        .user-mgmt-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .user-mgmt-table th, .user-mgmt-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
-            font-size: 0.9rem;
-        }
-
-        .user-mgmt-table th {
-            color: var(--gold-secondary);
-            font-family: 'Cinzel', serif;
-        }
-
-        .input-edit-coins {
-            background: rgba(3, 7, 18, 0.8);
-            border: 1px solid var(--gold-primary);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            width: 120px;
-        }
-
-        .btn-save-coins {
-            background: var(--gold-gradient);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            color: #030712;
-            margin-left: 5px;
         }
 
         /* Thông báo trạng thái */
@@ -573,7 +537,7 @@
             <span class="dancing-bear">🧸</span>
             <span class="dancing-bear">🐼</span>
             <span class="dancing-bear">🐨</span>
-            <span class="bear-message">Chào mừng các đại gia đến với không gian âm nhạc đẳng cấp! Up nhạc & Mua xu mượt mà không lỗi lầm.</span>
+            <span class="bear-message">Không gian VIP đẳng cấp: Thêm ảnh bìa bắt mắt khi up nhạc, gửi bill tự động cực mượt!</span>
         </div>
 
         <div class="dashboard-grid">
@@ -631,34 +595,52 @@
                 </div>
             </div>
 
-            <!-- CỘT 2: KHO NHẠC VIP & UP NHẠC (SỬA LỖI UPLOAD) -->
+            <!-- CỘT 2: KHO NHẠC VIP & UP NHẠC (CÓ THÊM ẢNH BÌA) -->
             <div class="panel">
                 <div class="panel-title">
                     <i class="fa-solid fa-music"></i> Kho Nhạc VIP Sang Trọng
                 </div>
                 
-                <!-- Form Up Nhạc Đã Fix Lỗi -->
+                <!-- Form Up Nhạc Tích Hợp Thêm Ảnh Bìa Bắt Mắt -->
                 <div style="background: rgba(3, 7, 18, 0.4); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 15px; margin-bottom: 20px;">
-                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc Lên Hệ Thống</h4>
+                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc & Ảnh Bìa Độc Quyền</h4>
                     <form id="uploadMusicForm" onsubmit="handleUploadMusic(event)">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                             <input type="text" class="form-input" id="songTitle" placeholder="Tên bài hát..." required>
                             <input type="text" class="form-input" id="songArtist" placeholder="Ca sĩ / Producer..." required>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 120px; gap: 10px; margin-bottom: 10px;">
-                            <div class="file-upload-wrapper" style="padding: 10px; text-align: left; display: flex; align-items: center; justify-content: space-between;">
-                                <span id="audioFileName" style="font-size: 0.8rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn file nhạc (.mp3)...</span>
-                                <input type="file" id="audioFile" accept="audio/*" required onchange="document.getElementById('audioFileName').innerText = this.files[0].name">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <!-- Thêm mục chọn Ảnh Bìa -->
+                            <div>
+                                <label class="form-label" style="font-size: 0.75rem;">Ảnh Bìa (Thumb)</label>
+                                <div class="file-upload-wrapper" style="padding: 10px; text-align: center;">
+                                    <span id="coverFileName" style="font-size: 0.75rem; color: var(--text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn ảnh bìa...</span>
+                                    <input type="file" id="coverFile" accept="image/*" required onchange="document.getElementById('coverFileName').innerText = this.files[0].name">
+                                </div>
                             </div>
-                            <input type="number" class="form-input" id="songPrice" placeholder="Giá Xu" required min="0">
+                            <!-- Chọn File Nhạc (.mp3) -->
+                            <div>
+                                <label class="form-label" style="font-size: 0.75rem;">File Âm Thanh (.mp3)</label>
+                                <div class="file-upload-wrapper" style="padding: 10px; text-align: center;">
+                                    <span id="audioFileName" style="font-size: 0.75rem; color: var(--text-muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn file nhạc...</span>
+                                    <input type="file" id="audioFile" accept="audio/*" required onchange="document.getElementById('audioFileName').innerText = this.files[0].name">
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn-luxury" style="padding: 10px; font-size: 0.9rem;">Xác Nhận Up Nhạc</button>
+
+                        <div style="margin-bottom: 10px;">
+                            <input type="number" class="form-input" id="songPrice" placeholder="Giá Xu mở khóa bài hát" required min="0">
+                        </div>
+
+                        <button type="submit" class="btn-luxury" style="padding: 10px; font-size: 0.9rem;">Xác Nhận Up Nhạc Lên Web</button>
                     </form>
                 </div>
 
                 <div class="music-list" id="musicContainerList">
-                    <!-- Danh sách nhạc mẫu -->
+                    <!-- Danh sách nhạc mẫu có ảnh bìa sang trọng -->
                     <div class="music-card">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150" class="music-thumb" alt="Thumb">
                         <div class="music-info">
                             <h4>Luxury Trap Symphony (Remix)</h4>
                             <p>Producer: DJ Gold Star • 3,250 lượt nghe</p>
@@ -669,6 +651,7 @@
                         </div>
                     </div>
                     <div class="music-card">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150" class="music-thumb" alt="Thumb">
                         <div class="music-info">
                             <h4>Night Wolf VIP Bass Boosted</h4>
                             <p>Producer: Royal Sound • 5,120 lượt nghe</p>
@@ -676,16 +659,6 @@
                         <div class="music-action">
                             <span class="price-tag">80,000 Xu</span>
                             <button class="btn-buy" onclick="buySong('Night Wolf VIP Bass Boosted', 80000)">Mua Ngay</button>
-                        </div>
-                    </div>
-                    <div class="music-card">
-                        <div class="music-info">
-                            <h4>Golden Sunset Chill Lofi</h4>
-                            <p>Producer: Velvet Vibe • 1,890 lượt nghe</p>
-                        </div>
-                        <div class="music-action">
-                            <span class="price-tag">30,000 Xu</span>
-                            <button class="btn-buy" onclick="buySong('Golden Sunset Chill Lofi', 30000)">Mua Ngay</button>
                         </div>
                     </div>
                 </div>
@@ -698,14 +671,13 @@
                 </div>
                 
                 <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
-                    Duyệt bill chuyển khoản nạp xu và trực tiếp điều chỉnh số dư tài khoản người dùng tại đây.
+                    Điều chỉnh linh hoạt số dư tài khoản người dùng trực tiếp.
                 </div>
 
-                <!-- Chỉnh sửa tiền ảo người dùng -->
                 <div style="background: rgba(3, 7, 18, 0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
                     <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-coins"></i> Chỉnh Sửa Số Dư Thành Viên</h4>
                     <div class="form-group" style="margin-bottom: 10px;">
-                        <label class="form-label">Tên tài khoản / ID</label>
+                        <label class="form-label">Tài khoản</label>
                         <input type="text" class="form-input" id="adminTargetUser" value="VipMember_99">
                     </div>
                     <div class="form-group" style="margin-bottom: 10px;">
@@ -715,7 +687,6 @@
                     <button class="btn-luxury" style="padding: 10px; font-size: 0.9rem;" onclick="adminUpdateCoins()">Lưu Số Dư Mới</button>
                 </div>
 
-                <!-- Thống kê nhanh -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div style="background: rgba(3,7,18,0.6); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(245,158,11,0.2);">
                         <div style="font-size: 0.75rem; color: var(--text-muted);">Bill Chờ Duyệt</div>
@@ -723,28 +694,26 @@
                     </div>
                     <div style="background: rgba(3,7,18,0.6); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(245,158,11,0.2);">
                         <div style="font-size: 0.75rem; color: var(--text-muted);">Tổng Nhạc Kho</div>
-                        <div id="totalSongsBadge" style="font-size: 1.2rem; font-weight: 700; color: var(--success);">3</div>
+                        <div id="totalSongsBadge" style="font-size: 1.2rem; font-weight: 700; color: var(--success);">2</div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- KHU VỰC DUYỆT BILL DÀNH CHO ADMIN (NẰM DƯỚI RỘNG RÃI) -->
+        <!-- KHU VỰC DUYỆT BILL DÀNH CHO ADMIN -->
         <div class="admin-section">
             <div class="panel-title" style="border: none; margin-bottom: 5px;">
                 <i class="fa-solid fa-list-check"></i> Hàng Đợi Bill Chuyển Khoản Chờ Duyệt Từ Người Dùng
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted);">Khi người chơi chuyển khoản vào Vietcombank (STK: 1067823099) và gửi bill, admin có thể kiểm tra hình ảnh và duyệt cộng xu ngay lập tức.</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Xác nhận chuyển khoản Vietcombank (STK: 1067823099) để cộng xu tự động.</p>
 
             <div class="bill-queue" id="billQueueContainer">
-                <!-- Bill mẫu chờ duyệt -->
                 <div class="bill-card" id="billItem_sample">
                     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: var(--gold-secondary);">
                         <span>User: VipMember_99</span>
                         <span>Nạp: 200,000 VNĐ</span>
                     </div>
-                    <!-- Ảnh bill giả lập bằng khung màu/hình họa tiết sang trọng để không bị lỗi link ảnh ngoài -->
                     <div style="width: 100%; height: 140px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--gold-primary); margin-bottom: 10px;">
                         <i class="fa-solid fa-file-invoice-dollar" style="font-size: 32px; color: var(--gold-primary); margin-bottom: 5px;"></i>
                         <span style="font-size: 0.8rem; color: white;">Bill_ChuyenKhoan_VCB.png</span>
@@ -767,10 +736,9 @@
     </div>
 
     <script>
-        // Tạo hiệu ứng chạy dọc nền ngẫu nhiên
+        // Hiệu ứng nền matrix chạy dọc
         const matrixContainer = document.getElementById('matrixContainer');
-        const lineCount = 35;
-        for (let i = 0; i < lineCount; i++) {
+        for (let i = 0; i < 35; i++) {
             const line = document.createElement('div');
             line.className = 'matrix-line';
             line.style.left = `${Math.random() * 100}%`;
@@ -781,7 +749,7 @@
 
         let currentCoins = 500000;
         let pendingBillsCount = 1;
-        let totalSongsCount = 3;
+        let totalSongsCount = 2;
 
         function showToast(message, isSuccess = true) {
             const toast = document.getElementById('luxToast');
@@ -805,7 +773,6 @@
             }
         }
 
-        // Xử lý gửi bill nạp xu
         function handleDeposit(e) {
             e.preventDefault();
             const amount = document.getElementById('depositAmount').value;
@@ -820,7 +787,6 @@
             pendingBillsCount++;
             document.getElementById('pendingCountBadge').innerText = pendingBillsCount;
 
-            // Tạo thẻ bill mới trong danh sách chờ duyệt của admin
             const queueContainer = document.getElementById('billQueueContainer');
             const uniqueId = 'bill_' + Date.now();
             
@@ -850,7 +816,6 @@
             document.getElementById('fileNameDisplay').style.color = "var(--text-muted)";
         }
 
-        // Admin duyệt bill
         function approveBill(id, amount) {
             const el = document.getElementById(id);
             if (el) {
@@ -868,7 +833,6 @@
             showToast(`Đã duyệt thành công! Cộng thêm ${Number(amount).toLocaleString()} Xu vào ví.`);
         }
 
-        // Admin từ chối bill
         function rejectBill(id) {
             const el = document.getElementById(id);
             if (el) {
@@ -882,18 +846,22 @@
             showToast("Đã từ chối bill chuyển khoản này.", false);
         }
 
-        // Xử lý upload nhạc (Đã fix lỗi không upload được bằng cách giả lập phân tích file sạch sẽ)
+        // Xử lý upload nhạc có kèm hiển thị ảnh bìa trực tiếp
         function handleUploadMusic(e) {
             e.preventDefault();
             const title = document.getElementById('songTitle').value;
             const artist = document.getElementById('songArtist').value;
             const price = document.getElementById('songPrice').value;
+            const coverInput = document.getElementById('coverFile');
             const audioInput = document.getElementById('audioFile');
 
-            if (!audioInput.files || audioInput.files.length === 0) {
-                showToast("Vui lòng chọn file nhạc định dạng hợp lệ!", false);
+            if (!coverInput.files || !coverInput.files[0] || !audioInput.files || !audioInput.files[0]) {
+                showToast("Vui lòng chọn đầy đủ ảnh bìa và file nhạc (.mp3)!", false);
                 return;
             }
+
+            // Tạo đường dẫn hiển thị trực tiếp ảnh bìa từ tệp người dùng tải lên
+            const coverURL = URL.createObjectURL(coverInput.files[0]);
 
             totalSongsCount++;
             document.getElementById('totalSongsBadge').innerText = totalSongsCount;
@@ -902,6 +870,7 @@
             const card = document.createElement('div');
             card.className = 'music-card';
             card.innerHTML = `
+                <img src="${coverURL}" class="music-thumb" alt="Thumb">
                 <div class="music-info">
                     <h4>${title}</h4>
                     <p>Producer: ${artist} • 1 lượt nghe</p>
@@ -913,13 +882,14 @@
             `;
             listContainer.prepend(card);
 
-            showToast("Up nhạc thành công lên hệ thống VIP!");
+            showToast("Up nhạc và ảnh bìa thành công lên kho VIP!");
             document.getElementById('uploadMusicForm').reset();
-            document.getElementById('audioFileName').innerText = "Chọn file nhạc (.mp3)...";
+            document.getElementById('coverFileName').innerText = "Chọn ảnh bìa...";
+            document.getElementById('coverFileName').style.color = "var(--text-muted)";
+            document.getElementById('audioFileName').innerText = "Chọn file nhạc...";
             document.getElementById('audioFileName').style.color = "var(--text-muted)";
         }
 
-        // Mua nhạc bằng xu
         function buySong(songName, price) {
             if (currentCoins < price) {
                 showToast("Số dư trong ví không đủ! Vui lòng nạp thêm xu.", false);
@@ -932,7 +902,6 @@
             showToast(`Mua thành công bản quyền bài hát "${songName}"!`);
         }
 
-        // Admin cập nhật số dư trực tiếp
         function adminUpdateCoins() {
             const newval = document.getElementById('adminNewCoins').value;
             if (newval === "" || isNaN(newval)) {

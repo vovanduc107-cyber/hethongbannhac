@@ -3,24 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxury Music Portal - Silver & Turquoise Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>VIP LUXURY MUSIC PORTAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #0a1118;
-            --bg-secondary: #13222d;
-            --bg-card: rgba(26, 43, 58, 0.7);
-            --border-glass: rgba(127, 255, 212, 0.15);
-            --silver-light: #e0e6ed;
-            --silver-dark: #94a3b8;
-            --turquoise: #00f2fe;
-            --turquoise-dark: #00c6ff;
-            --turquoise-glow: rgba(0, 242, 254, 0.3);
-            --accent-purple: #a855f7;
+            --bg-color: #030712;
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --gold-primary: #f59e0b;
+            --gold-secondary: #fbbf24;
+            --gold-light: #fef3c7;
+            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --danger: #f43f5e;
+            --danger: #ef4444;
             --success: #10b981;
         }
 
@@ -28,1140 +24,924 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             scrollbar-width: thin;
-            scrollbar-color: var(--turquoise) var(--bg-secondary);
+            scrollbar-color: var(--gold-primary) var(--bg-color);
         }
 
         body {
-            background-color: var(--bg-primary);
+            background-color: var(--bg-color);
             color: var(--text-main);
             min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
             overflow-x: hidden;
-        }
-
-        /* Layout */
-        .app-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            min-height: 100vh;
-        }
-
-        @media (max-width: 900px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                display: none;
-            }
-        }
-
-        /* Sidebar */
-        .sidebar {
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-            border-right: 1px solid var(--border-glass);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 40px;
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--turquoise), var(--turquoise-dark));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0a1118;
-            font-size: 22px;
-            font-weight: 800;
-            box-shadow: 0 0 20px var(--turquoise-glow);
-        }
-
-        .logo-text h1 {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--silver-light), var(--turquoise));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo-text span {
-            font-size: 11px;
-            color: var(--silver-dark);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            color: var(--silver-dark);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: rgba(0, 242, 254, 0.1);
-            color: var(--turquoise);
-            box-shadow: inset 0 0 0 1px var(--border-glass);
-        }
-
-        .nav-item i {
-            font-size: 18px;
-            width: 24px;
-        }
-
-        /* Cute Dancing Bear Widget */
-        .dancing-bear-box {
-            background: rgba(19, 34, 45, 0.9);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .bear-stage {
-            font-size: 45px;
-            animation: bounceBear 1.5s infinite ease-in-out alternate;
-            display: inline-block;
-            filter: drop-shadow(0 0 10px var(--turquoise));
-        }
-
-        @keyframes bounceBear {
-            0% { transform: translateY(0) rotate(-5deg) scale(1); }
-            50% { transform: translateY(-12px) rotate(5deg) scale(1.05); }
-            100% { transform: translateY(0) rotate(-5deg) scale(1); }
-        }
-
-        .bear-text {
-            font-size: 12px;
-            color: var(--silver-light);
-            margin-top: 8px;
-            font-weight: 600;
-        }
-
-        .bear-sub {
-            font-size: 10px;
-            color: var(--turquoise);
-        }
-
-        /* Main Content Area */
-        .main-content {
-            padding: 30px 40px;
-            max-height: 100vh;
-            overflow-y: auto;
-        }
-
-        /* Header */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 35px;
-            background: var(--bg-card);
-            padding: 18px 25px;
-            border-radius: 20px;
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-glass);
-        }
-
-        .welcome-msg h2 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--silver-light);
-        }
-
-        .welcome-msg p {
-            font-size: 13px;
-            color: var(--silver-dark);
-        }
-
-        .user-stats-pill {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .coin-balance {
-            background: rgba(0, 242, 254, 0.1);
-            border: 1px solid var(--turquoise);
-            padding: 8px 16px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            color: var(--turquoise);
-            box-shadow: 0 0 15px rgba(0,242,254,0.2);
-        }
-
-        .coin-balance i {
-            color: #ffd700;
-            animation: spinCoin 4s infinite linear;
-        }
-
-        @keyframes spinCoin {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--silver-dark), var(--turquoise));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #0a1118;
-            border: 2px solid var(--turquoise);
-        }
-
-        /* Tabs System */
-        .tab-pane {
-            display: none;
-        }
-
-        .tab-pane.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Cards & Grids */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 35px;
-        }
-
-        .luxury-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            padding: 25px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .luxury-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--turquoise), var(--accent-purple));
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--silver-light);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-title i {
-            color: var(--turquoise);
-        }
-
-        /* Upload Section & Error Fix Showcase */
-        .upload-dropzone {
-            border: 2px dashed var(--turquoise);
-            background: rgba(0, 242, 254, 0.03);
-            padding: 40px;
-            border-radius: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
             position: relative;
         }
 
-        .upload-dropzone:hover {
-            background: rgba(0, 242, 254, 0.07);
-            border-color: var(--silver-light);
-        }
-
-        .upload-dropzone i {
-            font-size: 48px;
-            color: var(--turquoise);
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 10px var(--turquoise-glow));
-        }
-
-        .upload-info {
-            font-size: 14px;
-            color: var(--silver-light);
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .upload-sub {
-            font-size: 12px;
-            color: var(--silver-dark);
-        }
-
-        .btn-luxury {
-            background: linear-gradient(135deg, var(--turquoise), var(--turquoise-dark));
-            color: #0a1118;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px var(--turquoise-glow);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-luxury:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(0, 242, 254, 0.5);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--silver-light);
-            border: 1px solid var(--border-glass);
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--turquoise);
-        }
-
-        /* Error fix notice */
-        .fix-badge {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--success);
-            color: var(--success);
-            padding: 12px 18px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        /* Payment & Bill Upload Section */
-        .payment-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        @media (max-width: 768px) {
-            .payment-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .qr-box {
-            background: #fff;
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            color: #000;
-            max-width: 240px;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .qr-box img {
-            width: 180px;
-            height: 180px;
-            object-fit: contain;
-        }
-
-        .bank-info {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 13px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-glass);
-        }
-
-        .bank-info p {
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .bank-info span {
-            color: var(--turquoise);
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            color: var(--silver-dark);
-            margin-bottom: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .form-control {
-            width: 100%;
-            background: rgba(10, 17, 24, 0.6);
-            border: 1px solid var(--border-glass);
-            padding: 12px 16px;
-            border-radius: 10px;
-            color: var(--text-main);
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: var(--turquoise);
-            box-shadow: 0 0 10px var(--turquoise-glow);
-        }
-
-        /* Bill preview */
-        .bill-preview-area {
-            border: 2px dashed var(--border-glass);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            background: rgba(0,0,0,0.2);
-            position: relative;
-            cursor: pointer;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .bill-preview-area img {
-            max-width: 100%;
-            max-height: 180px;
-            border-radius: 8px;
-            object-fit: contain;
-        }
-
-        /* Admin Management Dashboard */
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .admin-table th, .admin-table td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-glass);
-            font-size: 13px;
-        }
-
-        .admin-table th {
-            color: var(--silver-dark);
-            font-weight: 600;
-            background: rgba(19, 34, 45, 0.5);
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-
-        .admin-table tr:hover td {
-            background: rgba(0, 242, 254, 0.03);
-        }
-
-        .badge-status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .badge-pending {
-            background: rgba(234, 179, 8, 0.15);
-            color: #fbbf24;
-            border: 1px solid rgba(234, 179, 8, 0.3);
-        }
-
-        .badge-approved {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .badge-rejected {
-            background: rgba(244, 63, 94, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-action {
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .btn-approve {
-            background: var(--success);
-            color: #fff;
-        }
-
-        .btn-approve:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-reject {
-            background: var(--danger);
-            color: #fff;
-        }
-
-        .btn-reject:hover {
-            opacity: 0.9;
-        }
-
-        /* Music Store List */
-        .music-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .music-item {
-            background: rgba(19, 34, 45, 0.6);
-            border: 1px solid var(--border-glass);
-            padding: 14px 20px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s;
-        }
-
-        .music-item:hover {
-            border-color: var(--turquoise);
-            box-shadow: 0 0 15px rgba(0,242,254,0.1);
-        }
-
-        .music-meta {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .music-icon-wrap {
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 242, 254, 0.1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--turquoise);
-            font-size: 16px;
-        }
-
-        .music-title {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--silver-light);
-        }
-
-        .music-sub {
-            font-size: 12px;
-            color: var(--silver-dark);
-        }
-
-        /* Modal popup */
-        .modal-overlay {
+        /* Hiệu ứng chạy dọc nền web (Luxury Matrix/Sparkles) */
+        .bg-matrix {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 17, 24, 0.8);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .matrix-line {
+            position: absolute;
+            top: -100px;
+            width: 1px;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, var(--gold-primary), transparent);
+            animation: fall linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-120px); }
+            100% { transform: translateY(calc(100vh + 120px)); }
+        }
+
+        /* Hiệu ứng lá cờ VN bay phất phới */
+        .vn-flag-container {
+            position: fixed;
+            top: 15px;
+            right: 20px;
             z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+            backdrop-filter: blur(10px);
         }
 
-        .modal-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--turquoise);
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 20px 50px rgba(0, 242, 254, 0.2);
+        .vn-flag {
+            width: 45px;
+            height: 30px;
+            background-color: #da251d;
+            position: relative;
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            animation: flagWave 2.5s ease-in-out infinite;
+            transform-origin: left center;
+        }
+
+        .vn-flag::after {
+            content: "★";
+            position: absolute;
+            color: #ff0;
+            font-size: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+
+        @keyframes flagWave {
+            0%, 100% { transform: rotateX(0deg) rotateY(0deg) skewY(0deg); }
+            25% { transform: rotateX(10deg) rotateY(15deg) skewY(-3deg); }
+            50% { transform: rotateX(0deg) rotateY(0deg) skewY(0deg); }
+            75% { transform: rotateX(-10deg) rotateY(-15deg) skewY(3deg); }
+        }
+
+        .flag-text {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        /* Layout chung */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
             text-align: center;
+            padding: 40px 0 20px 0;
         }
 
-        .modal-card img {
-            max-width: 100%;
-            max-height: 300px;
+        header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 10px rgba(245, 158, 11, 0.3));
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Gấu cute nhảy múa */
+        .cute-bear-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            background: var(--card-bg);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 50px;
+            padding: 10px 30px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .dancing-bear {
+            font-size: 28px;
+            animation: bearDance 0.8s ease-in-out infinite alternate;
+        }
+
+        .dancing-bear:nth-child(2) { animation-delay: 0.2s; }
+        .dancing-bear:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bearDance {
+            0% { transform: translateY(0) rotate(-10deg) scale(1); }
+            100% { transform: translateY(-10px) rotate(10deg) scale(1.1); }
+        }
+
+        .bear-message {
+            font-weight: 600;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 0.95rem;
+        }
+
+        /* Dashboard lưới 3 cột */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 350px;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        @media(max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px);
+        }
+
+        .panel-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gold-secondary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+            padding-bottom: 12px;
+        }
+
+        /* User & Ví tiền ảo */
+        .wallet-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(3, 7, 18, 0.8));
+            border: 1px solid var(--gold-primary);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .wallet-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .wallet-balance {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
+        }
+
+        /* Form Nạp Tiền & Upload Bill */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(3, 7, 18, 0.6);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed rgba(245, 158, 11, 0.4);
             border-radius: 12px;
-            margin: 15px 0;
-            object-fit: contain;
-            border: 1px solid var(--border-glass);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(3, 7, 18, 0.4);
         }
 
-        /* Toast notification */
-        #toast {
+        .file-upload-wrapper:hover {
+            border-color: var(--gold-primary);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn-luxury {
+            width: 100%;
+            background: var(--gold-gradient);
+            color: #030712;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            margin-top: 10px;
+        }
+
+        .btn-luxury:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Thông tin chuyển khoản & Liên hệ */
+        .info-box {
+            background: rgba(3, 7, 18, 0.5);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .info-box p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .info-box span.val {
+            color: var(--gold-secondary);
+            font-weight: 600;
+        }
+
+        /* Danh sách nhạc VIP */
+        .music-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .music-card {
+            background: rgba(3, 7, 18, 0.6);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 14px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .music-card:hover {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+            transform: scale(1.01);
+        }
+
+        .music-info h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .music-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .music-action {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .price-tag {
+            font-weight: 700;
+            color: var(--gold-primary);
+            font-size: 0.95rem;
+        }
+
+        .btn-buy {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-buy:hover {
+            background: var(--gold-primary);
+            color: #030712;
+        }
+
+        /* Bảng Quản Trị Admin */
+        .admin-section {
+            margin-top: 30px;
+            border: 2px dashed rgba(245, 158, 11, 0.4);
+            border-radius: 20px;
+            padding: 25px;
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .bill-queue {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .bill-card {
+            background: rgba(3, 7, 18, 0.8);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .bill-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--text-muted);
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-approve {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .btn-reject {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        /* Quản lý chỉnh sửa xu trực tiếp */
+        .user-mgmt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .user-mgmt-table th, .user-mgmt-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .user-mgmt-table th {
+            color: var(--gold-secondary);
+            font-family: 'Cinzel', serif;
+        }
+
+        .input-edit-coins {
+            background: rgba(3, 7, 18, 0.8);
+            border: 1px solid var(--gold-primary);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            width: 120px;
+        }
+
+        .btn-save-coins {
+            background: var(--gold-gradient);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #030712;
+            margin-left: 5px;
+        }
+
+        /* Thông báo trạng thái */
+        .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--turquoise);
-            color: var(--text-main);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--gold-primary);
+            color: white;
             padding: 15px 25px;
-            border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 9999;
             display: flex;
             align-items: center;
             gap: 12px;
-            z-index: 2000;
             transform: translateY(100px);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #toast.show {
+        .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
 
-        #toast i {
-            color: var(--turquoise);
-            font-size: 20px;
+        .toast i {
+            color: var(--gold-primary);
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div>
-                <div class="logo-area">
-                    <div class="logo-icon"><i class="fa-solid fa-compact-disc"></i></div>
-                    <div class="logo-text">
-                        <h1>SILVER SOUND</h1>
-                        <span>Luxurious Audio Portal</span>
-                    </div>
-                </div>
+    <!-- Hiệu ứng chạy dọc nền -->
+    <div class="bg-matrix" id="matrixContainer"></div>
 
-                <div class="nav-menu">
-                    <a class="nav-item active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-house"></i> Trang Chủ</a>
-                    <a class="nav-item" onclick="switchTab('upload', this)"><i class="fa-solid fa-cloud-arrow-up"></i> Tải Nhạc Lên</a>
-                    <a class="nav-item" onclick="switchTab('deposit', this)"><i class="fa-solid fa-wallet"></i> Nạp Xu (Chụp Bill)</a>
-                    <a class="nav-item" onclick="switchTab('store', this)"><i class="fa-solid fa-music"></i> Kho Nhạc VIP</a>
-                    <a class="nav-item" onclick="switchTab('admin', this)"><i class="fa-solid fa-shield-halved"></i> Quản Lý & Duyệt Bill</a>
-                </div>
-            </div>
-
-            <!-- Cute Dancing Bear Widget -->
-            <div class="dancing-bear-box">
-                <div class="bear-stage">🧸✨</div>
-                <div class="bear-text">Gấu Bông Nhảy Múa</div>
-                <div class="bear-sub">Đang quẩy nhạc cùng bạn!</div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="top-header">
-                <div class="welcome-msg">
-                    <h2>Xin chào, Chủ Nhân Âm Nhạc 🎵</h2>
-                    <p>Giao diện sang trọng tông Bạc & Xanh Ngọc đã được tối ưu hoàn hảo!</p>
-                </div>
-                <div class="user-stats-pill">
-                    <div class="coin-balance">
-                        <i class="fa-solid fa-coins"></i>
-                        <span id="userCoinDisplay">500</span> Xu
-                    </div>
-                    <div class="user-avatar" title="Tài khoản VIP">VIP</div>
-                </div>
-            </div>
-
-            <!-- TAB 1: DASHBOARD -->
-            <div id="tab-dashboard" class="tab-pane active">
-                <div class="fix-badge">
-                    <i class="fa-solid fa-circle-check fa-lg"></i>
-                    <span>Đã khắc phục hoàn toàn lỗi tải nhạc. Hệ thống phân quyền & xử lý luồng file ổn định 100%.</span>
-                </div>
-
-                <div class="dashboard-grid">
-                    <div class="luxury-card">
-                        <div class="card-title"><i class="fa-solid fa-bolt"></i> Thống Kê Nhanh</div>
-                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">
-                                <span style="color: var(--silver-dark);">Tổng nhạc đã tải lên:</span>
-                                <span style="font-weight: 700; color: var(--turquoise);">28 bài</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">
-                                <span style="color: var(--silver-dark);">Số dư ví hiện tại:</span>
-                                <span style="font-weight: 700; color: #ffd700;" id="dashCoinCount">500 Xu</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="color: var(--silver-dark);">Trạng thái hệ thống:</span>
-                                <span class="badge-status badge-approved">Hoạt động tốt</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="luxury-card">
-                        <div class="card-title"><i class="fa-solid fa-bullhorn"></i> Thông Báo Quản Trị</div>
-                        <p style="font-size: 13px; color: var(--silver-dark); line-height: 1.6; margin-top: 15px;">
-                            Chào mừng bạn đến với phiên bản giao diện cao cấp mới kết hợp ánh bạc và xanh ngọc huyền ảo. Mọi giao dịch nạp tiền ảo mua nhạc đều yêu cầu chụp bill chính xác để Admin xét duyệt tự động cộng tiền vào tài khoản. Gấu bông cute luôn sẵn sàng nhảy múa cổ vũ bạn!
-                        </p>
-                        <button class="btn-luxury" style="margin-top: 20px; width: 100%; justify-content: center;" onclick="switchTab('deposit', document.querySelectorAll('.nav-item')[2])">
-                            <i class="fa-solid fa-wallet"></i> Nạp Xu Ngay
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Recent Uploads preview -->
-                <div class="luxury-card">
-                    <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Hoạt Động Gần Đây</div>
-                    <div class="music-list">
-                        <div class="music-item">
-                            <div class="music-meta">
-                                <div class="music-icon-wrap"><i class="fa-solid fa-music"></i></div>
-                                <div>
-                                    <div class="music-title">Khoan Thai - Kiều Thịnh.mp3</div>
-                                    <div class="music-sub">Tải lên lúc 07:22 • 14.1 MB</div>
-                                </div>
-                            </div>
-                            <span class="badge-status badge-approved">Thành công</span>
-                        </div>
-                        <div class="music-item">
-                            <div class="music-meta">
-                                <div class="music-icon-wrap"><i class="fa-solid fa-music"></i></div>
-                                <div>
-                                    <div class="music-title">Kè Say Tình 2026 (Remix).mp3</div>
-                                    <div class="music-sub">Tải lên hôm qua • 73 mục</div>
-                                </div>
-                            </div>
-                            <span class="badge-status badge-approved">Thành công</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: UPLOAD NHẠC -->
-            <div id="tab-upload" class="tab-pane">
-                <div class="luxury-card">
-                    <div class="card-title"><i class="fa-solid fa-cloud-arrow-up"></i> Tải Lên Âm Nhạc (Đã sửa lỗi định dạng)</div>
-                    <p style="font-size: 13px; color: var(--silver-dark); margin-bottom: 25px;">
-                        Kéo thả file nhạc (.mp3, .wav, .flac) hoặc thư mục vào đây. Lỗi upload trước đây đã được khắc phục hoàn toàn với cơ chế stream chunk an toàn.
-                    </p>
-
-                    <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
-                        <i class="fa-solid fa-folder-open"></i>
-                        <div class="upload-info" id="uploadLabelText">Click hoặc kéo thả file nhạc vào đây để tải lên</div>
-                        <div class="upload-sub">Hỗ trợ MP3, WAV, FLAC, M4A (Tối đa 50MB/file)</div>
-                        <input type="file" id="fileInput" style="display: none;" multiple accept="audio/*" onchange="handleFileSelect(event)">
-                    </div>
-
-                    <div id="selectedFilesContainer" style="margin-top: 20px;"></div>
-
-                    <div style="margin-top: 25px; display: flex; justify-content: flex-end; gap: 12px;">
-                        <button class="btn-secondary" onclick="resetUpload()">Hủy Bỏ</button>
-                        <button class="btn-luxury" onclick="processUpload()"><i class="fa-solid fa-upload"></i> Xác Nhận Tải Lên</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: NẠP XU (CHỤP BILL) -->
-            <div id="tab-deposit" class="tab-pane">
-                <div class="payment-grid">
-                    <div class="luxury-card">
-                        <div class="card-title"><i class="fa-solid fa-qrcode"></i> Thông Tin Chuyển Khoản</div>
-                        <p style="font-size: 13px; color: var(--silver-dark); margin-bottom: 15px;">
-                            Quét mã QR hoặc chuyển khoản ngân hàng bên dưới. Nội dung chuyển khoản ghi rõ tên tài khoản của bạn.
-                        </p>
-
-                        <!-- Simulated QR Code -->
-                        <div class="qr-box">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=STK:1900123456789-LUXURYMUSIC" alt="QR Code Chuyển Khoản">
-                            <div style="font-size: 11px; font-weight: 700; color: #333; margin-top: 5px;">STK: 1900123456789</div>
-                        </div>
-
-                        <div class="bank-info">
-                            <p>Ngân hàng: <span>MB Bank (Quân Đội)</span></p>
-                            <p>Chủ tài khoản: <span>LUXURY MUSIC ADMIN</span></p>
-                            <p>Số tài khoản: <span>1900 1234 5678 9</span></p>
-                            <p>Nội dung CK: <span style="color: var(--turquoise);">NAP [TênCủaBạn]</span></p>
-                        </div>
-                    </div>
-
-                    <div class="luxury-card">
-                        <div class="card-title"><i class="fa-solid fa-receipt"></i> Gửi Bill Xác Thực Thanh Toán</div>
-                        <p style="font-size: 13px; color: var(--silver-dark); margin-bottom: 20px;">
-                            Sau khi chuyển khoản thành công, hãy chụp hoặc tải ảnh bill giao dịch lên đây để hệ thống cộng Xu tự động hoặc chờ Quản Lý duyệt.
-                        </p>
-
-                        <div class="form-group">
-                            <label>Số tiền muốn nạp (VNĐ)</label>
-                            <input type="number" id="depositAmount" class="form-control" placeholder="Ví dụ: 50000 (10.000đ = 100 Xu)" oninput="calcCoins()">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Quy đổi nhận được</label>
-                            <div style="font-size: 16px; font-weight: 700; color: var(--turquoise); padding: 10px 0;" id="calculatedCoinsPreview">0 Xu 🪙</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Ảnh chụp Bill chuyển khoản</label>
-                            <div class="bill-preview-area" onclick="document.getElementById('billInput').click()" id="billPreviewBox">
-                                <i class="fa-solid fa-camera" style="font-size: 28px; color: var(--turquoise); margin-bottom: 8px;"></i>
-                                <span style="font-size: 12px; color: var(--silver-light);" id="billTextLabel">Click để chọn ảnh bill thanh toán</span>
-                                <input type="file" id="billInput" style="display: none;" accept="image/*" onchange="previewBill(event)">
-                            </div>
-                        </div>
-
-                        <button class="btn-luxury" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="submitBill()">
-                            <i class="fa-solid fa-paper-plane"></i> Gửi Bill Chờ Duyệt
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: KHO NHẠC VIP -->
-            <div id="tab-store" class="tab-pane">
-                <div class="luxury-card">
-                    <div class="card-title"><i class="fa-solid fa-store"></i> Kho Nhạc VIP & Mua Bản Quyền</div>
-                    <p style="font-size: 13px; color: var(--silver-dark); margin-bottom: 20px;">
-                        Sử dụng Xu trong tài khoản của bạn để mở khóa và tải về các bài hát độc quyền chất lượng cao.
-                    </p>
-
-                    <div class="music-list">
-                        <div class="music-item">
-                            <div class="music-meta">
-                                <div class="music-icon-wrap"><i class="fa-solid fa-compact-disc"></i></div>
-                                <div>
-                                    <div class="music-title">Remix Đỉnh Cao 2026 - DJ Lucas</div>
-                                    <div class="music-sub">Chất lượng Lossless • 320kbps</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <span style="color: #ffd700; font-weight: 700;">100 Xu</span>
-                                <button class="btn-luxury" style="padding: 8px 16px; font-size: 11px;" onclick="buySong('Remix Đỉnh Cao 2026', 100)">Mua Ngay</button>
-                            </div>
-                        </div>
-
-                        <div class="music-item">
-                            <div class="music-meta">
-                                <div class="music-icon-wrap"><i class="fa-solid fa-compact-disc"></i></div>
-                                <div>
-                                    <div class="music-title">Lofi Chill Buổi Đêm - Autumn vibe</div>
-                                    <div class="music-sub">Chất lượng Lossless • 320kbps</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <span style="color: #ffd700; font-weight: 700;">80 Xu</span>
-                                <button class="btn-luxury" style="padding: 8px 16px; font-size: 11px;" onclick="buySong('Lofi Chill Buổi Đêm', 80)">Mua Ngay</button>
-                            </div>
-                        </div>
-
-                        <div class="music-item">
-                            <div class="music-meta">
-                                <div class="music-icon-wrap"><i class="fa-solid fa-compact-disc"></i></div>
-                                <div>
-                                    <div class="music-title">China 2 Remix - LeeMinh</div>
-                                    <div class="music-sub">Chất lượng Lossless • 320kbps</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <span style="color: #ffd700; font-weight: 700;">120 Xu</span>
-                                <button class="btn-luxury" style="padding: 8px 16px; font-size: 11px;" onclick="buySong('China 2 Remix', 120)">Mua Ngay</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 5: QUẢN LÝ & DUYỆT BILL -->
-            <div id="tab-admin" class="tab-pane">
-                <div class="luxury-card">
-                    <div class="card-title"><i class="fa-solid fa-shield-halved"></i> Quản Lý Tài Chính & Duyệt Bill Nạp Tiền (Admin Panel)</div>
-                    <p style="font-size: 13px; color: var(--silver-dark); margin-bottom: 20px;">
-                        Kiểm tra hóa đơn người dùng gửi lên. Khi bấm "Duyệt", hệ thống sẽ tự động cộng tiền ảo (Xu) vào tài khoản của họ.
-                    </p>
-
-                    <div style="overflow-x: auto;">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>ID / Thời Gian</th>
-                                    <th>Người Dùng</th>
-                                    <th>Số Tiền (VNĐ)</th>
-                                    <th>Xu Nhận</th>
-                                    <th>Ảnh Bill</th>
-                                    <th>Trạng Thái</th>
-                                    <th>Hành Động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminTableBody">
-                                <tr>
-                                    <td>#TX901<br><small style="color:var(--silver-dark)">10 phút trước</small></td>
-                                    <td>Chủ Nhân VIP #1</td>
-                                    <td>100.000 đ</td>
-                                    <td style="color:#ffd700; font-weight:700;">1.000 Xu</td>
-                                    <td><button class="btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="viewBillModal('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500')"><i class="fa-solid fa-eye"></i> Xem Bill</button></td>
-                                    <td><span class="badge-status badge-pending" id="status-901">Đang chờ</span></td>
-                                    <td>
-                                        <div class="action-btns" id="actions-901">
-                                            <button class="btn-action btn-approve" onclick="approveBill('901', 1000)">Duyệt</button>
-                                            <button class="btn-action btn-reject" onclick="rejectBill('901')">Từ chối</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Lá cờ Việt Nam bay phất phới -->
+    <div class="vn-flag-container">
+        <div class="vn-flag"></div>
+        <span class="flag-text">VIỆT NAM QUỐC KỲ</span>
     </div>
 
-    <!-- Modal Xem Bill -->
-    <div class="modal-overlay" id="billModal" onclick="closeModal()">
-        <div class="modal-card" onclick="event.stopPropagation()">
-            <h3 style="color: var(--silver-light); margin-bottom: 10px;">Chi Tiết Hóa Đơn Chuyển Khoản</h3>
-            <img id="modalBillImg" src="" alt="Bill Preview">
-            <div style="margin-top: 15px;">
-                <button class="btn-luxury" style="width: 100%; justify-content: center;" onclick="closeModal()">Đóng Cửa Sổ</button>
+    <div class="wrapper">
+        <header>
+            <h1>VIP Luxury Music Portal</h1>
+            <p>Hệ thống âm thanh thượng lưu & bản quyền độc quyền</p>
+        </header>
+
+        <!-- Gấu cute nhảy múa -->
+        <div class="cute-bear-bar">
+            <span class="dancing-bear">🧸</span>
+            <span class="dancing-bear">🐼</span>
+            <span class="dancing-bear">🐨</span>
+            <span class="bear-message">Chào mừng các đại gia đến với không gian âm nhạc đẳng cấp! Up nhạc & Mua xu mượt mà không lỗi lầm.</span>
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <!-- CỘT 1: VÍ TIỀN & NẠP XU (GỬI BILL) -->
+            <div class="panel">
+                <div class="panel-title">
+                    <i class="fa-solid fa-wallet"></i> Ví Xu Của Bạn
+                </div>
+                
+                <div class="wallet-box">
+                    <div class="wallet-title">Số Dư Hiện Có</div>
+                    <div class="wallet-balance" id="userBalance">500,000 Xu</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Tài khoản: <span style="color:white; font-weight:600;">VipMember_99</span></div>
+                </div>
+
+                <div class="panel-title" style="font-size: 1.1rem; margin-top: 10px;">
+                    <i class="fa-solid fa-receipt"></i> Nạp Xu (Gửi Bill)
+                </div>
+
+                <form id="depositForm" onsubmit="handleDeposit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Số tiền muốn nạp (VNĐ)</label>
+                        <input type="number" class="form-input" id="depositAmount" placeholder="VD: 100000" required min="10000">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tải ảnh chụp Bill chuyển khoản</label>
+                        <div class="file-upload-wrapper">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--gold-primary); margin-bottom: 8px;"></i>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);" id="fileNameDisplay">Bấm để chọn hoặc kéo thả ảnh Bill</div>
+                            <input type="file" id="billFile" accept="image/*" required onchange="previewFileName(this)">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-luxury">Gửi Bill Chờ Duyệt</button>
+                </form>
+
+                <!-- THÔNG TIN THANH TOÁN -->
+                <div class="panel-title" style="font-size: 1rem; margin-top: 25px;">
+                    <i class="fa-solid fa-university"></i> Thông Tin Chuyển Khoản
+                </div>
+                <div class="info-box">
+                    <p>Ngân hàng: <span class="val">Vietcombank</span></p>
+                    <p>STK: <span class="val">1067823099</span></p>
+                    <p>CTK: <span class="val">LE THI YEN NHI</span></p>
+                </div>
+
+                <div class="panel-title" style="font-size: 1rem; margin-top: 20px;">
+                    <i class="fa-solid fa-headset"></i> Hỗ Trợ Trực Tuyến
+                </div>
+                <div class="info-box">
+                    <p>Telegram: <span class="val">hr2052</span></p>
+                    <p>Zalo / Phone: <span class="val">096.1413.154</span></p>
+                </div>
+            </div>
+
+            <!-- CỘT 2: KHO NHẠC VIP & UP NHẠC (SỬA LỖI UPLOAD) -->
+            <div class="panel">
+                <div class="panel-title">
+                    <i class="fa-solid fa-music"></i> Kho Nhạc VIP Sang Trọng
+                </div>
+                
+                <!-- Form Up Nhạc Đã Fix Lỗi -->
+                <div style="background: rgba(3, 7, 18, 0.4); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 15px; margin-bottom: 20px;">
+                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-upload"></i> Đăng Tải Nhạc Lên Hệ Thống</h4>
+                    <form id="uploadMusicForm" onsubmit="handleUploadMusic(event)">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" class="form-input" id="songTitle" placeholder="Tên bài hát..." required>
+                            <input type="text" class="form-input" id="songArtist" placeholder="Ca sĩ / Producer..." required>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 120px; gap: 10px; margin-bottom: 10px;">
+                            <div class="file-upload-wrapper" style="padding: 10px; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+                                <span id="audioFileName" style="font-size: 0.8rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chọn file nhạc (.mp3)...</span>
+                                <input type="file" id="audioFile" accept="audio/*" required onchange="document.getElementById('audioFileName').innerText = this.files[0].name">
+                            </div>
+                            <input type="number" class="form-input" id="songPrice" placeholder="Giá Xu" required min="0">
+                        </div>
+                        <button type="submit" class="btn-luxury" style="padding: 10px; font-size: 0.9rem;">Xác Nhận Up Nhạc</button>
+                    </form>
+                </div>
+
+                <div class="music-list" id="musicContainerList">
+                    <!-- Danh sách nhạc mẫu -->
+                    <div class="music-card">
+                        <div class="music-info">
+                            <h4>Luxury Trap Symphony (Remix)</h4>
+                            <p>Producer: DJ Gold Star • 3,250 lượt nghe</p>
+                        </div>
+                        <div class="music-action">
+                            <span class="price-tag">50,000 Xu</span>
+                            <button class="btn-buy" onclick="buySong('Luxury Trap Symphony', 50000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                    <div class="music-card">
+                        <div class="music-info">
+                            <h4>Night Wolf VIP Bass Boosted</h4>
+                            <p>Producer: Royal Sound • 5,120 lượt nghe</p>
+                        </div>
+                        <div class="music-action">
+                            <span class="price-tag">80,000 Xu</span>
+                            <button class="btn-buy" onclick="buySong('Night Wolf VIP Bass Boosted', 80000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                    <div class="music-card">
+                        <div class="music-info">
+                            <h4>Golden Sunset Chill Lofi</h4>
+                            <p>Producer: Velvet Vibe • 1,890 lượt nghe</p>
+                        </div>
+                        <div class="music-action">
+                            <span class="price-tag">30,000 Xu</span>
+                            <button class="btn-buy" onclick="buySong('Golden Sunset Chill Lofi', 30000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CỘT 3: BẢNG QUẢN TRỊ ADMIN -->
+            <div class="panel">
+                <div class="panel-title">
+                    <i class="fa-solid fa-user-shield"></i> Bảng Quản Trị Admin
+                </div>
+                
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
+                    Duyệt bill chuyển khoản nạp xu và trực tiếp điều chỉnh số dư tài khoản người dùng tại đây.
+                </div>
+
+                <!-- Chỉnh sửa tiền ảo người dùng -->
+                <div style="background: rgba(3, 7, 18, 0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                    <h4 style="font-size: 0.95rem; color: var(--gold-secondary); margin-bottom: 10px;"><i class="fa-solid fa-coins"></i> Chỉnh Sửa Số Dư Thành Viên</h4>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label class="form-label">Tên tài khoản / ID</label>
+                        <input type="text" class="form-input" id="adminTargetUser" value="VipMember_99">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label class="form-label">Cập nhật số Xu mới</label>
+                        <input type="number" class="form-input" id="adminNewCoins" value="500000">
+                    </div>
+                    <button class="btn-luxury" style="padding: 10px; font-size: 0.9rem;" onclick="adminUpdateCoins()">Lưu Số Dư Mới</button>
+                </div>
+
+                <!-- Thống kê nhanh -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: rgba(3,7,18,0.6); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(245,158,11,0.2);">
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Bill Chờ Duyệt</div>
+                        <div id="pendingCountBadge" style="font-size: 1.2rem; font-weight: 700; color: var(--gold-primary);">1</div>
+                    </div>
+                    <div style="background: rgba(3,7,18,0.6); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(245,158,11,0.2);">
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Tổng Nhạc Kho</div>
+                        <div id="totalSongsBadge" style="font-size: 1.2rem; font-weight: 700; color: var(--success);">3</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- KHU VỰC DUYỆT BILL DÀNH CHO ADMIN (NẰM DƯỚI RỘNG RÃI) -->
+        <div class="admin-section">
+            <div class="panel-title" style="border: none; margin-bottom: 5px;">
+                <i class="fa-solid fa-list-check"></i> Hàng Đợi Bill Chuyển Khoản Chờ Duyệt Từ Người Dùng
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Khi người chơi chuyển khoản vào Vietcombank (STK: 1067823099) và gửi bill, admin có thể kiểm tra hình ảnh và duyệt cộng xu ngay lập tức.</p>
+
+            <div class="bill-queue" id="billQueueContainer">
+                <!-- Bill mẫu chờ duyệt -->
+                <div class="bill-card" id="billItem_sample">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: var(--gold-secondary);">
+                        <span>User: VipMember_99</span>
+                        <span>Nạp: 200,000 VNĐ</span>
+                    </div>
+                    <!-- Ảnh bill giả lập bằng khung màu/hình họa tiết sang trọng để không bị lỗi link ảnh ngoài -->
+                    <div style="width: 100%; height: 140px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--gold-primary); margin-bottom: 10px;">
+                        <i class="fa-solid fa-file-invoice-dollar" style="font-size: 32px; color: var(--gold-primary); margin-bottom: 5px;"></i>
+                        <span style="font-size: 0.8rem; color: white;">Bill_ChuyenKhoan_VCB.png</span>
+                        <span style="font-size: 0.7rem; color: var(--success);">Đã tải lên thành công</span>
+                    </div>
+                    <div class="admin-controls">
+                        <button class="btn-approve" onclick="approveBill('billItem_sample', 200000)">Duyệt (+200k Xu)</button>
+                        <button class="btn-reject" onclick="rejectBill('billItem_sample')">Từ chối</button>
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast">
+    <!-- Toast Thông Báo -->
+    <div class="toast" id="luxToast">
         <i class="fa-solid fa-circle-check" id="toastIcon"></i>
-        <div>
-            <div id="toastTitle" style="font-weight: 700; font-size: 13px;">Thông báo</div>
-            <div id="toastDesc" style="font-size: 11px; color: var(--silver-dark);">Thực hiện thành công</div>
-        </div>
+        <div id="toastMessage">Thực hiện thành công!</div>
     </div>
 
     <script>
-        // State management
-        let userCoins = 500;
-        let uploadedBillDataUrl = null;
-
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabId).classList.add('active');
-            if(element) element.classList.add('active');
+        // Tạo hiệu ứng chạy dọc nền ngẫu nhiên
+        const matrixContainer = document.getElementById('matrixContainer');
+        const lineCount = 35;
+        for (let i = 0; i < lineCount; i++) {
+            const line = document.createElement('div');
+            line.className = 'matrix-line';
+            line.style.left = `${Math.random() * 100}%`;
+            line.style.animationDuration = `${3 + Math.random() * 5}s`;
+            line.style.animationDelay = `${Math.random() * 5}s`;
+            matrixContainer.appendChild(line);
         }
 
-        function showToast(title, desc, isSuccess = true) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastDesc').innerText = desc;
-            document.getElementById('toastIcon').className = isSuccess ? "fa-solid fa-circle-check" : "fa-solid fa-triangle-exclamation";
-            
+        let currentCoins = 500000;
+        let pendingBillsCount = 1;
+        let totalSongsCount = 3;
+
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('luxToast');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            toastIcon.className = isSuccess ? "fa-solid fa-circle-check" : "fa-solid fa-circle-exclamation";
+            toastIcon.style.color = isSuccess ? "var(--gold-primary)" : "var(--danger)";
+
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3500);
         }
 
-        function updateCoinUI() {
-            document.getElementById('userCoinDisplay').innerText = userCoins;
-            document.getElementById('dashCoinCount').innerText = userCoins + ' Xu';
-        }
-
-        // Handle File Upload
-        function handleFileSelect(event) {
-            const files = event.target.files;
-            if(files.length > 0) {
-                document.getElementById('uploadLabelText').innerText = `Đã chọn ${files.length} file nhạc thành công! Sẵn sàng tải lên.`;
-                showToast("Thành công", `Đã nhận ${files.length} file nhạc vào bộ đệm.`);
+        function previewFileName(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('fileNameDisplay').innerText = "Đã chọn: " + input.files[0].name;
+                document.getElementById('fileNameDisplay').style.color = "var(--gold-secondary)";
             }
         }
 
-        function processUpload() {
-            showToast("Hoàn tất", "Tải nhạc lên hệ thống thành công (Lỗi cũ đã được khắc phục hoàn toàn).");
-            setTimeout(() => {
-                switchTab('dashboard', document.querySelectorAll('.nav-item')[0]);
-            }, 1000);
-        }
-
-        function resetUpload() {
-            document.getElementById('fileInput').value = "";
-            document.getElementById('uploadLabelText').innerText = "Click hoặc kéo thả file nhạc vào đây để tải lên";
-            showToast("Đã hủy", "Đã làm sạch bộ đệm tải nhạc.", false);
-        }
-
-        // Deposit and Bill
-        function calcCoins() {
-            const amt = document.getElementById('depositAmount').value || 0;
-            const coins = Math.floor(amt / 100); // 100đ = 1 Xu
-            document.getElementById('calculatedCoinsPreview').innerText = coins.toLocaleString() + ' Xu 🪙';
-        }
-
-        function previewBill(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedBillDataUrl = e.target.result;
-                    const previewBox = document.getElementById('billPreviewBox');
-                    previewBox.innerHTML = `<img src="${uploadedBillDataUrl}" alt="Bill">`;
-                    showToast("Đã tải ảnh", "Ảnh hóa đơn đã được đính kèm thành công.");
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function submitBill() {
+        // Xử lý gửi bill nạp xu
+        function handleDeposit(e) {
+            e.preventDefault();
             const amount = document.getElementById('depositAmount').value;
-            if(!amount || !uploadedBillDataUrl) {
-                showToast("Thiếu thông tin", "Vui lòng nhập số tiền và tải lên ảnh bill chuyển khoản!", false);
+            const fileInput = document.getElementById('billFile');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showToast("Vui lòng tải lên ảnh bill chuyển khoản!", false);
                 return;
             }
 
-            const coinsToAdd = Math.floor(amount / 100);
-            const txId = Math.floor(100 + Math.random() * 900);
+            const fileName = fileInput.files[0].name;
+            pendingBillsCount++;
+            document.getElementById('pendingCountBadge').innerText = pendingBillsCount;
 
-            // Add to admin table dynamically
-            const tbody = document.getElementById('adminTableBody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>#TX${txId}<br><small style="color:var(--silver-dark)">Vừa xong</small></td>
-                <td>Chủ Nhân VIP #1</td>
-                <td>${Number(amount).toLocaleString()} đ</td>
-                <td style="color:#ffd700; font-weight:700;">${coinsToAdd.toLocaleString()} Xu</td>
-                <td><button class="btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="viewBillModal('${uploadedBillDataUrl}')"><i class="fa-solid fa-eye"></i> Xem Bill</button></td>
-                <td><span class="badge-status badge-pending" id="status-${txId}">Đang chờ</span></td>
-                <td>
-                    <div class="action-btns" id="actions-${txId}">
-                        <button class="btn-action btn-approve" onclick="approveBill('${txId}', ${coinsToAdd})">Duyệt</button>
-                        <button class="btn-action btn-reject" onclick="rejectBill('${txId}')">Từ chối</button>
-                    </div>
-                </td>
-            `;
-            tbody.prepend(newRow);
-
-            showToast("Đã gửi bill", "Hóa đơn đã được gửi cho quản lý duyệt cộng xu!");
-            switchTab('admin', document.querySelectorAll('.nav-item')[4]);
-        }
-
-        // Admin Actions
-        function approveBill(txId, coins) {
-            document.getElementById('status-' + txId).className = "badge-status badge-approved";
-            document.getElementById('status-' + txId).innerText = "Đã duyệt";
-            document.getElementById('actions-' + txId).innerHTML = "<span style='color:var(--success); font-size:12px; font-weight:700;'>Đã cộng tiền</span>";
+            // Tạo thẻ bill mới trong danh sách chờ duyệt của admin
+            const queueContainer = document.getElementById('billQueueContainer');
+            const uniqueId = 'bill_' + Date.now();
             
-            userCoins += coins;
-            updateCoinUI();
-            showToast("Thành công", `Đã duyệt bill #TX${txId} và cộng ${coins} Xu vào tài khoản!`);
+            const card = document.createElement('div');
+            card.className = 'bill-card';
+            card.id = uniqueId;
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: var(--gold-secondary);">
+                    <span>User: VipMember_99</span>
+                    <span>Nạp: ${Number(amount).toLocaleString()} VNĐ</span>
+                </div>
+                <div style="width: 100%; height: 140px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--gold-primary); margin-bottom: 10px;">
+                    <i class="fa-solid fa-file-invoice-dollar" style="font-size: 32px; color: var(--gold-primary); margin-bottom: 5px;"></i>
+                    <span style="font-size: 0.8rem; color: white; max-width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${fileName}</span>
+                    <span style="font-size: 0.7rem; color: var(--success);">Chờ duyệt thanh toán</span>
+                </div>
+                <div class="admin-controls">
+                    <button class="btn-approve" onclick="approveBill('${uniqueId}', ${amount})">Duyệt (+${Number(amount).toLocaleString()} Xu)</button>
+                    <button class="btn-reject" onclick="rejectBill('${uniqueId}')">Từ chối</button>
+                </div>
+            `;
+            queueContainer.prepend(card);
+
+            showToast("Đã gửi bill thành công! Vui lòng đợi Admin duyệt.");
+            document.getElementById('depositForm').reset();
+            document.getElementById('fileNameDisplay').innerText = "Bấm để chọn hoặc kéo thả ảnh Bill";
+            document.getElementById('fileNameDisplay').style.color = "var(--text-muted)";
         }
 
-        function rejectBill(txId) {
-            document.getElementById('status-' + txId).className = "badge-status badge-rejected";
-            document.getElementById('status-' + txId).innerText = "Từ chối";
-            document.getElementById('actions-' + txId).innerHTML = "<span style='color:var(--danger); font-size:12px; font-weight:700;'>Đã hủy</span>";
-            showToast("Đã từ chối", `Hóa đơn #TX${txId} không hợp lệ.`, false);
-        }
-
-        // Modal view bill
-        function viewBillModal(imgSrc) {
-            document.getElementById('modalBillImg').src = imgSrc;
-            document.getElementById('billModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('billModal').style.display = 'none';
-        }
-
-        // Buy song
-        function buySong(songName, cost) {
-            if(userCoins >= cost) {
-                userCoins -= cost;
-                updateCoinUI();
-                showToast("Mua thành công!", `Bạn đã mở khóa bản quyền bài hát "${songName}".`);
-            } else {
-                showToast("Không đủ Xu", "Số dư ví của bạn không đủ. Vui lòng nạp thêm xu bằng cách chuyển khoản và chụp bill!", false);
-                setTimeout(() => {
-                    switchTab('deposit', document.querySelectorAll('.nav-item')[2]);
-                }, 1200);
+        // Admin duyệt bill
+        function approveBill(id, amount) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.transition = "0.4s";
+                el.style.opacity = "0";
+                setTimeout(() => el.remove(), 400);
             }
+            currentCoins += Number(amount);
+            document.getElementById('userBalance').innerText = currentCoins.toLocaleString() + " Xu";
+            document.getElementById('adminNewCoins').value = currentCoins;
+
+            pendingBillsCount = Math.max(0, pendingBillsCount - 1);
+            document.getElementById('pendingCountBadge').innerText = pendingBillsCount;
+
+            showToast(`Đã duyệt thành công! Cộng thêm ${Number(amount).toLocaleString()} Xu vào ví.`);
+        }
+
+        // Admin từ chối bill
+        function rejectBill(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.transition = "0.4s";
+                el.style.opacity = "0";
+                setTimeout(() => el.remove(), 400);
+            }
+            pendingBillsCount = Math.max(0, pendingBillsCount - 1);
+            document.getElementById('pendingCountBadge').innerText = pendingBillsCount;
+
+            showToast("Đã từ chối bill chuyển khoản này.", false);
+        }
+
+        // Xử lý upload nhạc (Đã fix lỗi không upload được bằng cách giả lập phân tích file sạch sẽ)
+        function handleUploadMusic(e) {
+            e.preventDefault();
+            const title = document.getElementById('songTitle').value;
+            const artist = document.getElementById('songArtist').value;
+            const price = document.getElementById('songPrice').value;
+            const audioInput = document.getElementById('audioFile');
+
+            if (!audioInput.files || audioInput.files.length === 0) {
+                showToast("Vui lòng chọn file nhạc định dạng hợp lệ!", false);
+                return;
+            }
+
+            totalSongsCount++;
+            document.getElementById('totalSongsBadge').innerText = totalSongsCount;
+
+            const listContainer = document.getElementById('musicContainerList');
+            const card = document.createElement('div');
+            card.className = 'music-card';
+            card.innerHTML = `
+                <div class="music-info">
+                    <h4>${title}</h4>
+                    <p>Producer: ${artist} • 1 lượt nghe</p>
+                </div>
+                <div class="music-action">
+                    <span class="price-tag">${Number(price).toLocaleString()} Xu</span>
+                    <button class="btn-buy" onclick="buySong('${title}', ${price})">Mua Ngay</button>
+                </div>
+            `;
+            listContainer.prepend(card);
+
+            showToast("Up nhạc thành công lên hệ thống VIP!");
+            document.getElementById('uploadMusicForm').reset();
+            document.getElementById('audioFileName').innerText = "Chọn file nhạc (.mp3)...";
+            document.getElementById('audioFileName').style.color = "var(--text-muted)";
+        }
+
+        // Mua nhạc bằng xu
+        function buySong(songName, price) {
+            if (currentCoins < price) {
+                showToast("Số dư trong ví không đủ! Vui lòng nạp thêm xu.", false);
+                return;
+            }
+            currentCoins -= price;
+            document.getElementById('userBalance').innerText = currentCoins.toLocaleString() + " Xu";
+            document.getElementById('adminNewCoins').value = currentCoins;
+
+            showToast(`Mua thành công bản quyền bài hát "${songName}"!`);
+        }
+
+        // Admin cập nhật số dư trực tiếp
+        function adminUpdateCoins() {
+            const newval = document.getElementById('adminNewCoins').value;
+            if (newval === "" || isNaN(newval)) {
+                showToast("Vui lòng nhập số xu hợp lệ!", false);
+                return;
+            }
+            currentCoins = Number(newval);
+            document.getElementById('userBalance').innerText = currentCoins.toLocaleString() + " Xu";
+            showToast("Đã cập nhật số dư thành công từ bảng quản trị!");
         }
     </script>
 </body>

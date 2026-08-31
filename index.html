@@ -12,7 +12,7 @@
         .wrap { max-width: 500px; margin: 0 auto; }
         
         .top-nav { display: flex; justify-content: space-between; align-items: center; background: #111827; border: 1px solid rgba(236,72,153,0.3); padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; }
-        .btn-act { background: rgba(236,72,153,0.2); border: 1px solid #ec4899; color: #ec4899; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+        .btn-act { background: rgba(236,72,153,0.2); border: 1px solid #ec4899; color: #ec4899; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
         .btn-act.pri { background: #ec4899; color: #fff; border: none; }
         
         .box { background: #111827; border: 2px solid rgba(236,72,153,0.25); border-radius: 16px; padding: 16px; margin-bottom: 15px; }
@@ -25,42 +25,9 @@
         
         .btn-sub { width: 100%; background: linear-gradient(135deg, #f43f5e, #ec4899); color: white; font-weight: 700; border: none; border-radius: 10px; padding: 12px; font-size: 0.95rem; cursor: pointer; }
 
-        /* KHUNG POPUP ĐĂNG NHẬP / ĐĂNG KÝ (FIX HOÀN TOÀN TRÊN IPHONE) */
-        .modal-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 99999;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.25s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-bg.open {
-            visibility: visible;
-            opacity: 1;
-        }
-        .modal-box {
-            background: #111827;
-            border: 2px solid #ec4899;
-            width: 85%;
-            max-width: 320px;
-            border-radius: 16px;
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .close-btn {
-            position: absolute; top: 10px; right: 12px;
-            background: none; border: none; color: #ec4899;
-            font-size: 1.3rem; cursor: pointer; font-weight: bold;
-        }
-
-        /* THÔNG BÁO TOAST */
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; border: 2px solid #ec4899; color: #fff; padding: 10px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; transition: 0.3s; z-index: 100000; opacity: 0; }
-        #toast.active { transform: translateX(-50%) translateY(0); opacity: 1; }
+        /* KHUNG CHỨA FORM ĐĂNG NHẬP / ĐĂNG KÝ TRỰC TIẾP */
+        .auth-card { display: none; }
+        .auth-card.active { display: block; }
     </style>
 </head>
 <body>
@@ -69,14 +36,42 @@
         <div class="top-nav">
             <div style="font-size:0.85rem; color:#94a3b8;">Chào, <span id="lblUser" style="color:#ec4899; font-weight:700;">Khách</span></div>
             <div style="display:flex; gap:6px;">
-                <button class="btn-act" type="button" onclick="showModal('login')">Đăng Nhập</button>
-                <button class="btn-act pri" type="button" onclick="showModal('reg')">Đăng Ký</button>
+                <a href="#auth-section" class="btn-act" onclick="switchTab('login')">Đăng Nhập</a>
+                <a href="#auth-section" class="btn-act pri" onclick="switchTab('reg')">Đăng Ký</a>
             </div>
         </div>
 
         <div style="text-align:center; margin-bottom:20px;">
             <h1 style="font-family:'Outfit'; font-size:1.8rem; background:linear-gradient(135deg,#f43f5e,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">SMM Panel Pro 🚀</h1>
             <p style="font-size:0.75rem; color:#94a3b8; font-weight:600;">Hệ thống tăng tương tác tự động</p>
+        </div>
+
+        <div class="box" id="auth-section">
+            <div id="formLogin" class="auth-card active">
+                <div class="title"><i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập Tài Khoản</div>
+                <div class="fg">
+                    <label class="fl">Tên tài khoản</label>
+                    <input type="text" class="fi" id="logU" placeholder="Nhập username...">
+                </div>
+                <div class="fg">
+                    <label class="fl">Mật khẩu</label>
+                    <input type="password" class="fi" id="logP" placeholder="Nhập mật khẩu...">
+                </div>
+                <button class="btn-sub" onclick="doLogin()">Xác Nhận Đăng Nhập</button>
+            </div>
+
+            <div id="formReg" class="auth-card">
+                <div class="title"><i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản Mới</div>
+                <div class="fg">
+                    <label class="fl">Tên tài khoản mới</label>
+                    <input type="text" class="fi" id="regU" placeholder="Chọn username...">
+                </div>
+                <div class="fg">
+                    <label class="fl">Mật khẩu</label>
+                    <input type="password" class="fi" id="regP" placeholder="Tạo mật khẩu...">
+                </div>
+                <button class="btn-sub" onclick="doReg()">Đăng Ký (Nhận Ngay 50.000đ)</button>
+            </div>
         </div>
 
         <div class="box" style="text-align:center;">
@@ -103,4 +98,63 @@
                 </div>
                 <div class="fg">
                     <label class="fl">Link bài viết / Profile</label>
-                    <input type="url" class="fi" id="
+                    <input type="url" class="fi" id="inLink" placeholder="https://..." required>
+                </div>
+                <div class="fg">
+                    <label class="fl">Số lượng (Tối thiểu 100)</label>
+                    <input type="number" class="fi" id="inQty" value="100" min="100" oninput="calc()" required>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#090d16; padding:10px; border-radius:8px; margin-bottom:12px;">
+                    <span style="font-size:0.8rem; color:#94a3b8;">Tổng tiền:</span>
+                    <span style="font-family:'Outfit'; font-size:1.1rem; font-weight:900; color:#10b981;" id="lblTotal">5,000 đ</span>
+                </div>
+                <button type="submit" class="btn-sub">Thanh Toán Ngay</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let balance = 50000;
+
+        function switchTab(type) {
+            const loginCard = document.getElementById('formLogin');
+            const regCard = document.getElementById('formReg');
+            
+            if(type === 'login') {
+                loginCard.classList.add('active');
+                regCard.classList.remove('active');
+            } else {
+                loginCard.classList.remove('active');
+                regCard.classList.add('active');
+            }
+        }
+
+        function doLogin() {
+            let u = document.getElementById('logU').value.trim();
+            if(!u) {
+                alert('Vui lòng nhập tên tài khoản!');
+                return;
+            }
+            document.getElementById('lblUser').innerText = u;
+            alert('Đăng nhập thành công tài khoản: ' + u);
+        }
+
+        function doReg() {
+            let u = document.getElementById('regU').value.trim();
+            if(!u) {
+                alert('Vui lòng nhập tên tài khoản!');
+                return;
+            }
+            document.getElementById('lblUser').innerText = u;
+            balance = 50000;
+            document.getElementById('lblBal').innerText = balance.toLocaleString() + ' đ';
+            alert('Đăng ký thành công! Đã tặng 50,000đ vào ví.');
+        }
+
+        function changeSvc() {
+            let p = document.getElementById('selPlat').value;
+            let s = document.getElementById('selSvc');
+            if(p === 'fb') {
+                s.innerHTML = `<option value="50">Like Facebook Thường - 50đ/lượt</option><option value="100">Like Facebook VIP - 100đ/lượt</option>`;
+            } else {
+                s.innerHTML = `<option value="120">Follow TikTok - 120đ/lượt</option><option value="40">Tim TikTok - 40đ/lượt</

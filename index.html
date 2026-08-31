@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BearMelody - Kho Nhạc Độc Quyền Gấu Hồng</title>
+    <title>SMM BearSocial - Hệ Thống Buff Like, Follow, Share Đỉnh Cao</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -16,6 +16,9 @@
             --text-muted: #881337;
             --success: #059669;
             --danger: #dc2626;
+            --fb-color: #1877f2;
+            --tt-color: #000000;
+            --ig-color: #e1306c;
         }
 
         * {
@@ -216,7 +219,7 @@
             margin-bottom: 4px;
         }
 
-        .form-input {
+        .form-input, .form-select {
             width: 100%;
             background: white;
             border: 2px solid #fda4af;
@@ -225,7 +228,7 @@
             color: var(--text-main);
             font-size: 0.9rem;
         }
-        .form-input:focus { outline: none; border-color: var(--primary); }
+        .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); }
 
         .file-upload-wrapper {
             position: relative;
@@ -284,52 +287,78 @@
             margin-bottom: 4px;
         }
 
-        .music-list {
+        /* Platform Tabs */
+        .platform-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .platform-tab {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            border: 2px solid #fda4af;
+            background: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+            color: var(--text-muted);
+        }
+        .platform-tab.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.2);
+        }
+
+        /* Services List */
+        .service-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 550px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
-        .music-card {
+        .service-card {
             background: white;
             border: 2px solid #ffe4e6;
             border-radius: 14px;
-            padding: 12px 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .service-title {
+            font-family: 'Outfit';
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            gap: 6px;
         }
-
-        .music-thumb { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; border: 2px solid #fda4af; }
-        .music-info { flex: 1; }
-        .music-info h4 { font-family: 'Outfit'; font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
-        .music-info p { font-size: 0.78rem; color: var(--text-muted); font-weight: 700; }
-        .fake-listeners { font-size: 0.73rem; color: #db2777; font-weight: 700; margin-top: 3px; display: inline-flex; align-items: center; gap: 4px; background: #fdf2f8; padding: 2px 8px; border-radius: 20px; }
-
-        .btn-audio-action { display: flex; gap: 8px; align-items: center; }
-
-        .btn-listen {
-            background: #fdf2f8;
-            border: 2px solid #f472b6;
-            color: #db2777;
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.8rem;
+        .service-price {
+            font-weight: 900;
+            color: var(--primary);
+            font-size: 0.95rem;
         }
-        .btn-buy {
-            background: var(--primary-gradient);
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
+        .service-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
             font-weight: 700;
-            font-size: 0.8rem;
+        }
+        .service-action-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
         }
 
         .admin-layout {
@@ -411,646 +440,4 @@
             
             <div id="loginFormSection">
                 <div style="font-family:'Outfit'; font-size:1.3rem; font-weight:900; color:var(--primary); margin-bottom:15px; text-align:center;">Đăng Nhập Tài Khoản</div>
-                <form onsubmit="processLogin(event)">
-                    <div class="form-group">
-                        <label class="form-label">Tên tài khoản (Gõ 'admin' để vào quyền quản trị)</label>
-                        <input type="text" class="form-input" id="loginUser" placeholder="Nhập username..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mật khẩu</label>
-                        <input type="password" class="form-input" id="loginPass" placeholder="Nhập mật khẩu..." required>
-                    </div>
-                    <button type="submit" class="btn-main">Đăng Nhập</button>
-                </form>
-                <div style="text-align:center; margin-top:12px; font-size:0.8rem; font-weight:700; color:var(--text-muted);">
-                    Chưa có tài khoản? <span style="color:var(--primary); cursor:pointer;" onclick="switchModalTab('register')">Đăng ký ngay</span>
-                </div>
-            </div>
-
-            <div id="registerFormSection" style="display:none;">
-                <div style="font-family:'Outfit'; font-size:1.3rem; font-weight:900; color:var(--primary); margin-bottom:15px; text-align:center;">Tạo Tài Khoản Mới</div>
-                <form onsubmit="processRegister(event)">
-                    <div class="form-group">
-                        <label class="form-label">Tên tài khoản mới</label>
-                        <input type="text" class="form-input" id="regUser" placeholder="Chọn username..." required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mật khẩu</label>
-                        <input type="password" class="form-input" id="regPass" placeholder="Tạo mật khẩu..." required>
-                    </div>
-                    <button type="submit" class="btn-main">Đăng Ký (Tặng 10.000 Xu)</button>
-                </form>
-                <div style="text-align:center; margin-top:12px; font-size:0.8rem; font-weight:700; color:var(--text-muted);">
-                    Đã có tài khoản? <span style="color:var(--primary); cursor:pointer;" onclick="switchModalTab('login')">Đăng nhập</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="wrapper">
-        
-        <div id="userViewSection" class="view-section active">
-            <header>
-                <h1>BearMelody Music 🧸</h1>
-                <p>Thế giới âm nhạc hồng đỏ ngọt ngào cùng những chú gấu siêu dễ thương</p>
-            </header>
-
-            <div class="user-grid">
-                <div>
-                    <div class="panel">
-                        <div class="panel-title"><i class="fa-solid fa-wallet"></i> Ví Xu Của Bạn</div>
-                        <div class="wallet-box">
-                            <div style="font-size:0.8rem; font-weight:800; color:#881337;">Số Dư Khả Dụng</div>
-                            <div class="wallet-balance" id="userBalanceDisplay">0 Xu</div>
-                            <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Tài khoản: <span id="accNameText" style="color:var(--primary);">Khách</span></div>
-                        </div>
-
-                        <div class="panel-title" style="font-size:1rem;"><i class="fa-solid fa-receipt"></i> Nạp Xu (Gửi Bill)</div>
-                        <form id="depositForm" onsubmit="handleDeposit(event)">
-                            <div class="form-group">
-                                <label class="form-label">Số tiền (VNĐ)</label>
-                                <input type="number" class="form-input" id="depositAmount" placeholder="VD: 50000" required min="10000">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Ảnh Bill Chuyển Khoản</label>
-                                <div class="file-upload-wrapper">
-                                    <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);" id="billFileText"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây</div>
-                                    <input type="file" id="billFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('billFileText').innerText = 'Đã chọn: ' + this.files[0].name;">
-                                </div>
-                            </div>
-                            <button type="submit" class="btn-main">Gửi Bill Chờ Admin Duyệt</button>
-                        </form>
-
-                        <div class="info-box">
-                            <p>Ngân hàng: <span class="val">Vietcombank</span></p>
-                            <p>Số tài khoản: <span class="val">1067823099</span></p>
-                            <p>Chủ TK: <span class="val">LE THI YEN NHI</span></p>
-                        </div>
-
-                        <div class="contact-box">
-                            <div class="contact-title"><i class="fa-solid fa-address-book"></i> Hỗ Trợ Trực Tuyến</div>
-                            <div class="contact-item"><i class="fa-brands fa-telegram" style="color:var(--primary);"></i> Telegram: <b>hr2052</b></div>
-                            <div class="contact-item"><i class="fa-solid fa-phone" style="color:var(--primary);"></i> Zalo/Phone: <b>096.1413.154</b></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="panel">
-                        <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Kho Nhạc Độc Quyền 🧸</div>
-                        <div class="music-list" id="userMusicListContainer"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="adminViewSection" class="view-section">
-            <header>
-                <h1>Khu Vực Quản Trị 🛡️</h1>
-                <p>Tải trực tiếp file Nhạc (.mp3, .wav) và Ảnh Bìa từ thiết bị của bạn</p>
-            </header>
-
-            <div style="margin-bottom: 15px;">
-                <button class="btn-auth-nav" onclick="switchView('user')" style="width:auto;"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</button>
-            </div>
-
-            <div class="admin-layout">
-                <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-circle-plus"></i> Đăng Bài Hát Mới Từ Máy</div>
-                    <form id="adminUploadForm" onsubmit="handleAdminUpload(event)">
-                        <div class="form-group">
-                            <label class="form-label">Tên bài hát</label>
-                            <input type="text" class="form-input" id="adminSongTitle" placeholder="Nhập tên bài hát..." required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Nghệ sĩ / Producer</label>
-                            <input type="text" class="form-input" id="adminSongArtist" placeholder="Nhập tên nghệ sĩ..." required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Giá mở khóa (Xu)</label>
-                            <input type="number" class="form-input" id="adminSongPrice" placeholder="VD: 15000" required min="0">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Ảnh Bìa (Chọn từ thiết bị)</label>
-                            <div class="file-upload-wrapper">
-                                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);" id="coverFileText"><i class="fa-solid fa-image" style="color:var(--primary);"></i> Chọn ảnh bìa (.jpg, .png)</div>
-                                <input type="file" id="adminCoverFile" accept="image/*" required onchange="if(this.files[0]) document.getElementById('coverFileText').innerText = 'Đã chọn: ' + this.files[0].name;">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">File Âm Thanh (.mp3, .wav)</label>
-                            <div class="file-upload-wrapper" style="border-color: #3b82f6; background: rgba(239, 246, 255, 0.6);">
-                                <div style="font-size:0.8rem; font-weight:700; color: #1d4ed8;" id="audioFileText"><i class="fa-solid fa-music" style="color: #3b82f6;"></i> Chọn file .mp3 hoặc .wav</div>
-                                <input type="file" id="adminAudioFile" accept="audio/mp3,audio/wav,audio/*" required onchange="if(this.files[0]) document.getElementById('audioFileText').innerText = 'Đã chọn: ' + this.files[0].name;">
-                            </div>
-                            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block; margin-top:4px;">🚀 Lưu trữ cục bộ thông minh: Hỗ trợ trọn vẹn file nặng mà không giới hạn dung lượng.</small>
-                        </div>
-                        <button type="submit" class="btn-main" id="uploadSubmitBtn">Tải Lên & Đăng Bài Hát</button>
-                    </form>
-                </div>
-
-                <div class="panel">
-                    <div class="panel-title"><i class="fa-solid fa-list-check"></i> Hàng Đợi Bill Chờ Duyệt (<span id="pendingBadgeCount">1</span>)</div>
-                    <div class="bill-queue" id="adminBillQueue">
-                        <div class="bill-card-item" id="sampleBillBox">
-                            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.8rem; color:var(--primary); margin-bottom:4px;">
-                                <span>User: teddyfan_99</span>
-                                <span>Nạp: 50,000 VNĐ</span>
-                            </div>
-                            <div style="font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
-                                <i class="fa-solid fa-file-invoice-dollar"></i> Bill_ChuyenKhoan.png
-                            </div>
-                            <div class="admin-actions">
-                                <button class="btn-approve" onclick="approveUserBill('sampleBillBox', 'teddyfan_99', 50000)">Cộng Xu</button>
-                                <button class="btn-reject" onclick="rejectUserBill('sampleBillBox')">Từ chối</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <audio id="globalAudioPlayer"></audio>
-
-    <div class="toast" id="luxToast">
-        <i class="fa-solid fa-circle-check" id="toastIcon" style="color:var(--success); font-size:1.1rem;"></i>
-        <div id="toastMessage">Thành công!</div>
-    </div>
-
-    <script>
-        try {
-            const sparkleContainer = document.getElementById('sparkleContainer');
-            for (let i = 0; i < 15; i++) {
-                const s = document.createElement('div');
-                s.className = 'sparkle';
-                const size = Math.random() * 20 + 6;
-                s.style.width = `${size}px`;
-                s.style.height = `${size}px`;
-                s.style.left = `${Math.random() * 100}%`;
-                s.style.top = `${Math.random() * 100}%`;
-                s.style.opacity = Math.random() * 0.5 + 0.2;
-                sparkleContainer.appendChild(s);
-            }
-        } catch(e) {}
-
-        // --- INDEXEDDB SETUP FOR AUDIO & IMAGE BLOB STORAGE ---
-        let db;
-        const dbName = "BearMelodyDB";
-        const storeName = "mediaFiles";
-
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(dbName, 1);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => {
-                    db = request.result;
-                    resolve(db);
-                };
-                request.onupgradeneeded = (event) => {
-                    const database = event.target.result;
-                    if (!database.objectStoreNames.contains(storeName)) {
-                        database.createObjectStore(storeName);
-                    }
-                };
-            });
-        }
-
-        function saveFileToIDB(id, blob) {
-            return new Promise((resolve, reject) => {
-                if (!db) return resolve();
-                const transaction = db.transaction([storeName], "readwrite");
-                const store = transaction.objectStore(storeName);
-                const request = store.put(blob, id);
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        function getFileFromIDB(id) {
-            return new Promise((resolve, reject) => {
-                if (!db) return resolve(null);
-                const transaction = db.transaction([storeName], "readonly");
-                const store = transaction.objectStore(storeName);
-                const request = store.get(id);
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(null);
-            });
-        }
-
-        let currentUser = localStorage.getItem('bear_current_user') || null;
-        let isAdmin = localStorage.getItem('bear_is_admin') === 'true';
-        
-        let usersData = {};
-        try {
-            usersData = JSON.parse(localStorage.getItem('bear_users_data')) || {};
-        } catch(e) {
-            usersData = {};
-        }
-        
-        let musicList = [
-            {
-                id: 'default_1',
-                title: 'Sweet Bear Melody',
-                artist: 'DJ Teddy',
-                price: 15000,
-                coverId: null,
-                audioId: null,
-                coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150',
-                audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-                fakeListeners: 1420,
-                unlockedBy: []
-            }
-        ];
-        
-        try {
-            const savedMusic = localStorage.getItem('bear_music_list');
-            if (savedMusic) {
-                const parsed = JSON.parse(savedMusic);
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    musicList = parsed;
-                }
-            }
-        } catch(e) {}
-
-        let pendingBills = 1;
-
-        document.addEventListener("DOMContentLoaded", async function() {
-            try {
-                await initDB();
-                // Load blobs for items having coverId / audioId
-                for (let song of musicList) {
-                    if (song.coverId) {
-                        const blob = await getFileFromIDB(song.coverId);
-                        if (blob) song.coverUrl = URL.createObjectURL(blob);
-                    }
-                    if (song.audioId) {
-                        const blob = await getFileFromIDB(song.audioId);
-                        if (blob) song.audioUrl = URL.createObjectURL(blob);
-                    }
-                    if (!song.fakeListeners) {
-                        song.fakeListeners = Math.floor(Math.random() * 2500) + 300;
-                    }
-                }
-            } catch(e) {
-                console.error("IDB init error:", e);
-            }
-
-            updateAuthUI();
-            renderMusicList();
-
-            // Tự động tăng lượt nghe ảo ngẫu nhiên mỗi vài giây cho sinh động
-            setInterval(() => {
-                if (musicList.length > 0) {
-                    const idx = Math.floor(Math.random() * musicList.length);
-                    const inc = Math.floor(Math.random() * 3) + 1;
-                    musicList[idx].fakeListeners += inc;
-                    const el = document.getElementById(`listeners_${musicList[idx].id}`);
-                    if (el) el.innerText = musicList[idx].fakeListeners.toLocaleString();
-                }
-            }, 4000);
-        });
-
-        function openModal(tab) {
-            document.getElementById('authModal').classList.add('active');
-            switchModalTab(tab);
-        }
-
-        function closeModal() {
-            document.getElementById('authModal').classList.remove('active');
-        }
-
-        function switchModalTab(tab) {
-            document.getElementById('loginFormSection').style.display = tab === 'login' ? 'block' : 'none';
-            document.getElementById('registerFormSection').style.display = tab === 'register' ? 'block' : 'none';
-        }
-
-        function processLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('loginUser').value.trim();
-            currentUser = username;
-
-            if (username.toLowerCase() === 'admin') {
-                isAdmin = true;
-                showToast("Đăng nhập Quản Trị Viên thành công!");
-            } else {
-                isAdmin = false;
-                if (usersData[currentUser] === undefined) {
-                    usersData[currentUser] = 0;
-                }
-                showToast(`Đăng nhập thành công: ${username}`);
-            }
-
-            saveStateToStorage();
-            updateAuthUI();
-            closeModal();
-        }
-
-        function processRegister(e) {
-            e.preventDefault();
-            const username = document.getElementById('regUser').value.trim();
-            if (!username) return;
-
-            currentUser = username;
-            isAdmin = (username.toLowerCase() === 'admin');
-            usersData[currentUser] = 10000;
-
-            saveStateToStorage();
-            showToast("Đăng ký thành công! Tặng 10.000 Xu.");
-            updateAuthUI();
-            closeModal();
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            isAdmin = false;
-            localStorage.removeItem('bear_current_user');
-            localStorage.removeItem('bear_is_admin');
-            updateAuthUI();
-            switchView('user');
-            showToast("Đã đăng xuất tài khoản.", false);
-        }
-
-        function saveStateToStorage() {
-            try {
-                localStorage.setItem('bear_current_user', currentUser || '');
-                localStorage.setItem('bear_is_admin', isAdmin);
-                localStorage.setItem('bear_users_data', JSON.stringify(usersData));
-                // Lưu metadata nhưng bỏ blob URLs tạm thời
-                const cleanList = musicList.map(s => ({
-                    id: s.id,
-                    title: s.title,
-                    artist: s.artist,
-                    price: s.price,
-                    coverId: s.coverId,
-                    audioId: s.audioId,
-                    fakeListeners: s.fakeListeners,
-                    unlockedBy: s.unlockedBy
-                }));
-                localStorage.setItem('bear_music_list', JSON.stringify(cleanList));
-            } catch(e) {}
-        }
-
-        function updateAuthUI() {
-            const authBtns = document.getElementById('authButtonsContainer');
-            const userPill = document.getElementById('userPillContainer');
-            const adminBadge = document.getElementById('adminNavBadge');
-
-            if (currentUser) {
-                authBtns.style.display = 'none';
-                userPill.style.display = 'flex';
-                document.getElementById('currentUsernameDisplay').innerText = currentUser;
-                document.getElementById('accNameText').innerText = currentUser;
-
-                const currentBal = usersData[currentUser] !== undefined ? usersData[currentUser] : 0;
-                document.getElementById('userBalanceDisplay').innerText = currentBal.toLocaleString() + " Xu";
-
-                if (isAdmin) {
-                    adminBadge.style.display = 'block';
-                } else {
-                    adminBadge.style.display = 'none';
-                }
-            } else {
-                authBtns.style.display = 'flex';
-                userPill.style.display = 'none';
-                adminBadge.style.display = 'none';
-                document.getElementById('accNameText').innerText = "Khách";
-                document.getElementById('userBalanceDisplay').innerText = "0 Xu";
-            }
-        }
-
-        function switchView(viewName) {
-            if (viewName === 'admin' && !isAdmin) {
-                showToast("Bạn không có quyền truy cập khu vực Quản Trị!", false);
-                return;
-            }
-            document.getElementById('userViewSection').classList.remove('active');
-            document.getElementById('adminViewSection').classList.remove('active');
-
-            if (viewName === 'admin') {
-                document.getElementById('adminViewSection').classList.add('active');
-            } else {
-                document.getElementById('userViewSection').classList.add('active');
-            }
-        }
-
-        function showToast(msg, isSuccess = true) {
-            const toast = document.getElementById('luxToast');
-            document.getElementById('toastMessage').innerText = msg;
-            document.getElementById('toastIcon').className = isSuccess ? "fa-solid fa-circle-check" : "fa-solid fa-circle-exclamation";
-            document.getElementById('toastIcon').style.color = isSuccess ? "var(--success)" : "var(--danger)";
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3500);
-        }
-
-        function handleDeposit(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                showToast("Vui lòng đăng nhập trước khi gửi bill!", false);
-                openModal('login');
-                return;
-            }
-            const amount = document.getElementById('depositAmount').value;
-            const fileInput = document.getElementById('billFile');
-            if (!fileInput.files[0]) {
-                showToast("Vui lòng chọn ảnh bill chuyển khoản!", false);
-                return;
-            }
-
-            pendingBills++;
-            document.getElementById('pendingBadgeCount').innerText = pendingBills;
-
-            const queue = document.getElementById('adminBillQueue');
-            const id = 'bill_' + Date.now();
-            const div = document.createElement('div');
-            div.className = 'bill-card-item';
-            div.id = id;
-            div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.8rem; color:var(--primary); margin-bottom:4px;">
-                    <span>User: ${currentUser}</span>
-                    <span>Nạp: ${Number(amount).toLocaleString()} VNĐ</span>
-                </div>
-                <div style="font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> ${fileInput.files[0].name}
-                </div>
-                <div class="admin-actions">
-                    <button class="btn-approve" onclick="approveUserBill('${id}', '${currentUser}', ${amount})">Cộng Xu</button>
-                    <button class="btn-reject" onclick="rejectUserBill('${id}')">Từ chối</button>
-                </div>
-            `;
-            queue.prepend(div);
-
-            showToast("Đã gửi bill thành công! Chờ Quản Trị Viên duyệt.");
-            document.getElementById('depositForm').reset();
-            document.getElementById('billFileText').innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Tải ảnh bill lên đây';
-        }
-
-        function approveUserBill(id, targetUser, amount) {
-            const el = document.getElementById(id);
-            if (el) el.remove();
-            pendingBills = Math.max(0, pendingBills - 1);
-            document.getElementById('pendingBadgeCount').innerText = pendingBills;
-
-            if (usersData[targetUser] === undefined) {
-                usersData[targetUser] = 0;
-            }
-            usersData[targetUser] += Number(amount);
-            saveStateToStorage();
-
-            if (currentUser === targetUser) {
-                document.getElementById('userBalanceDisplay').innerText = usersData[currentUser].toLocaleString() + " Xu";
-            }
-
-            showToast(`Đã duyệt cộng thành công ${Number(amount).toLocaleString()} Xu cho ${targetUser}!`);
-        }
-
-        function rejectUserBill(id) {
-            const el = document.getElementById(id);
-            if (el) el.remove();
-            pendingBills = Math.max(0, pendingBills - 1);
-            document.getElementById('pendingBadgeCount').innerText = pendingBills;
-            showToast("Đã từ chối phiếu nạp xu này.", false);
-        }
-
-        async function handleAdminUpload(e) {
-            e.preventDefault();
-            const title = document.getElementById('adminSongTitle').value.trim();
-            const artist = document.getElementById('adminSongArtist').value.trim();
-            const price = Number(document.getElementById('adminSongPrice').value);
-            
-            const coverInput = document.getElementById('adminCoverFile');
-            const audioInput = document.getElementById('adminAudioFile');
-
-            if (!coverInput.files[0] || !audioInput.files[0]) {
-                showToast("Vui lòng chọn đầy đủ ảnh bìa và file âm thanh!", false);
-                return;
-            }
-
-            const submitBtn = document.getElementById('uploadSubmitBtn');
-            submitBtn.innerText = "Đang lưu file vào bộ nhớ...";
-            submitBtn.disabled = true;
-
-            const coverFile = coverInput.files[0];
-            const audioFile = audioInput.files[0];
-
-            const uniqueId = 'song_' + Date.now();
-            const coverId = 'cover_' + uniqueId;
-            const audioId = 'audio_' + uniqueId;
-
-            try {
-                await saveFileToIDB(coverId, coverFile);
-                await saveFileToIDB(audioId, audioFile);
-
-                const newSong = {
-                    id: uniqueId,
-                    title: title,
-                    artist: artist,
-                    price: price,
-                    coverId: coverId,
-                    audioId: audioId,
-                    coverUrl: URL.createObjectURL(coverFile),
-                    audioUrl: URL.createObjectURL(audioFile),
-                    fakeListeners: Math.floor(Math.random() * 2000) + 500,
-                    unlockedBy: []
-                };
-
-                musicList.unshift(newSong);
-                saveStateToStorage();
-                renderMusicList();
-
-                showToast("Tải lên bài hát thành công! Khách hàng có thể nghe và mua ngay.");
-                document.getElementById('adminUploadForm').reset();
-                document.getElementById('coverFileText').innerHTML = '<i class="fa-solid fa-image" style="color:var(--primary);"></i> Chọn ảnh bìa (.jpg, .png)';
-                document.getElementById('audioFileText').innerHTML = '<i class="fa-solid fa-music" style="color: #3b82f6;"></i> Chọn file .mp3 hoặc .wav';
-                submitBtn.innerText = "Tải Lên & Đăng Bài Hát";
-                submitBtn.disabled = false;
-                switchView('user');
-            } catch(err) {
-                console.error(err);
-                showToast("Lỗi khi lưu file vào trình duyệt!", false);
-                submitBtn.innerText = "Tải Lên & Đăng Bài Hát";
-                submitBtn.disabled = false;
-            }
-        }
-
-        function renderMusicList() {
-            const listContainer = document.getElementById('userMusicListContainer');
-            if (!listContainer) return;
-            listContainer.innerHTML = '';
-
-            musicList.forEach(song => {
-                const card = document.createElement('div');
-                card.className = 'music-card';
-
-                const isUnlocked = currentUser && song.unlockedBy && song.unlockedBy.includes(currentUser);
-                const buyBtnText = isUnlocked ? '<span style="color:var(--success); font-weight:800;"><i class="fa-solid fa-check"></i> Đã mua</span>' : `<button class="btn-buy" onclick="buySong('${song.id}', ${song.price})">Mua</button>`;
-                
-                const canListen = isAdmin || isUnlocked || song.id === 'default_1';
-                const listenBtn = canListen 
-                    ? `<button class="btn-listen" onclick="playCustomAudio('${song.audioUrl}', '${song.title}')"><i class="fa-solid fa-play"></i> Nghe</button>`
-                    : `<button class="btn-listen" style="opacity:0.5;" onclick="showToast('Bạn cần mua bản quyền bài hát này để nghe!', false)"><i class="fa-solid fa-lock"></i> Khóa</button>`;
-
-                card.innerHTML = `
-                    <img src="${song.coverUrl}" class="music-thumb" alt="Thumb" onerror="this.src='https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150'">
-                    <div class="music-info">
-                        <h4>${song.title}</h4>
-                        <p>${song.artist} • ${song.price.toLocaleString()} Xu</p>
-                        <div class="fake-listeners"><i class="fa-solid fa-headphones"></i> <span id="listeners_${song.id}">${(song.fakeListeners || 1000).toLocaleString()}</span> đang nghe</div>
-                    </div>
-                    <div class="btn-audio-action">
-                        ${listenBtn}
-                        ${buyBtnText}
-                    </div>
-                `;
-                listContainer.appendChild(card);
-            });
-        }
-
-        function playCustomAudio(url, title) {
-            const player = document.getElementById('globalAudioPlayer');
-            if (!url) {
-                showToast("Đường dẫn bài hát không hợp lệ!", false);
-                return;
-            }
-            player.src = url;
-            player.play().then(() => {
-                showToast(`Đang phát: "${title}"`);
-            }).catch(err => {
-                showToast("Không thể phát nhạc. Định dạng file có thể không được trình duyệt hỗ trợ!", false);
-            });
-        }
-
-        function buySong(songId, price) {
-            if (!currentUser) {
-                showToast("Vui lòng đăng nhập để mua nhạc!", false);
-                openModal('login');
-                return;
-            }
-
-            const song = musicList.find(s => s.id === songId);
-            if (!song) return;
-
-            if (song.unlockedBy && song.unlockedBy.includes(currentUser)) {
-                showToast("Bạn đã sở hữu bài hát này rồi!");
-                return;
-            }
-
-            const currentBal = usersData[currentUser] !== undefined ? usersData[currentUser] : 0;
-            if (currentBal < price) {
-                showToast("Số dư ví không đủ! Vui lòng nạp thêm xu.", false);
-                return;
-            }
-
-            usersData[currentUser] -= price;
-            if (!song.unlockedBy) song.unlockedBy = [];
-            song.unlockedBy.push(currentUser);
-
-            saveStateToStorage();
-            renderMusicList();
-            document.getElementById('userBalanceDisplay').innerText = usersData[currentUser].toLocaleString() + " Xu";
-            showToast(`Mua bản quyền thành công bài hát: "${song.title}"!`);
-        }
-    </script>
-</body>
-</html>
+                <form onsubmit

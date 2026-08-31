@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMM Panel - Dịch Vụ Mạng Xã Hội Uy Tín</title>
+    <title>SMM Panel Pro - Dịch Vụ Mạng Xã Hội</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #31103f 100%);
-            --card-bg: rgba(30, 41, 59, 0.85);
+            --bg-gradient: linear-gradient(135deg, #090d16 0%, #111827 50%, #1f1033 100%);
+            --card-bg: rgba(17, 24, 39, 0.9);
             --primary: #ec4899;
             --primary-gradient: linear-gradient(135deg, #f43f5e, #ec4899, #8b5cf6);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --success: #10b981;
-            --border-color: rgba(236, 72, 153, 0.3);
+            --border-color: rgba(236, 72, 153, 0.25);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
@@ -25,16 +25,40 @@
             color: var(--text-main);
             min-height: 100vh;
             padding: 15px;
-            padding-bottom: 60px;
+            padding-bottom: 70px;
         }
 
         .wrapper { max-width: 600px; margin: 0 auto; }
 
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-            padding-top: 15px;
+        /* TOP BAR ĐĂNG NHẬP / ĐĂNG KÝ */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
+        .user-welcome { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
+        .user-welcome span { color: var(--primary); }
+        
+        .auth-btns-group { display: flex; gap: 8px; }
+        .btn-auth {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-auth.primary { background: var(--primary-gradient); color: white; border: none; }
+
+        header { text-align: center; margin-bottom: 25px; }
         header h1 {
             font-family: 'Outfit', sans-serif;
             font-size: 2rem;
@@ -43,7 +67,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        header p { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-top: 5px; }
+        header p { color: var(--text-muted); font-size: 0.82rem; font-weight: 600; margin-top: 4px; }
 
         .panel {
             background: var(--card-bg);
@@ -69,7 +93,7 @@
         }
 
         .wallet-box {
-            background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(139, 92, 246, 0.15));
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.12), rgba(139, 92, 246, 0.12));
             border: 2px solid var(--primary);
             border-radius: 16px;
             padding: 15px;
@@ -85,19 +109,30 @@
         }
 
         .form-group { margin-bottom: 15px; }
-        .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+        .form-label { display: block; font-size: 0.83rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
         
         .form-select, .form-input {
             width: 100%;
-            background: #0f172a;
+            background: #090d16;
             border: 2px solid var(--border-color);
             border-radius: 12px;
             padding: 12px;
             color: var(--text-main);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
         }
         .form-select:focus, .form-input:focus { border-color: var(--primary); }
+
+        .service-info-badge {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px dashed var(--success);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            color: #34d399;
+            font-weight: 700;
+            margin-top: 6px;
+        }
 
         .btn-main {
             width: 100%;
@@ -112,41 +147,30 @@
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 15px;
+        /* MODAL ĐĂNG NHẬP / ĐĂNG KÝ */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
         }
-        .stat-card {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box {
+            background: #111827; border: 2px solid var(--primary); border-radius: 20px;
+            width: 90%; max-width: 360px; padding: 24px; position: relative;
         }
-        .stat-card .val { font-family: 'Outfit'; font-size: 1.2rem; font-weight: 900; color: #10b981; margin-top: 4px; }
+        .modal-close {
+            position: absolute; top: 15px; right: 15px; background: rgba(236,72,153,0.2); border: none;
+            width: 28px; height: 28px; border-radius: 50%; color: var(--primary); cursor: pointer; font-weight: 700;
+        }
 
         .toast {
-            position: fixed;
-            bottom: 20px; left: 20px; right: 20px;
-            max-width: 380px;
-            margin: 0 auto;
-            background: #1e293b;
-            border: 2px solid var(--primary);
-            color: var(--text-main);
-            padding: 14px;
-            border-radius: 14px;
-            z-index: 999;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transform: translateY(120px);
-            opacity: 0;
-            transition: 0.3s;
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            max-width: 380px; margin: 0 auto; background: #1e293b;
+            border: 2px solid var(--primary); color: var(--text-main);
+            padding: 14px; border-radius: 14px; z-index: 2000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px;
+            font-weight: 700; font-size: 0.9rem; transform: translateY(120px); opacity: 0; transition: 0.3s;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
     </style>
@@ -154,37 +178,27 @@
 <body>
 
     <div class="wrapper">
+        <div class="top-bar">
+            <div class="user-welcome" id="userWelcomeText">Xin chào, <span id="displayUsername">Khách</span></div>
+            <div class="auth-btns-group" id="authButtonsGroup">
+                <button class="btn-auth" onclick="openAuthModal('login')">Đăng Nhập</button>
+                <button class="btn-auth primary" onclick="openAuthModal('register')">Đăng Ký</button>
+            </div>
+        </div>
+
         <header>
             <h1>SMM Panel Pro 🚀</h1>
-            <p>Hệ thống dịch vụ Mạng Xã Hội Facebook, TikTok, Instagram</p>
+            <p>Hệ thống tự động tăng Like, Follow, Share mạng xã hội</p>
         </header>
 
         <div class="panel">
             <div class="panel-title"><i class="fa-solid fa-wallet"></i> Quản Lý Số Dư</div>
             <div class="wallet-box">
-                <div style="font-size:0.85rem; font-weight:800; color:var(--text-muted);">Tài khoản hiện tại</div>
+                <div style="font-size:0.85rem; font-weight:800; color:var(--text-muted);">Số dư tài khoản</div>
                 <div class="wallet-balance" id="accountBalance">50,000 đ</div>
-                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Trạng thái: <span style="color:#10b981;">Hoạt động</span></div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Đã tiêu dùng</div>
-                    <div class="val" id="totalSpent" style="color:#f43f5e;">0 đ</div>
-                </div>
-                <div class="stat-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Đơn đã tạo</div>
-                    <div class="val" id="totalOrders">0</div>
-                </div>
+                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Trạng thái: <span style="color:#10b981;">Hoạt động ổn định</span></div>
             </div>
         </div>
 
         <div class="panel">
-            <div class="panel-title"><i class="fa-solid fa-cart-shopping"></i> Tạo Đơn Dịch Vụ Mới</div>
-            <form onsubmit="handleCreateOrder(event)">
-                <div class="form-group">
-                    <label class="form-label">Chọn Mạng Xã Hội</label>
-                    <select class="form-select" id="platformSelect" onchange="updateServices()">
-                        <option value="fb">📘 Facebook (Like, Follow, Share)</option>
-                        <option value="tk">🎵 TikTok (Follow, Tim, View)</option>
-                        <option value="ig">
+            <div class="panel-title"><i class="fa-solid fa-cart-shopping

@@ -24,18 +24,19 @@
         .fi:focus, .fs:focus { border-color: #ec4899; }
         
         .btn-sub { width: 100%; background: linear-gradient(135deg, #f43f5e, #ec4899); color: white; font-weight: 700; border: none; border-radius: 10px; padding: 12px; font-size: 0.95rem; cursor: pointer; }
-
-        /* KHUNG CHỨA FORM ĐĂNG NHẬP / ĐĂNG KÝ TRỰC TIẾP */
         .auth-card { display: none; }
         .auth-card.active { display: block; }
+        
+        .admin-badge { background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div class="wrap">
+        <!-- TOP NAV -->
         <div class="top-nav">
             <div style="font-size:0.85rem; color:#94a3b8;">Chào, <span id="lblUser" style="color:#ec4899; font-weight:700;">Khách</span></div>
-            <div style="display:flex; gap:6px;">
+            <div style="display:flex; gap:6px;" id="navButtons">
                 <a href="#auth-section" class="btn-act" onclick="switchTab('login')">Đăng Nhập</a>
                 <a href="#auth-section" class="btn-act pri" onclick="switchTab('reg')">Đăng Ký</a>
             </div>
@@ -46,20 +47,32 @@
             <p style="font-size:0.75rem; color:#94a3b8; font-weight:600;">Hệ thống tăng tương tác tự động</p>
         </div>
 
+        <!-- THÔNG TIN LIÊN HỆ -->
+        <div class="box">
+            <div class="title"><i class="fa-solid fa-headset"></i> Hỗ Trợ & Liên Hệ</div>
+            <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
+                <div style="margin-bottom: 6px;"><i class="fa-solid fa-phone" style="color: #ec4899; width: 20px;"></i> <b>Zalo/Phone:</b> <a href="tel:0961413154" style="color: #38bdf8; text-decoration: none;">0961413154</a></div>
+                <div><i class="fa-brands fa-telegram" style="color: #ec4899; width: 20px;"></i> <b>Telegram:</b> <a href="https://t.me/hr2052" target="_blank" style="color: #38bdf8; text-decoration: none;">@hr2052</a></div>
+            </div>
+        </div>
+
+        <!-- KHU VỰC ĐĂNG NHẬP / ĐĂNG KÝ -->
         <div class="box" id="auth-section">
+            <!-- Form Đăng Nhập -->
             <div id="formLogin" class="auth-card active">
                 <div class="title"><i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập Tài Khoản</div>
                 <div class="fg">
                     <label class="fl">Tên tài khoản</label>
-                    <input type="text" class="fi" id="logU" placeholder="Nhập username...">
+                    <input type="text" class="fi" id="logU" value="admin" placeholder="Nhập username...">
                 </div>
                 <div class="fg">
                     <label class="fl">Mật khẩu</label>
-                    <input type="password" class="fi" id="logP" placeholder="Nhập mật khẩu...">
+                    <input type="password" class="fi" id="logP" value="admin123" placeholder="Nhập mật khẩu...">
                 </div>
-                <button class="btn-sub" onclick="doLogin()">Xác Nhận Đăng Nhập</button>
+                <button type="button" class="btn-sub" onclick="doLogin()">Xác Nhận Đăng Nhập</button>
             </div>
 
+            <!-- Form Đăng Ký -->
             <div id="formReg" class="auth-card">
                 <div class="title"><i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản Mới</div>
                 <div class="fg">
@@ -70,15 +83,26 @@
                     <label class="fl">Mật khẩu</label>
                     <input type="password" class="fi" id="regP" placeholder="Tạo mật khẩu...">
                 </div>
-                <button class="btn-sub" onclick="doReg()">Đăng Ký (Nhận Ngay 50.000đ)</button>
+                <button type="button" class="btn-sub" onclick="doReg()">Đăng Ký (Nhận Ngay 50.000đ)</button>
             </div>
         </div>
 
+        <!-- KHU VỰC QUẢN TRỊ -->
+        <div class="box" id="adminPanelBox" style="display:none; border-color: #f59e0b;">
+            <div class="admin-badge"><i class="fa-solid fa-shield-halved"></i> BẢNG ĐIỀU KHIỂN ADMIN</div>
+            <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">Quản lý toàn bộ hệ thống đơn hàng và số dư thành viên.</div>
+            <div style="background: #090d16; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: #34d399;">
+                ✅ Đang đăng nhập quyền Quản Trị Viên cao nhất.
+            </div>
+        </div>
+
+        <!-- SỐ DƯ -->
         <div class="box" style="text-align:center;">
             <div style="font-size:0.75rem; color:#94a3b8; font-weight:700;">SỐ DƯ TÀI KHOẢN</div>
             <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:900; color:#f43f5e; margin:5px 0;" id="lblBal">50,000 đ</div>
         </div>
 
+        <!-- MUA HÀNG -->
         <div class="box">
             <div class="title"><i class="fa-solid fa-cart-shopping"></i> Tạo Đơn Dịch Vụ</div>
             <form onsubmit="makeOrder(event)">
@@ -119,7 +143,6 @@
         function switchTab(type) {
             const loginCard = document.getElementById('formLogin');
             const regCard = document.getElementById('formReg');
-            
             if(type === 'login') {
                 loginCard.classList.add('active');
                 regCard.classList.remove('active');
@@ -131,12 +154,25 @@
 
         function doLogin() {
             let u = document.getElementById('logU').value.trim();
-            if(!u) {
-                alert('Vui lòng nhập tên tài khoản!');
+            let p = document.getElementById('logP').value.trim();
+            
+            if(!u || !p) {
+                alert('Vui lòng nhập đầy đủ tài khoản và mật khẩu!');
                 return;
             }
-            document.getElementById('lblUser').innerText = u;
-            alert('Đăng nhập thành công tài khoản: ' + u);
+
+            if (u === 'admin' && p === 'admin123') {
+                document.getElementById('lblUser').innerText = 'Quản Trị Viên (Admin)';
+                document.getElementById('adminPanelBox').style.display = 'block';
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('navButtons').innerHTML = `<a href="#" class="btn-act" onclick="location.reload()">Đăng Xuất</a>`;
+                alert('Đăng nhập thành công quyền Admin hệ thống!');
+            } else {
+                document.getElementById('lblUser').innerText = u;
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('navButtons').innerHTML = `<a href="#" class="btn-act" onclick="location.reload()">Đăng Xuất</a>`;
+                alert('Đăng nhập thành công tài khoản: ' + u);
+            }
         }
 
         function doReg() {
@@ -148,6 +184,8 @@
             document.getElementById('lblUser').innerText = u;
             balance = 50000;
             document.getElementById('lblBal').innerText = balance.toLocaleString() + ' đ';
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('navButtons').innerHTML = `<a href="#" class="btn-act" onclick="location.reload()">Đăng Xuất</a>`;
             alert('Đăng ký thành công! Đã tặng 50,000đ vào ví.');
         }
 
@@ -157,4 +195,32 @@
             if(p === 'fb') {
                 s.innerHTML = `<option value="50">Like Facebook Thường - 50đ/lượt</option><option value="100">Like Facebook VIP - 100đ/lượt</option>`;
             } else {
-                s.innerHTML = `<option value="120">Follow TikTok - 120đ/lượt</option><option value="40">Tim TikTok - 40đ/lượt</
+                s.innerHTML = `<option value="120">Follow TikTok - 120đ/lượt</option><option value="40">Tim TikTok - 40đ/lượt</option>`;
+            }
+            calc();
+        }
+
+        function calc() {
+            let price = Number(document.getElementById('selSvc').value);
+            let qty = Number(document.getElementById('inQty').value) || 0;
+            document.getElementById('lblTotal').innerText = (price * qty).toLocaleString() + ' đ';
+        }
+
+        function makeOrder(e) {
+            e.preventDefault();
+            let price = Number(document.getElementById('selSvc').value);
+            let qty = Number(document.getElementById('inQty').value);
+            let cost = price * qty;
+
+            if(balance < cost) {
+                alert('Số dư trong ví không đủ!');
+                return;
+            }
+            balance -= cost;
+            document.getElementById('lblBal').innerText = balance.toLocaleString() + ' đ';
+            alert('Tạo đơn hàng thành công!');
+            document.getElementById('inLink').value = '';
+        }
+    </script>
+</body>
+</html>

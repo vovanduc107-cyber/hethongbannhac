@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMM BearSocial - Hệ Thống Buff Like, Follow, Share Đỉnh Cao</title>
+    <title>BearMelody - Kho Nhạc Độc Quyền Gấu Hồng</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -16,9 +16,6 @@
             --text-muted: #881337;
             --success: #059669;
             --danger: #dc2626;
-            --fb-color: #1877f2;
-            --tt-color: #000000;
-            --ig-color: #e1306c;
         }
 
         * {
@@ -219,7 +216,7 @@
             margin-bottom: 4px;
         }
 
-        .form-input, .form-select {
+        .form-input {
             width: 100%;
             background: white;
             border: 2px solid #fda4af;
@@ -228,7 +225,7 @@
             color: var(--text-main);
             font-size: 0.9rem;
         }
-        .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); }
+        .form-input:focus { outline: none; border-color: var(--primary); }
 
         .file-upload-wrapper {
             position: relative;
@@ -287,157 +284,25 @@
             margin-bottom: 4px;
         }
 
-        /* Platform Tabs */
-        .platform-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .platform-tab {
-            flex: 1;
-            padding: 10px;
-            border-radius: 12px;
-            border: 2px solid #fda4af;
-            background: white;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-align: center;
-            transition: 0.2s;
-            color: var(--text-muted);
-        }
-        .platform-tab.active {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.2);
-        }
-
-        /* Services List */
-        .service-list {
+        .music-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 500px;
+            max-height: 550px;
             overflow-y: auto;
         }
 
-        .service-card {
+        .music-card {
             background: white;
             border: 2px solid #ffe4e6;
             border-radius: 14px;
-            padding: 15px;
+            padding: 12px 15px;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .service-header {
-            display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-        }
-        .service-title {
-            font-family: 'Outfit';
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .service-price {
-            font-weight: 900;
-            color: var(--primary);
-            font-size: 0.95rem;
-        }
-        .service-desc {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-        .service-action-row {
-            display: flex;
-            gap: 8px;
-            margin-top: 4px;
+            gap: 12px;
         }
 
-        .admin-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        @media(max-width: 800px) { .admin-layout { grid-template-columns: 1fr; } }
-
-        .bill-queue { display: flex; flex-direction: column; gap: 10px; max-height: 450px; overflow-y: auto; }
-        .bill-card-item { background: white; border: 2px solid #fecdd3; border-radius: 12px; padding: 12px; }
-        .admin-actions { display: flex; gap: 8px; margin-top: 8px; }
-
-        .btn-approve { background: var(--success); color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; cursor: pointer; flex: 1; font-size: 0.8rem; }
-        .btn-reject { background: var(--danger); color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; cursor: pointer; flex: 1; font-size: 0.8rem; }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(76, 5, 25, 0.4); backdrop-filter: blur(4px);
-            z-index: 2000; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: 0.3s;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-        .modal-box {
-            background: white; border-radius: 20px; width: 90%; max-width: 360px; padding: 24px;
-            position: relative; border: 2px solid #fda4af; box-shadow: 0 15px 30px rgba(225, 29, 72, 0.2);
-        }
-
-        .modal-close {
-            position: absolute; top: 15px; right: 15px; background: #ffe4e6; border: none;
-            width: 28px; height: 28px; border-radius: 50%; color: var(--primary); cursor: pointer; font-weight: 700;
-        }
-
-        .toast {
-            position: fixed; bottom: 20px; right: 20px; left: 20px; max-width: 380px; margin: 0 auto; background: white; border: 2px solid #fb7185;
-            color: var(--text-main); padding: 12px 18px; border-radius: 12px; z-index: 9999;
-            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.2); display: flex; align-items: center; gap: 10px;
-            transform: translateY(120px); opacity: 0; transition: 0.4s; font-weight: 700; font-size: 0.9rem;
-        }
-        .toast.show { transform: translateY(0); opacity: 1; }
-    </style>
-</head>
-<body>
-
-    <div id="sparkleContainer"></div>
-    <div class="dancing-bears">
-        <span class="bear">🧸</span>
-        <span class="bear">🐻‍❄️</span>
-        <span class="bear">🐼</span>
-        <span class="bear">🧸</span>
-    </div>
-
-    <div class="top-nav-bar">
-        <div class="vn-flag-wrapper">
-            <div class="flag-icon"></div>
-            <span style="font-family:'Outfit'; font-size:10px; font-weight:900; color:#e11d48;">VIỆT NAM</span>
-        </div>
-        
-        <div class="auth-btns" id="authButtonsContainer">
-            <button class="btn-auth-nav" onclick="openModal('login')">Đăng Nhập</button>
-            <button class="btn-auth-nav" onclick="openModal('register')" style="background: var(--primary-gradient); color:white; border:none;">Đăng Ký</button>
-        </div>
-
-        <div class="user-pill" id="userPillContainer">
-            <i class="fa-solid fa-user-circle" style="color:var(--primary); font-size: 1rem;"></i>
-            <span id="currentUsernameDisplay" style="font-weight:700; font-size:0.85rem;">Member</span>
-            <button onclick="handleLogout()" style="background:transparent; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i></button>
-        </div>
-
-        <button class="admin-badge-nav" id="adminNavBadge" onclick="switchView('admin')">
-            <i class="fa-solid fa-shield-halved"></i> Quản Trị
-        </button>
-    </div>
-
-    <div class="modal-overlay" id="authModal">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            
-            <div id="loginFormSection">
-                <div style="font-family:'Outfit'; font-size:1.3rem; font-weight:900; color:var(--primary); margin-bottom:15px; text-align:center;">Đăng Nhập Tài Khoản</div>
-                <form onsubmit
+        .music-thumb { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; border: 2px solid #fda4af; }
+        .music-info { flex: 1; }
+        .music-

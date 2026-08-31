@@ -3,104 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BearMelody - Kho Nhạc Gấu Hồng</title>
+    <title>SMM Panel - Dịch Vụ Mạng Xã Hội Uy Tín</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --primary: #e11d48;
-            --primary-gradient: linear-gradient(135deg, #fb7185, #e11d48, #9f1239);
-            --text-main: #4c0519;
-            --text-muted: #881337;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #31103f 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --primary: #ec4899;
+            --primary-gradient: linear-gradient(135deg, #f43f5e, #ec4899, #8b5cf6);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --border-color: rgba(236, 72, 153, 0.3);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
-        body { background: var(--bg-gradient); color: var(--text-main); min-height: 100vh; padding: 20px; padding-bottom: 50px; }
-        .wrapper { max-width: 600px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 25px; padding-top: 10px; }
-        header h1 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 900; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        header p { color: var(--text-muted); font-size: 0.85rem; font-weight: 700; margin-top: 5px; }
-        
-        .panel { background: var(--card-bg); border: 2px solid rgba(255, 182, 193, 0.8); border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(225, 29, 72, 0.1); margin-bottom: 20px; }
-        .panel-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #ffe4e6; padding-bottom: 8px; }
-        
-        .wallet-box { background: linear-gradient(135deg, #ffe4e6, #fecdd3); border: 2px solid #fb7185; border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 15px; }
-        .wallet-balance { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 900; color: #9f1239; margin: 5px 0; }
-        
-        .form-group { margin-bottom: 12px; }
-        .form-label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
-        .form-input { width: 100%; background: white; border: 2px solid #fda4af; border-radius: 10px; padding: 10px 12px; color: var(--text-main); font-size: 0.9rem; }
-        
-        .btn-main { width: 100%; background: var(--primary-gradient); color: white; font-weight: 700; border: none; border-radius: 10px; padding: 12px; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3); }
 
-        .music-card { background: white; border: 2px solid #ffe4e6; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-        .music-thumb { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; border: 2px solid #fda4af; }
-        .music-info { flex: 1; }
-        .music-info h4 { font-family: 'Outfit'; font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
-        .music-info p { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
         
-        .btn-play { background: #fdf2f8; border: 2px solid #f472b6; color: #db2777; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; }
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 15px;
+            padding-bottom: 60px;
+        }
+
+        .wrapper { max-width: 600px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-top: 15px;
+        }
+        header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        header p { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-top: 5px; }
+
+        .panel {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f43f5e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid rgba(236, 72, 153, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .wallet-box {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(139, 92, 246, 0.15));
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .wallet-balance {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #f43f5e;
+            margin: 5px 0;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
         
-        .toast { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 350px; margin: 0 auto; background: white; border: 2px solid #fb7185; color: var(--text-main); padding: 12px; border-radius: 12px; z-index: 999; box-shadow: 0 10px 25px rgba(225, 29, 72, 0.2); text-align: center; font-weight: 700; font-size: 0.9rem; display: none; }
+        .form-select, .form-input {
+            width: 100%;
+            background: #0f172a;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .form-select:focus, .form-input:focus { border-color: var(--primary); }
+
+        .btn-main {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .stat-card {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-card .val { font-family: 'Outfit'; font-size: 1.2rem; font-weight: 900; color: #10b981; margin-top: 4px; }
+
+        .toast {
+            position: fixed;
+            bottom: 20px; left: 20px; right: 20px;
+            max-width: 380px;
+            margin: 0 auto;
+            background: #1e293b;
+            border: 2px solid var(--primary);
+            color: var(--text-main);
+            padding: 14px;
+            border-radius: 14px;
+            z-index: 999;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
     </style>
 </head>
 <body>
 
     <div class="wrapper">
         <header>
-            <h1>BearMelody Music 🧸</h1>
-            <p>Kho nhạc độc quyền gấu hồng ngọt ngào</p>
+            <h1>SMM Panel Pro 🚀</h1>
+            <p>Hệ thống dịch vụ Mạng Xã Hội Facebook, TikTok, Instagram</p>
         </header>
 
         <div class="panel">
-            <div class="panel-title"><i class="fa-solid fa-wallet"></i> Thông Tin Tài Khoản</div>
+            <div class="panel-title"><i class="fa-solid fa-wallet"></i> Quản Lý Số Dư</div>
             <div class="wallet-box">
-                <div style="font-size:0.8rem; font-weight:800; color:#881337;">Số Dư Xu</div>
-                <div class="wallet-balance" id="userBalance">10,000 Xu</div>
-                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Tài khoản: <span style="color:var(--primary);">Thành Viên Gấu Hồng</span></div>
+                <div style="font-size:0.85rem; font-weight:800; color:var(--text-muted);">Tài khoản hiện tại</div>
+                <div class="wallet-balance" id="accountBalance">50,000 đ</div>
+                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Trạng thái: <span style="color:#10b981;">Hoạt động</span></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Đã tiêu dùng</div>
+                    <div class="val" id="totalSpent" style="color:#f43f5e;">0 đ</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Đơn đã tạo</div>
+                    <div class="val" id="totalOrders">0</div>
+                </div>
             </div>
         </div>
 
         <div class="panel">
-            <div class="panel-title"><i class="fa-solid fa-compact-disc"></i> Danh Sách Bài Hát</div>
-            <div id="musicListContainer">
-                <div class="music-card">
-                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150" class="music-thumb" alt="cover">
-                    <div class="music-info">
-                        <h4>Sweet Bear Melody</h4>
-                        <p>DJ Teddy • 15,000 Xu</p>
-                    </div>
-                    <button class="btn-play" onclick="playSong('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Sweet Bear Melody')">
-                        <i class="fa-solid fa-play"></i> Nghe
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <audio id="audioPlayer"></audio>
-    <div class="toast" id="toastBox">Thông báo thành công!</div>
-
-    <script>
-        function playSong(url, title) {
-            const player = document.getElementById('audioPlayer');
-            player.src = url;
-            player.play().then(() => {
-                showToast(`Đang phát: ${title}`);
-            }).catch(e => {
-                showToast("Trình duyệt yêu cầu bấm tương tác để phát nhạc!");
-            });
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toastBox');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => {
-                t.style.display = 'none';
-            }, 3000);
-        }
-    </script>
-</body>
-</html>
+            <div class="panel-title"><i class="fa-solid fa-cart-shopping"></i> Tạo Đơn Dịch Vụ Mới</div>
+            <form onsubmit="handleCreateOrder(event)">
+                <div class="form-group">
+                    <label class="form-label">Chọn Mạng Xã Hội</label>
+                    <select class="form-select" id="platformSelect" onchange="updateServices()">
+                        <option value="fb">📘 Facebook (Like, Follow, Share)</option>
+                        <option value="tk">🎵 TikTok (Follow, Tim, View)</option>
+                        <option value="ig">

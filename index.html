@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMM Panel Pro</title>
+    <title>CloudVPS Pro - Thuê Máy Ảo Tự Động</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,19 +11,19 @@
         body { background: #090d16; color: #f8fafc; min-height: 100vh; padding: 15px; padding-bottom: 50px; }
         .wrap { max-width: 500px; margin: 0 auto; }
         
-        .top-nav { display: flex; justify-content: space-between; align-items: center; background: #111827; border: 1px solid rgba(236,72,153,0.3); padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; }
-        .btn-act { background: rgba(236,72,153,0.2); border: 1px solid #ec4899; color: #ec4899; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-act.pri { background: #ec4899; color: #fff; border: none; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; background: #111827; border: 1px solid rgba(56,189,248,0.3); padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; }
+        .btn-act { background: rgba(56,189,248,0.2); border: 1px solid #38bdf8; color: #38bdf8; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-act.pri { background: #38bdf8; color: #090d16; border: none; }
         
-        .box { background: #111827; border: 2px solid rgba(236,72,153,0.25); border-radius: 16px; padding: 16px; margin-bottom: 15px; }
-        .title { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 700; color: #f43f5e; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(236,72,153,0.2); padding-bottom: 6px; }
+        .box { background: #111827; border: 2px solid rgba(56,189,248,0.25); border-radius: 16px; padding: 16px; margin-bottom: 15px; }
+        .title { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 700; color: #38bdf8; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(56,189,248,0.2); padding-bottom: 6px; }
         
         .fg { margin-bottom: 12px; }
         .fl { display: block; font-size: 0.8rem; font-weight: 700; color: #94a3b8; margin-bottom: 4px; }
-        .fi, .fs { width: 100%; background: #090d16; border: 2px solid rgba(236,72,153,0.3); border-radius: 10px; padding: 10px; color: #fff; font-size: 0.9rem; outline: none; }
-        .fi:focus, .fs:focus { border-color: #ec4899; }
+        .fi, .fs { width: 100%; background: #090d16; border: 2px solid rgba(56,189,248,0.3); border-radius: 10px; padding: 10px; color: #fff; font-size: 0.9rem; outline: none; }
+        .fi:focus, .fs:focus { border-color: #38bdf8; }
         
-        .btn-sub { width: 100%; background: linear-gradient(135deg, #f43f5e, #ec4899); color: white; font-weight: 700; border: none; border-radius: 10px; padding: 12px; font-size: 0.95rem; cursor: pointer; }
+        .btn-sub { width: 100%; background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: #090d16; font-weight: 800; border: none; border-radius: 10px; padding: 12px; font-size: 0.95rem; cursor: pointer; }
         .auth-card { display: none; }
         .auth-card.active { display: block; }
         
@@ -35,7 +35,7 @@
     <div class="wrap">
         <!-- TOP NAV -->
         <div class="top-nav">
-            <div style="font-size:0.85rem; color:#94a3b8;">Chào, <span id="lblUser" style="color:#ec4899; font-weight:700;">Khách</span></div>
+            <div style="font-size:0.85rem; color:#94a3b8;">Chào, <span id="lblUser" style="color:#38bdf8; font-weight:700;">Khách</span></div>
             <div style="display:flex; gap:6px;" id="navButtons">
                 <a href="#auth-section" class="btn-act" onclick="switchTab('login')">Đăng Nhập</a>
                 <a href="#auth-section" class="btn-act pri" onclick="switchTab('reg')">Đăng Ký</a>
@@ -43,16 +43,16 @@
         </div>
 
         <div style="text-align:center; margin-bottom:20px;">
-            <h1 style="font-family:'Outfit'; font-size:1.8rem; background:linear-gradient(135deg,#f43f5e,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">SMM Panel Pro 🚀</h1>
-            <p style="font-size:0.75rem; color:#94a3b8; font-weight:600;">Hệ thống tăng tương tác tự động</p>
+            <h1 style="font-family:'Outfit'; font-size:1.8rem; background:linear-gradient(135deg,#38bdf8,#818cf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">CloudVPS Pro 💻</h1>
+            <p style="font-size:0.75rem; color:#94a3b8; font-weight:600;">Hệ thống cho thuê máy ảo tốc độ cao</p>
         </div>
 
         <!-- THÔNG TIN LIÊN HỆ -->
         <div class="box">
             <div class="title"><i class="fa-solid fa-headset"></i> Hỗ Trợ & Liên Hệ</div>
             <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
-                <div style="margin-bottom: 6px;"><i class="fa-solid fa-phone" style="color: #ec4899; width: 20px;"></i> <b>Zalo/Phone:</b> <a href="tel:0961413154" style="color: #38bdf8; text-decoration: none;">0961413154</a></div>
-                <div><i class="fa-brands fa-telegram" style="color: #ec4899; width: 20px;"></i> <b>Telegram:</b> <a href="https://t.me/hr2052" target="_blank" style="color: #38bdf8; text-decoration: none;">@hr2052</a></div>
+                <div style="margin-bottom: 6px;"><i class="fa-solid fa-phone" style="color: #38bdf8; width: 20px;"></i> <b>Zalo/Phone:</b> <a href="tel:0961413154" style="color: #38bdf8; text-decoration: none;">0961413154</a></div>
+                <div><i class="fa-brands fa-telegram" style="color: #38bdf8; width: 20px;"></i> <b>Telegram:</b> <a href="https://t.me/hr2052" target="_blank" style="color: #38bdf8; text-decoration: none;">@hr2052</a></div>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
         <!-- KHU VỰC QUẢN TRỊ -->
         <div class="box" id="adminPanelBox" style="display:none; border-color: #f59e0b;">
             <div class="admin-badge"><i class="fa-solid fa-shield-halved"></i> BẢNG ĐIỀU KHIỂN ADMIN</div>
-            <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">Quản lý toàn bộ hệ thống đơn hàng và số dư thành viên.</div>
+            <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">Quản lý hệ thống máy ảo VPS và trạng thái hoạt động của khách.</div>
             <div style="background: #090d16; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: #34d399;">
                 ✅ Đang đăng nhập quyền Quản Trị Viên cao nhất.
             </div>
@@ -99,40 +99,39 @@
         <!-- SỐ DƯ -->
         <div class="box" style="text-align:center;">
             <div style="font-size:0.75rem; color:#94a3b8; font-weight:700;">SỐ DƯ TÀI KHOẢN</div>
-            <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:900; color:#f43f5e; margin:5px 0;" id="lblBal">50,000 đ</div>
+            <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:900; color:#38bdf8; margin:5px 0;" id="lblBal">50,000 đ</div>
         </div>
 
-        <!-- MUA HÀNG -->
+        <!-- THUÊ MÁY ẢO (VPS) -->
         <div class="box">
-            <div class="title"><i class="fa-solid fa-cart-shopping"></i> Tạo Đơn Dịch Vụ</div>
+            <div class="title"><i class="fa-solid fa-server"></i> Thuê Cấu Hình VPS</div>
             <form onsubmit="makeOrder(event)">
                 <div class="fg">
-                    <label class="fl">Mạng xã hội</label>
-                    <select class="fs" id="selPlat" onchange="changeSvc()">
-                        <option value="fb">Facebook (Like/Follow)</option>
-                        <option value="tk">TikTok (Follow/Tim)</option>
+                    <label class="fl">Chọn gói cấu hình VPS</label>
+                    <select class="fs" id="selVps" onchange="calc()">
+                        <option value="50000">VPS 1Core - 1GB RAM (50.000đ/tháng)</option>
+                        <option value="100000">VPS 2Core - 2GB RAM (100.000đ/tháng)</option>
+                        <option value="200000">VPS 4Core - 4GB RAM (200.000đ/tháng)</option>
+                        <option value="400000">VPS 8Core - 8GB RAM (400.000đ/tháng)</option>
                     </select>
                 </div>
                 <div class="fg">
-                    <label class="fl">Gói dịch vụ (Server)</label>
-                    <select class="fs" id="selSvc" onchange="calc()">
-                        <option value="50">Like Facebook Thường - 50đ/lượt</option>
-                        <option value="100">Like Facebook VIP - 100đ/lượt</option>
+                    <label class="fl">Hệ điều hành (OS)</label>
+                    <select class="fs" id="selOs">
+                        <option value="ubuntu">Ubuntu 22.04 LTS</option>
+                        <option value="debian">Debian 11</option>
+                        <option value="windows">Windows Server 2019 (+20k)</option>
                     </select>
                 </div>
                 <div class="fg">
-                    <label class="fl">Link bài viết / Profile</label>
-                    <input type="url" class="fi" id="inLink" placeholder="https://..." required>
-                </div>
-                <div class="fg">
-                    <label class="fl">Số lượng (Tối thiểu 100)</label>
-                    <input type="number" class="fi" id="inQty" value="100" min="100" oninput="calc()" required>
+                    <label class="fl">Thời gian thuê (Tháng)</label>
+                    <input type="number" class="fi" id="inMonths" value="1" min="1" oninput="calc()" required>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#090d16; padding:10px; border-radius:8px; margin-bottom:12px;">
-                    <span style="font-size:0.8rem; color:#94a3b8;">Tổng tiền:</span>
-                    <span style="font-family:'Outfit'; font-size:1.1rem; font-weight:900; color:#10b981;" id="lblTotal">5,000 đ</span>
+                    <span style="font-size:0.8rem; color:#94a3b8;">Tổng thanh toán:</span>
+                    <span style="font-family:'Outfit'; font-size:1.1rem; font-weight:900; color:#34d399;" id="lblTotal">50,000 đ</span>
                 </div>
-                <button type="submit" class="btn-sub">Thanh Toán Ngay</button>
+                <button type="submit" class="btn-sub">Thuê VPS Ngay</button>
             </form>
         </div>
     </div>
@@ -189,37 +188,25 @@
             alert('Đăng ký thành công! Đã tặng 50,000đ vào ví.');
         }
 
-        function changeSvc() {
-            let p = document.getElementById('selPlat').value;
-            let s = document.getElementById('selSvc');
-            if(p === 'fb') {
-                s.innerHTML = `<option value="50">Like Facebook Thường - 50đ/lượt</option><option value="100">Like Facebook VIP - 100đ/lượt</option>`;
-            } else {
-                s.innerHTML = `<option value="120">Follow TikTok - 120đ/lượt</option><option value="40">Tim TikTok - 40đ/lượt</option>`;
-            }
-            calc();
-        }
-
         function calc() {
-            let price = Number(document.getElementById('selSvc').value);
-            let qty = Number(document.getElementById('inQty').value) || 0;
-            document.getElementById('lblTotal').innerText = (price * qty).toLocaleString() + ' đ';
+            let price = Number(document.getElementById('selVps').value);
+            let months = Number(document.getElementById('inMonths').value) || 1;
+            document.getElementById('lblTotal').innerText = (price * months).toLocaleString() + ' đ';
         }
 
         function makeOrder(e) {
             e.preventDefault();
-            let price = Number(document.getElementById('selSvc').value);
-            let qty = Number(document.getElementById('inQty').value);
-            let cost = price * qty;
+            let price = Number(document.getElementById('selVps').value);
+            let months = Number(document.getElementById('inMonths').value);
+            let cost = price * months;
 
             if(balance < cost) {
-                alert('Số dư trong ví không đủ!');
+                alert('Số dư trong ví không đủ! Vui lòng nạp thêm tiền.');
                 return;
             }
             balance -= cost;
             document.getElementById('lblBal').innerText = balance.toLocaleString() + ' đ';
-            alert('Tạo đơn hàng thành công!');
-            document.getElementById('inLink').value = '';
+            alert('Thuê VPS thành công! Thông tin IP và mật khẩu đã gửi về quản lý.');
         }
     </script>
 </body>
